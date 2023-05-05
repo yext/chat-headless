@@ -1,0 +1,54 @@
+{
+  "name": "chat-headless",
+  "version": "0.1.0",
+  "description": "A library for powering UI components for Yext Chat integrations",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "keywords": [
+    "chat",
+    "yext",
+    "redux",
+    "state management"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "THIRD-PARTY-NOTICES"
+  ],
+  "scripts": {
+    "test": "jest --config=jest.config.json",
+    "lint": "eslint . --max-warnings=0",
+    "tsc-cjs": "tsc -p tsconfig.cjs.json",
+    "tsc-esm": "tsc -p tsconfig.esm.json",
+    "dev": "npm run tsc-esm -- --watch",
+    "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yext/chat-headless.git"
+  },
+  "author": "clippy@yext.com",
+  "bugs": {
+    "url": "https://github.com/yext/chat-headless/issues"
+  },
+  "homepage": "https://github.com/yext/chat-headless#readme",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
+    "@yext/chat-core": "file:~/chat-core/yext-chat-core-0.1.0.tgz"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.5",
+    "@babel/preset-typescript": "^7.21.5",
+    "@microsoft/api-documenter": "^7.22.4",
+    "@microsoft/api-extractor": "^7.34.8",
+    "@types/jest": "^29.5.1",
+    "@yext/eslint-config-slapshot": "^0.7.0",
+    "babel-jest": "^29.5.0",
+    "eslint": "^8.39.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "typescript": "^5.0.4"
+  }
+}
