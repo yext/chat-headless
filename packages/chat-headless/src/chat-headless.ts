@@ -1,14 +1,15 @@
 import { ChatConfig, ChatCore, Message, MessageNotes, MessageResponse, MessageSource } from '@yext/chat-core';
 import { State } from './models/state';
+import ReduxStateManager from './redux-state-manager';
 
 export class ChatHeadless {
 
   chatCore: ChatCore;
-  stateManager: StateManager;
+  stateManager: ReduxStateManager;
 
   constructor(config: ChatConfig) {
     this.chatCore = new ChatCore(config);
-    this.stateManager = new StateManager();
+    this.stateManager = new ReduxStateManager();
   }
 
   /**
