@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, EnhancedStore, Unsubscribe } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, EnhancedStore, Unsubscribe, Action } from '@reduxjs/toolkit';
 
 import chatStatusReducer from './slices/chatstatus';
 // import StateListener from './models/state-listener';
@@ -18,15 +18,7 @@ export default class ReduxStateManager { //implements StateManager {
     });
 
     this.store = configureStore({
-      middleware:
-        (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
-      reducer: (state, action) => {
-        if (action.type === 'set-state') {
-          return action.payload;
-        } else {
-          return coreReducer(state, action);
-        }
-      },
+      reducer: coreReducer,
     });
   }
 
@@ -34,18 +26,7 @@ export default class ReduxStateManager { //implements StateManager {
     return this.store.getState();
   }
 
-  dispatchEvent(type: string, payload?: unknown): void {
-    this.store.dispatch({ type, payload });
+  dispatch(action: Action): void {
+    this.store.dispatch(action);
   }
-
-  // addListener<T>(listener: StateListener<T>): Unsubscribe {
-  //   let previousValue = listener.valueAccessor(this.getState());
-  //   return this.store.subscribe(() => {
-  //     const currentValue: T = listener.valueAccessor(this.getState());
-  //     if (currentValue !== previousValue) {
-  //       listener.callback(currentValue);
-  //       previousValue = currentValue;
-  //     }
-  //   });
-  // }
 }

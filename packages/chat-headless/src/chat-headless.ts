@@ -1,6 +1,8 @@
 import { ChatConfig, ChatCore, Message, MessageNotes, MessageResponse, MessageSource } from '@yext/chat-core';
 import { State } from './models/state';
 import ReduxStateManager from './redux-state-manager';
+import { setIsLoading } from './slices/chatstatus';
+import { setMessageNotes, setMessages } from './slices/conversation';
 
 export class ChatHeadless {
 
@@ -20,15 +22,15 @@ export class ChatHeadless {
   }
 
   setMessageNotes(notes: MessageNotes) {
-
+    this.stateManager.dispatch(setMessageNotes(notes));
   }
 
   setMessages(messages: Message[]) {
-
+    this.stateManager.dispatch(setMessages(messages));
   }
 
   setChatLoadingStatus(isLoading: boolean) {
-
+    this.stateManager.dispatch(setIsLoading(isLoading));
   }
 
   async getNextMessage(text: string, source: MessageSource = MessageSource.USER): Promise<MessageResponse> {

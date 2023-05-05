@@ -1,0 +1,25 @@
+{
+  "name": "@yext/chat-headless-react",
+  "version": "0.1.0",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "THIRD-PARTY-NOTICES"
+  ],
+  "scripts": {
+    "tsc-cjs": "tsc -p tsconfig.cjs.json",
+    "tsc-esm": "tsc -p tsconfig.esm.json",
+    "dev": "npm run tsc-esm -- --watch",
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-redux": "^8.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

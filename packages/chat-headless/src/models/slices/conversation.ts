@@ -9,5 +9,5 @@ export interface ConversationState {
   /** {@inheritdoc Message} */
   messages: Message[],
   /** {@inheritdoc MessageNotes} */
-  notes: MessageNotes
+  notes?: MessageNotes
 }
