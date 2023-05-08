@@ -4,8 +4,6 @@
  * @public
  */
 export interface ChatStatusState {
-  /**
-   * Whether the next message is currently processing or has finished processing.
-   */
+  /** Whether the next message is currently processing or has finished processing. */
   isLoading?: boolean
 }

@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
-import { createSelectorHook } from 'react-redux'
+import { ChatHeadlessProvider, useChatActions, useChatState, ChatConfig } from '@yext/chat-headless-react';
+import { useCallback } from 'react';
+
+const config: ChatConfig = {
+  botId: "",
+  apiKey: "",
+}
+
+function MyComponent(): JSX.Element {
+  const isLoading = useChatState(s => s.chatStatus.isLoading)
+  const messages = useChatState(s => s.conversation.messages)
+  const actions = useChatActions()
+
+  const onClick = useCallback(() => {
+    actions.setChatLoadingStatus(!isLoading)
+  }, [isLoading])
+
+  return (
+    <div>
+      <button onClick={onClick}>
+        Click me!
+      </button>
+      <p>isLoading: {`${isLoading}`}</p>
+      {messages.map(m => <p>{`${m.source}: ${m.text}`}</p>)}
+    </div>
+  )
+}
 
 function App() {
-  const a = createSelectorHook()
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ChatHeadlessProvider config={config}>
+        <MyComponent />
+      </ChatHeadlessProvider>
     </div>
   );
 }

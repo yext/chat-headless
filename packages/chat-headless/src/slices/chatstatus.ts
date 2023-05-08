@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChatStatusState } from '../models/slices/chatstatus';
 
-export const initialState: ChatStatusState = {};
+export const initialState: ChatStatusState = {
+  isLoading: false
+};
 
 /**
  * Registers with Redux the slice of {@link State} pertaining to the loading status

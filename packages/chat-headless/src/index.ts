@@ -1,1 +1,3 @@
-export { ChatHeadless } from './chat-headless';
+export { ChatHeadless } from './ChatHeadless';
+export * from './models';
+export * from './corereexports';

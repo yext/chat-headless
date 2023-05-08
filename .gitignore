@@ -1,7 +1,7 @@
 node_modules/
 coverage/
 dist/
-temp/
 .DS_Store
 .env
 .turbo
+.vscode

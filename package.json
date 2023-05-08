@@ -5,20 +5,13 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "lint": "turbo run lint"
   },
   "devDependencies": {
-    "@yext/eslint-config-slapshot": "^0.7.0",
-    "eslint": "^8.39.0",
-    "turbo": "latest",
-    "typescript": "^5.0.4"
+    "turbo": "latest"
   },
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "dependencies": {
-    "react-redux": "^8.0.5"
-  }
+  ]
 }
