@@ -10,4 +10,6 @@ export interface ConversationState {
   messages: Message[],
   /** {@inheritdoc MessageNotes} */
   notes?: MessageNotes,
+  /** Whether the next message is currently processing or has finished processing. */
+  isLoading?: boolean
 }

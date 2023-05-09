@@ -1,5 +1,5 @@
 
-import { ChatHeadless, ConversationState, Message, MessageNotes, MessageSource, State } from '../src';
+import { ChatHeadless, Message, MessageNotes, MessageSource, State } from '../src';
 import { ChatConfig, ChatCore, MessageResponse } from '@yext/chat-core';
 import { ReduxStateManager } from '../src/ReduxStateManager'
 
@@ -23,11 +23,9 @@ describe('setters work as expected', () => {
         }],
         notes: {
           currentGoal: "NEW_GOAL"
-        }
-      },
-      chatStatus: {
+        },
         isLoading: true
-      }
+      },
     }
     chatHeadless.setState(state);
     expect(stateDispatchSpy).toBeCalledTimes(1);
@@ -87,13 +85,19 @@ describe('setters work as expected', () => {
     chatHeadless.setChatLoadingStatus(true);
     expect(stateDispatchSpy).toBeCalledTimes(1);
     expect(stateDispatchSpy).toBeCalledWith({
-      type: 'chatStatus/setIsLoading',
+      type: 'conversation/setIsLoading',
       payload: true
     });
   });
 })
 
 describe('Chat API methods work as expected', () => {
+  const expectedUserMessage: Message = {
+    text: "This is a dummy text!",
+    source: MessageSource.USER,
+    timestamp: expect.any(Number)
+  }
+
   it("getNextMessage works as expected", async () => {
     const chatHeadless = new ChatHeadless(config);
     const expectedResponse: MessageResponse = {
@@ -106,21 +110,13 @@ describe('Chat API methods work as expected', () => {
         currentGoal: "SOME_GOAL"
       },
     }
-    const expectedUserMessage: Message = {
-      text: "This is a dummy text!",
-      source: MessageSource.USER,
-      timestamp: expect.any(Number)
-    }
-
     const coreGetNextMessageSpy = jest.spyOn(ChatCore.prototype, 'getNextMessage')
-      .mockResolvedValue(expectedResponse)
+      .mockResolvedValueOnce(expectedResponse)
     const responsePromise = chatHeadless.getNextMessage("This is a dummy text!");
     //state update before response
     expect(chatHeadless.state).toEqual({
       conversation: {
-        messages: [expectedUserMessage]
-      },
-      chatStatus: {
+        messages: [expectedUserMessage],
         isLoading: true
       }
     })
@@ -130,14 +126,33 @@ describe('Chat API methods work as expected', () => {
     expect(chatHeadless.state).toEqual({
       conversation: {
         messages: [expectedUserMessage, expectedResponse.message],
-        notes: expectedResponse.notes
-      },
-      chatStatus: {
+        notes: expectedResponse.notes,
         isLoading: false
       }
     })
     expect(coreGetNextMessageSpy).toBeCalledTimes(1)
     expect(response).toEqual(expectedResponse)
+  })
+
+  it("updates loading status and throw error when an API request returns an error", async () => {
+    const errorMessage = "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)"
+    const chatHeadless = new ChatHeadless(config);
+    const coreGetNextMessageSpy = jest.spyOn(ChatCore.prototype, 'getNextMessage')
+    .mockRejectedValue(errorMessage)
+    expect.assertions(3)
+
+    try {
+      await chatHeadless.getNextMessage("This is a dummy text!");
+    } catch(e) {
+      expect(e).toEqual(errorMessage)
+      expect(chatHeadless.state).toEqual({
+        conversation: {
+          messages: [expectedUserMessage],
+          isLoading: false
+        }
+      })
+    }
+    expect(coreGetNextMessageSpy).toBeCalledTimes(1);
   })
 })
 
@@ -174,7 +189,7 @@ describe("addListener works as expected", () => {
     expect(mockedCallback).toBeCalledTimes(0)
   })
 
-  it("doesn't invoke callback on a different state update", () => {
+  it("does not invoke callback on a different state update", () => {
     const chatHeadless = new ChatHeadless(config);
     const mockedCallback = jest.fn()
     chatHeadless.addListener({

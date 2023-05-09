@@ -8,8 +8,7 @@ import {
 } from '@yext/chat-core';
 import { State } from './models/state';
 import { ReduxStateManager } from './ReduxStateManager';
-import { setIsLoading } from './slices/chatstatus';
-import { setMessageNotes, setMessages } from './slices/conversation';
+import { setIsLoading, setMessageNotes, setMessages } from './slices/conversation';
 import { Store, Unsubscribe } from '@reduxjs/toolkit';
 import { StateListener } from './models';
 
@@ -87,7 +86,7 @@ export class ChatHeadless {
   }
 
   /**
-   * Sets {@link ChatStatusState.isLoading} to the specified loading state
+   * Sets {@link ConversationState.isLoading} to the specified loading state
    *
    * @public
    * 
@@ -116,6 +115,9 @@ export class ChatHeadless {
    * 
    * @public
    * 
+   * @remarks
+   * If rejected, an Error is returned.
+   * 
    * @param text - the text of the next message
    * @param source - the source of the message
    * @returns a Promise of a {@link MessageResponse} from the Chat API
@@ -134,9 +136,9 @@ export class ChatHeadless {
         messages,
         notes: this.state.conversation.notes
       });
-    } catch (e) { 
+    } catch (e) {
       this.setChatLoadingStatus(false);
-      throw e;
+      return Promise.reject(e as Error);
     }
     this.setChatLoadingStatus(false);
     this.setMessages([...messages, nextMessage.message]);

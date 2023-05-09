@@ -3,7 +3,8 @@ import { ConversationState } from '../models/slices/conversation';
 import { Message, MessageNotes } from '@yext/chat-core';
 
 export const initialState: ConversationState = {
-  messages: []
+  messages: [],
+  isLoading: false,
 };
 
 /**
@@ -19,9 +20,12 @@ export const conversationSlice = createSlice({
     },
     setMessageNotes: (state: ConversationState, action: PayloadAction<MessageNotes>) => {
       state.notes = action.payload;
+    },
+    setIsLoading: (state: ConversationState, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     }
   }
 });
 
-export const { setMessages, setMessageNotes } = conversationSlice.actions;
+export const { setMessages, setMessageNotes, setIsLoading } = conversationSlice.actions;
 export default conversationSlice.reducer;

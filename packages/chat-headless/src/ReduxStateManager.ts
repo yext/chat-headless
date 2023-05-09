@@ -5,7 +5,6 @@ import {
   Unsubscribe,
   Action,
 } from '@reduxjs/toolkit';
-import chatStatusReducer from './slices/chatstatus';
 import conversationReducer from './slices/conversation';
 import { State } from './models/state';
 import { StateListener } from './models/utils/StateListeners';
@@ -21,7 +20,6 @@ export class ReduxStateManager {
 
   constructor() {
     const coreReducer = combineReducers({
-      chatStatus: chatStatusReducer,
       conversation: conversationReducer,
     });
     this.store = configureStore({

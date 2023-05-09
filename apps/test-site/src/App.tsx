@@ -7,7 +7,7 @@ const config: ChatConfig = {
 }
 
 function MyComponent(): JSX.Element {
-  const isLoading = useChatState(s => s.chatStatus.isLoading)
+  const isLoading = useChatState(s => s.conversation.isLoading)
   const messages = useChatState(s => s.conversation.messages)
   const actions = useChatActions()
 

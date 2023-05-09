@@ -1,5 +1,4 @@
 
-import { ChatStatusState } from './slices/chatstatus';
 import { ConversationState } from './slices/conversation';
 
 /**
@@ -10,6 +9,4 @@ import { ConversationState } from './slices/conversation';
 export interface State {
   /** {@inheritdoc ConversationState} */
   conversation: ConversationState,
-    /** {@inheritdoc ChatStatusState} */
-  chatStatus: ChatStatusState
 }
