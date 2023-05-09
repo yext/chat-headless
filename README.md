@@ -1,6 +1,6 @@
-# chat-headless
+# chat-headless monorepo
 
-The headless library and framework-specific binding libraries for the Chat frontend.
+This monorepo contains the headless library and framework-specific binding libraries for the Chat frontend.
 
 ## What's inside?
 

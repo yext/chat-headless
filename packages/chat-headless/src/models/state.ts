@@ -8,5 +8,5 @@ import { ConversationState } from './slices/conversation';
  */
 export interface State {
   /** {@inheritdoc ConversationState} */
-  conversation: ConversationState,
+  conversation: ConversationState
 }

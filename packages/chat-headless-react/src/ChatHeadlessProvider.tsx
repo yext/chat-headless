@@ -9,19 +9,19 @@ import { ChatHeadlessContext } from './ChatHeadlessContext';
 export type ChatHeadlessProviderProps = PropsWithChildren<{
   /** {@inheritdoc ChatConfig} */
   config: ChatConfig
-}>
+}>;
 
 /**
  * Instantiates a ChatHeadless instance for {@link ChatHeadlessContext} and provide
  * the context for all children components.
  *
  * @param props - {@link ChatHeadlessProviderProps}
- * 
+ *
  * @public
  */
 export function ChatHeadlessProvider(props: ChatHeadlessProviderProps): JSX.Element {
-  const {children, config } = props;
-  const headless = useMemo(() => new ChatHeadless(config), [config])
+  const { children, config } = props;
+  const headless = useMemo(() => new ChatHeadless(config), [config]);
 
   return (
     <ChatHeadlessContext.Provider value={headless}>
@@ -29,5 +29,5 @@ export function ChatHeadlessProvider(props: ChatHeadlessProviderProps): JSX.Elem
         {children}
       </Provider>
     </ChatHeadlessContext.Provider>
-  )
+  );
 }

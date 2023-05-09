@@ -1,5 +1,5 @@
 import { ChatConfig, ChatHeadlessProvider, useChatState } from '../src';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ChatHeadlessContext } from '../src/ChatHeadlessContext';
 import { useContext } from 'react';
 import userEvent from '@testing-library/user-event';
@@ -18,21 +18,21 @@ it('invoke useChatState outside of ChatHeadlessProvider', () => {
 
 const config: ChatConfig = {
   botId: 'BOT_ID',
-  apiKey: "API_KEY",
-}
+  apiKey: 'API_KEY',
+};
 
 it('trigger re-render on state update', async () => {
   const stateUpdates: (boolean | undefined)[] = [];
 
   function Test() {
     const selectedState = useChatState(s => s.conversation.isLoading);
-    const headless = useContext(ChatHeadlessContext)
+    const headless = useContext(ChatHeadlessContext);
     stateUpdates.push(selectedState);
 
     return <div>
       <button onClick={() => headless.setChatLoadingStatus(true)}>update</button>
       <span>{selectedState}</span>
-    </div>
+    </div>;
   }
 
   render(<ChatHeadlessProvider config={config}>

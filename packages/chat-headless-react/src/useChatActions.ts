@@ -7,11 +7,11 @@ export type ChatActions = ChatHeadless;
 /**
  * A React hook that returns a ChatHeadless instance with setter methods
  * to update state.
- * 
+ *
  * @remarks
  * This hook must be used only within {@link ChatHeadlessProvider}.
  * Otherwise, it will throw an error.
- * 
+ *
  * @public
  */
 export function useChatActions(): ChatActions {

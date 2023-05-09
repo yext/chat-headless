@@ -13,7 +13,7 @@ function MyComponent(): JSX.Element {
 
   const onClick = useCallback(() => {
     actions.setChatLoadingStatus(!isLoading)
-  }, [isLoading])
+  }, [actions, isLoading])
 
   return (
     <div>

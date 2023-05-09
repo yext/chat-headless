@@ -12,7 +12,7 @@ import { StateListener } from './models/utils/StateListeners';
 /**
  * A Redux-backed implementation of the {@link StateManager} interface. Redux is used to
  * manage the state, dispatch events, and register state listeners.
- * 
+ *
  * @internal
  */
 export class ReduxStateManager {
@@ -48,9 +48,8 @@ export class ReduxStateManager {
   /**
    * Dispatches an event. This can update the {@link State}.
    *
-   * @param action - represents an intention to change the state
-   * @param action.type - The type of action to dispatch
-   * @param action.payload - The payload of the action to dispatch
+   * @param action - represents an intention to change the state.
+   * This includes "type" field for the action type and "payload" field for the data to dispatch
    */
   dispatch<T extends Action>(action: T): void {
     this.store.dispatch(action);

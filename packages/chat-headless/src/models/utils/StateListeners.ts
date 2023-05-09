@@ -18,5 +18,5 @@ export interface StateListener<T> {
    *
    * @param currentValue - The current state value
    */
-  callback(currentValue: T)
+  callback(currentValue: T): any
 }
