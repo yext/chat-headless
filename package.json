@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "chat-headless",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "autofix": "prettier --write . && eslint --fix --max-warnings=0 ."
+  },
+  "devDependencies": {
+    "@yext/eslint-config": "^1.0.0",
+    "eslint": "^8.40.0",
+    "prettier": "^2.8.8",
+    "turbo": "latest"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

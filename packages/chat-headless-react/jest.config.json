@@ -1,0 +1,14 @@
+{
+  "bail": 0,
+  "collectCoverage": true,
+  "collectCoverageFrom": ["src/**", "!src/models/**/*.ts"],
+  "verbose": true,
+  "moduleFileExtensions": ["js", "ts", "tsx"],
+  "moduleDirectories": ["node_modules", "<rootDir>"],
+  "testEnvironment": "jsdom",
+  "testPathIgnorePatterns": ["./tests/mocks/*"],
+  "resetMocks": true,
+  "restoreMocks": true,
+  "clearMocks": true,
+  "testMatch": ["<rootDir>/tests/**/*.(test).ts(x)?"]
+}
