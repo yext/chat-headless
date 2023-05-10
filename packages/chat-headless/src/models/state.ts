@@ -1,5 +1,4 @@
-
-import { ConversationState } from './slices/conversation';
+import { ConversationState } from "./slices/conversation";
 
 /**
  * The state representing a ChatHeadless instance.
@@ -8,5 +7,5 @@ import { ConversationState } from './slices/conversation';
  */
 export interface State {
   /** {@inheritdoc ConversationState} */
-  conversation: ConversationState
+  conversation: ConversationState;
 }

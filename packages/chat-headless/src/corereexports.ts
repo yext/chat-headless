@@ -4,5 +4,5 @@ export {
   MessageNotes,
   MessageSource,
   MessageRequest,
-  MessageResponse
-} from '@yext/chat-core';
+  MessageResponse,
+} from "@yext/chat-core";

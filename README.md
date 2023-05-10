@@ -13,4 +13,3 @@ This monorepo includes the following packages/apps:
 - `apps/test-site`: A React app that uses `@yext/chat-headless-react` for development purposes.
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-

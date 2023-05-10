@@ -4,13 +4,17 @@ import {
   Message,
   MessageNotes,
   MessageResponse,
-  MessageSource
-} from '@yext/chat-core';
-import { State } from './models/state';
-import { ReduxStateManager } from './ReduxStateManager';
-import { setIsLoading, setMessageNotes, setMessages } from './slices/conversation';
-import { Store, Unsubscribe } from '@reduxjs/toolkit';
-import { StateListener } from './models';
+  MessageSource,
+} from "@yext/chat-core";
+import { State } from "./models/state";
+import { ReduxStateManager } from "./ReduxStateManager";
+import {
+  setIsLoading,
+  setMessageNotes,
+  setMessages,
+} from "./slices/conversation";
+import { Store, Unsubscribe } from "@reduxjs/toolkit";
+import { StateListener } from "./models";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -19,7 +23,6 @@ import { StateListener } from './models';
  * @public
  */
 export class ChatHeadless {
-
   private chatCore: ChatCore;
   private stateManager: ReduxStateManager;
 
@@ -46,8 +49,8 @@ export class ChatHeadless {
    */
   setState(state: State): void {
     this.stateManager.dispatch({
-      type: 'set-state',
-      payload: state
+      type: "set-state",
+      payload: state,
     });
   }
 
@@ -122,19 +125,25 @@ export class ChatHeadless {
    * @param source - the source of the message
    * @returns a Promise of a {@link MessageResponse} from the Chat API
    */
-  async getNextMessage(text: string, source: MessageSource = MessageSource.USER): Promise<MessageResponse> {
+  async getNextMessage(
+    text: string,
+    source: MessageSource = MessageSource.USER
+  ): Promise<MessageResponse> {
     this.setChatLoadingStatus(true);
-    const messages: Message[] = [...this.state.conversation.messages, {
-      timestamp: Date.now(),
-      source,
-      text
-    }];
+    const messages: Message[] = [
+      ...this.state.conversation.messages,
+      {
+        timestamp: Date.now(),
+        source,
+        text,
+      },
+    ];
     this.setMessages(messages);
     let nextMessage: MessageResponse;
     try {
       nextMessage = await this.chatCore.getNextMessage({
         messages,
-        notes: this.state.conversation.notes
+        notes: this.state.conversation.notes,
       });
     } catch (e) {
       this.setChatLoadingStatus(false);

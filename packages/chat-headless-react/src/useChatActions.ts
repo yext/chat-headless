@@ -1,6 +1,6 @@
-import { ChatHeadless } from '@yext/chat-headless';
-import { useContext } from 'react';
-import { ChatHeadlessContext } from './ChatHeadlessContext';
+import { ChatHeadless } from "@yext/chat-headless";
+import { useContext } from "react";
+import { ChatHeadlessContext } from "./ChatHeadlessContext";
 
 export type ChatActions = ChatHeadless;
 
@@ -17,8 +17,10 @@ export type ChatActions = ChatHeadless;
 export function useChatActions(): ChatActions {
   const chatHeadless = useContext(ChatHeadlessContext);
   if (chatHeadless.state === undefined) {
-    throw new Error('Attempted to call useChatActions() outside of ChatHeadlessProvider.'
-     + ' Please ensure that \'useChatActions()\' is called within an ChatHeadlessProvider component.');
+    throw new Error(
+      "Attempted to call useChatActions() outside of ChatHeadlessProvider." +
+        " Please ensure that 'useChatActions()' is called within an ChatHeadlessProvider component."
+    );
   }
   return chatHeadless;
 }

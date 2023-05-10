@@ -4,10 +4,10 @@ import {
   EnhancedStore,
   Unsubscribe,
   Action,
-} from '@reduxjs/toolkit';
-import conversationReducer from './slices/conversation';
-import { State } from './models/state';
-import { StateListener } from './models/utils/StateListeners';
+} from "@reduxjs/toolkit";
+import conversationReducer from "./slices/conversation";
+import { State } from "./models/state";
+import { StateListener } from "./models/utils/StateListeners";
 
 /**
  * A Redux-backed implementation of the {@link StateManager} interface. Redux is used to
@@ -24,7 +24,7 @@ export class ReduxStateManager {
     });
     this.store = configureStore({
       reducer: (state, action) => {
-        return action.type === 'set-state'
+        return action.type === "set-state"
           ? action.payload
           : coreReducer(state, action);
       },

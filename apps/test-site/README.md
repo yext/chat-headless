@@ -2,7 +2,7 @@
 
 This React application was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This test site provides a playground to test out packages from this monorepo. As an example, 
+This test site provides a playground to test out packages from this monorepo. As an example,
 App.tsx uses Provider component and hooks from '@yext/chat-headless-react' to ensure state update
 and re-renders works.
 

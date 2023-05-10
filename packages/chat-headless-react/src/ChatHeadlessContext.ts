@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import { ChatHeadless } from '@yext/chat-headless';
+import { createContext } from "react";
+import { ChatHeadless } from "@yext/chat-headless";
 
 /**
  * Persists a global ChatHeadless instance for React components under ChatHeadlessProvider.
@@ -9,4 +9,6 @@ import { ChatHeadless } from '@yext/chat-headless';
  *
  * @public
  */
-export const ChatHeadlessContext = createContext<ChatHeadless>({} as ChatHeadless);
+export const ChatHeadlessContext = createContext<ChatHeadless>(
+  {} as ChatHeadless
+);

@@ -1,27 +1,14 @@
 {
   "bail": 0,
   "collectCoverage": true,
-  "collectCoverageFrom": [
-    "src/**",
-    "!src/models/**/*.ts"
-  ],
+  "collectCoverageFrom": ["src/**", "!src/models/**/*.ts"],
   "verbose": true,
-  "moduleFileExtensions": [
-    "js",
-    "ts"
-  ],
-  "moduleDirectories": [
-    "node_modules",
-    "<rootDir>"
-  ],
+  "moduleFileExtensions": ["js", "ts"],
+  "moduleDirectories": ["node_modules", "<rootDir>"],
   "testEnvironment": "jsdom",
-  "testPathIgnorePatterns": [
-    "./tests/mocks/*"
-  ],
+  "testPathIgnorePatterns": ["./tests/mocks/*"],
   "resetMocks": true,
   "restoreMocks": true,
   "clearMocks": true,
-  "testMatch": [
-    "<rootDir>/tests/**/*.[jt]s"
-  ]
+  "testMatch": ["<rootDir>/tests/**/*.[jt]s"]
 }

@@ -1,7 +1,7 @@
-import { State } from '@yext/chat-headless';
-import { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { ChatHeadlessContext } from './ChatHeadlessContext';
+import { State } from "@yext/chat-headless";
+import { useContext } from "react";
+import { useSelector } from "react-redux";
+import { ChatHeadlessContext } from "./ChatHeadlessContext";
 
 /**
  * Map function to specify what part of the Chat state to use
@@ -22,8 +22,10 @@ export type StateSelector<T> = (s: State) => T;
 export function useChatState<T>(stateSelector: StateSelector<T>): T {
   const chatHeadless = useContext(ChatHeadlessContext);
   if (chatHeadless.state === undefined) {
-    throw new Error('Attempted to call useChatState() outside of ChatHeadlessProvider.'
-     + ' Please ensure that \'useChatState()\' is called within an ChatHeadlessProvider component.');
+    throw new Error(
+      "Attempted to call useChatState() outside of ChatHeadlessProvider." +
+        " Please ensure that 'useChatState()' is called within an ChatHeadlessProvider component."
+    );
   }
   return useSelector(stateSelector);
 }
