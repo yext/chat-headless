@@ -2,8 +2,6 @@ import { ChatHeadless } from "@yext/chat-headless";
 import { useContext } from "react";
 import { ChatHeadlessContext } from "./ChatHeadlessContext";
 
-export type ChatActions = ChatHeadless;
-
 /**
  * A React hook that returns a ChatHeadless instance with setter methods
  * to update state.
@@ -14,7 +12,7 @@ export type ChatActions = ChatHeadless;
  *
  * @public
  */
-export function useChatActions(): ChatActions {
+export function useChatActions(): ChatHeadless {
   const chatHeadless = useContext(ChatHeadlessContext);
   if (chatHeadless.state === undefined) {
     throw new Error(

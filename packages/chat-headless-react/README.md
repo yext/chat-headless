@@ -2,6 +2,8 @@
 
 Chat Headless React is the official React UI Bindings layer for Chat Headless
 
+[Full Documentation](./docs/chat-headless-react.md)
+
 ## Getting Started - `ChatHeadlessProvider`
 
 Chat Headless React includes an `<ChatHeadlessProvider />` component, which takes in a `ChatConfig`, instantiate a `ChatHeadless` instance and makes it available to the rest of your app:

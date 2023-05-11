@@ -21,7 +21,8 @@
     "tsc-cjs": "tsc -p tsconfig.cjs.json",
     "tsc-esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run tsc-esm -- --watch",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs"
+    "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs"
   },
   "repository": {
     "type": "git",
