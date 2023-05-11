@@ -21,7 +21,8 @@
     "tsc-cjs": "tsc -p tsconfig.cjs.json",
     "tsc-esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run tsc-esm -- --watch",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs"
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs",
+    "generate-notices": "../../generate-notices.sh"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-headless": "*",
+    "@yext/chat-headless": "file:~/chat-headless/packages/chat-headless",
     "react": "^18.2.0",
     "react-redux": "^8.0.5"
   },
