@@ -100,6 +100,17 @@ export class ChatHeadless {
   }
 
   /**
+   * Resets all fields within {@link ConversationState}
+   *
+   * @public
+   */
+  restartConversation() {
+    this.setChatLoadingStatus(false);
+    this.setMessageNotes({});
+    this.setMessages([]);
+  }
+
+  /**
    * Adds a listener for a specific state value of type T.
    *
    * @public
@@ -126,19 +137,22 @@ export class ChatHeadless {
    * @returns a Promise of a {@link MessageResponse} from the Chat API
    */
   async getNextMessage(
-    text: string,
+    text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse> {
     this.setChatLoadingStatus(true);
-    const messages: Message[] = [
-      ...this.state.conversation.messages,
-      {
-        timestamp: Date.now(),
-        source,
-        text,
-      },
-    ];
-    this.setMessages(messages);
+    let messages: Message[] = this.state.conversation.messages;
+    if (text && text.length > 0) {
+      messages = [
+        ...messages,
+        {
+          timestamp: Date.now(),
+          source,
+          text,
+        },
+      ];
+      this.setMessages(messages);
+    }
     let nextMessage: MessageResponse;
     try {
       nextMessage = await this.chatCore.getNextMessage({

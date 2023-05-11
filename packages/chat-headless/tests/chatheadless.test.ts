@@ -116,19 +116,19 @@ describe("Chat API methods work as expected", () => {
     source: MessageSource.USER,
     timestamp: expect.any(Number),
   };
+  const expectedResponse: MessageResponse = {
+    message: {
+      text: "dummy response!",
+      source: MessageSource.BOT,
+      timestamp: 123456789,
+    },
+    notes: {
+      currentGoal: "SOME_GOAL",
+    },
+  };
 
   it("getNextMessage works as expected", async () => {
     const chatHeadless = new ChatHeadless(config);
-    const expectedResponse: MessageResponse = {
-      message: {
-        text: "dummy response!",
-        source: MessageSource.BOT,
-        timestamp: 123456789,
-      },
-      notes: {
-        currentGoal: "SOME_GOAL",
-      },
-    };
     const coreGetNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "getNextMessage")
       .mockResolvedValueOnce(expectedResponse);
@@ -180,6 +180,20 @@ describe("Chat API methods work as expected", () => {
     }
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
   });
+
+  it("sends message array as is for initial message from bot", async () => {
+    const chatHeadless = new ChatHeadless(config);
+    expect(chatHeadless.state.conversation.messages).toEqual([]);
+
+    const coreGetNextMessageSpy = jest
+      .spyOn(ChatCore.prototype, "getNextMessage")
+      .mockResolvedValueOnce(expectedResponse);
+    await chatHeadless.getNextMessage();
+    expect(coreGetNextMessageSpy).toBeCalledTimes(1);
+    expect(coreGetNextMessageSpy).toBeCalledWith({
+      messages: [],
+    });
+  });
 });
 
 describe("addListener works as expected", () => {
@@ -225,4 +239,47 @@ describe("addListener works as expected", () => {
     chatHeadless.setMessageNotes({});
     expect(mockedCallback).toBeCalledTimes(0);
   });
+});
+
+it("restartConversation works as expected", () => {
+  const chatHeadless = new ChatHeadless(config);
+  chatHeadless.setState({
+    conversation: {
+      messages: [
+        {
+          text: "How can I help you?",
+          source: MessageSource.BOT,
+          timestamp: 100,
+        },
+      ],
+      notes: {
+        currentGoal: "GOAL",
+      },
+      isLoading: true,
+    },
+  });
+  const stateDispatchSpy = jest.spyOn(ReduxStateManager.prototype, "dispatch");
+  chatHeadless.restartConversation();
+  expect(stateDispatchSpy).toBeCalledTimes(3);
+  expect(stateDispatchSpy).toHaveBeenCalledWith({
+    type: "conversation/setIsLoading",
+    payload: false,
+  });
+  expect(stateDispatchSpy).toHaveBeenCalledWith({
+    type: "conversation/setMessageNotes",
+    payload: {},
+  });
+  expect(stateDispatchSpy).toHaveBeenCalledWith({
+    type: "conversation/setMessages",
+    payload: [],
+  });
+
+  const expectedState: State = {
+    conversation: {
+      messages: [],
+      notes: {},
+      isLoading: false,
+    },
+  };
+  expect(chatHeadless.state).toEqual(expectedState);
 });
