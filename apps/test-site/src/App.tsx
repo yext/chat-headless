@@ -4,32 +4,13 @@ import {
   useChatState,
   ChatConfig,
 } from "@yext/chat-headless-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const config: ChatConfig = {
-  botId: "",
-  apiKey: "",
+  botId: "red-dog-bot",
+  apiKey: "API_KEY_HERE",
+  apiDomain: "liveapi-dev.yext.com"
 };
-
-function MyComponent(): JSX.Element {
-  const isLoading = useChatState((s) => s.conversation.isLoading);
-  const messages = useChatState((s) => s.conversation.messages);
-  const actions = useChatActions();
-
-  const onClick = useCallback(() => {
-    actions.setChatLoadingStatus(!isLoading);
-  }, [actions, isLoading]);
-
-  return (
-    <div>
-      <button onClick={onClick}>Click me!</button>
-      <p>isLoading: {`${isLoading}`}</p>
-      {messages.map((m) => (
-        <p>{`${m.source}: ${m.text}`}</p>
-      ))}
-    </div>
-  );
-}
 
 function App() {
   return (
@@ -37,6 +18,37 @@ function App() {
       <ChatHeadlessProvider config={config}>
         <MyComponent />
       </ChatHeadlessProvider>
+    </div>
+  );
+}
+
+function MyComponent(): JSX.Element {
+  const isLoading = useChatState((s) => s.conversation.isLoading);
+  const messages = useChatState((s) => s.conversation.messages);
+  const actions = useChatActions();
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    actions.getNextMessage()
+  }, [actions])
+
+  const onClick = useCallback(() => {
+    actions.getNextMessage(input)
+    setInput("")
+  }, [actions, input]);
+
+  const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value)
+  }, [])
+
+  return (
+    <div>
+      {messages.map((m, i) => (
+        <p key={i}>{`${m.source}: ${m.text}`}</p>
+      ))}
+      {isLoading && <p>loading...</p>}
+      <input type="text" value={input} onChange={onInputChange}/>
+      <button onClick={onClick}>Send</button>
     </div>
   );
 }

@@ -6,6 +6,8 @@ import { Message, MessageNotes } from "@yext/chat-core";
  * @public
  */
 export interface ConversationState {
+  /** The id of the current conversation. */
+  conversationId?: string;
   /** {@inheritdoc Message} */
   messages: Message[];
   /** {@inheritdoc MessageNotes} */
