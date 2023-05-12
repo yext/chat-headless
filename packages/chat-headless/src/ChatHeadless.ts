@@ -102,9 +102,9 @@ export class ChatHeadless {
 
   /**
    * Sets {@link ConversationState.conversationId} to the specified id
-   * 
+   *
    * @internal
-   * 
+   *
    * @param id - the id to set
    */
   private setConversationId(id: string | undefined) {

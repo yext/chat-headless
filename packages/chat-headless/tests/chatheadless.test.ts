@@ -137,12 +137,12 @@ describe("Chat API methods work as expected", () => {
       "This is a dummy text!"
     );
     //state update before response
-    let expectedState : State = {
+    let expectedState: State = {
       conversation: {
         messages: [expectedUserMessage],
         isLoading: true,
       },
-    }
+    };
     expect(chatHeadless.state).toEqual(expectedState);
 
     const response = await responsePromise;
@@ -154,7 +154,7 @@ describe("Chat API methods work as expected", () => {
         notes: expectedResponse.notes,
         isLoading: false,
       },
-    }
+    };
     expect(chatHeadless.state).toEqual(expectedState);
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
     expect(response).toEqual(expectedResponse);

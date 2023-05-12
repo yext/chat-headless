@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 const config: ChatConfig = {
   botId: "red-dog-bot",
   apiKey: "API_KEY_HERE",
-  apiDomain: "liveapi-dev.yext.com"
+  apiDomain: "liveapi-dev.yext.com",
 };
 
 function App() {
@@ -29,17 +29,20 @@ function MyComponent(): JSX.Element {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    actions.getNextMessage()
-  }, [actions])
+    actions.getNextMessage();
+  }, [actions]);
 
   const onClick = useCallback(() => {
-    actions.getNextMessage(input)
-    setInput("")
+    actions.getNextMessage(input);
+    setInput("");
   }, [actions, input]);
 
-  const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
-  }, [])
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInput(e.target.value);
+    },
+    []
+  );
 
   return (
     <div>
@@ -47,7 +50,7 @@ function MyComponent(): JSX.Element {
         <p key={i}>{`${m.source}: ${m.text}`}</p>
       ))}
       {isLoading && <p>loading...</p>}
-      <input type="text" value={input} onChange={onInputChange}/>
+      <input type="text" value={input} onChange={onInputChange} />
       <button onClick={onClick}>Send</button>
     </div>
   );
