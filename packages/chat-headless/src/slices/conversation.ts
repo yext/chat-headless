@@ -15,6 +15,12 @@ export const conversationSlice = createSlice({
   name: "conversation",
   initialState,
   reducers: {
+    setConversationId: (
+      state: ConversationState,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.conversationId = action.payload;
+    },
     setMessages: (
       state: ConversationState,
       action: PayloadAction<Message[]>
@@ -36,6 +42,6 @@ export const conversationSlice = createSlice({
   },
 });
 
-export const { setMessages, setMessageNotes, setIsLoading } =
+export const { setMessages, setMessageNotes, setIsLoading, setConversationId } =
   conversationSlice.actions;
 export default conversationSlice.reducer;

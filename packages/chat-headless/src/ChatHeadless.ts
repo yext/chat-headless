@@ -9,6 +9,7 @@ import {
 import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
 import {
+  setConversationId,
   setIsLoading,
   setMessageNotes,
   setMessages,
@@ -100,11 +101,23 @@ export class ChatHeadless {
   }
 
   /**
+   * Sets {@link ConversationState.conversationId} to the specified id
+   *
+   * @internal
+   *
+   * @param id - the id to set
+   */
+  private setConversationId(id: string | undefined) {
+    this.stateManager.dispatch(setConversationId(id));
+  }
+
+  /**
    * Resets all fields within {@link ConversationState}
    *
    * @public
    */
   restartConversation() {
+    this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
     this.setMessageNotes({});
     this.setMessages([]);
@@ -134,7 +147,7 @@ export class ChatHeadless {
    *
    * @param text - the text of the next message
    * @param source - the source of the message
-   * @returns a Promise of a {@link MessageResponse} from the Chat API
+   * @returns a Promise of a response from the Chat API
    */
   async getNextMessage(
     text?: string,
@@ -146,7 +159,7 @@ export class ChatHeadless {
       messages = [
         ...messages,
         {
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
           source,
           text,
         },
@@ -156,6 +169,7 @@ export class ChatHeadless {
     let nextMessage: MessageResponse;
     try {
       nextMessage = await this.chatCore.getNextMessage({
+        conversationId: this.state.conversation.conversationId,
         messages,
         notes: this.state.conversation.notes,
       });
@@ -163,6 +177,7 @@ export class ChatHeadless {
       this.setChatLoadingStatus(false);
       return Promise.reject(e as Error);
     }
+    this.setConversationId(nextMessage.conversationId);
     this.setChatLoadingStatus(false);
     this.setMessages([...messages, nextMessage.message]);
     this.setMessageNotes(nextMessage.notes);
