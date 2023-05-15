@@ -159,7 +159,7 @@ export class ChatHeadless {
       messages = [
         ...messages,
         {
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
           source,
           text,
         },

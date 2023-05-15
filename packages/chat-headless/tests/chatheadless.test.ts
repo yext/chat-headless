@@ -28,7 +28,7 @@ describe("setters work as expected", () => {
           {
             text: "How can I help you?",
             source: MessageSource.BOT,
-            timestamp: 100,
+            timestamp: "2023-05-15T17:39:58.019Z",
           },
         ],
         notes: {
@@ -55,12 +55,12 @@ describe("setters work as expected", () => {
       {
         text: "How can I help you?",
         source: MessageSource.BOT,
-        timestamp: 100,
+        timestamp: "2023-05-15T17:39:58.019Z",
       },
       {
         text: "What is Yext Chat?",
         source: MessageSource.USER,
-        timestamp: 200,
+        timestamp: "2023-05-15T17:40:58.019Z",
       },
     ];
     chatHeadless.setMessages(messages);
@@ -114,14 +114,14 @@ describe("Chat API methods work as expected", () => {
   const expectedUserMessage: Message = {
     text: "This is a dummy text!",
     source: MessageSource.USER,
-    timestamp: expect.any(Number),
+    timestamp: expect.any(String),
   };
   const expectedResponse: MessageResponse = {
     conversationId: "convo-id",
     message: {
       text: "dummy response!",
       source: MessageSource.BOT,
-      timestamp: 123456789,
+      timestamp: "2023-05-15T17:39:58.019Z",
     },
     notes: {
       currentGoal: "SOME_GOAL",
@@ -202,7 +202,7 @@ describe("Chat API methods work as expected", () => {
 
 describe("addListener works as expected", () => {
   const messages: Message[] = [
-    { text: "test", source: MessageSource.BOT, timestamp: 100 },
+    { text: "test", source: MessageSource.BOT, timestamp: "2023-05-15T17:39:58.019Z" },
   ];
 
   it("invokes callback on state update", () => {
@@ -254,7 +254,7 @@ it("restartConversation works as expected", () => {
         {
           text: "How can I help you?",
           source: MessageSource.BOT,
-          timestamp: 100,
+          timestamp: "2023-05-15T17:39:58.019Z",
         },
       ],
       notes: {
