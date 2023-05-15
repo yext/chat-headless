@@ -14,7 +14,8 @@
   "files": [
     "dist",
     "src",
-    "THIRD-PARTY-NOTICES"
+    "THIRD-PARTY-NOTICES",
+    "LICENSE"
   ],
   "scripts": {
     "test": "jest --config=jest.config.json",

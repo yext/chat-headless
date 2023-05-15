@@ -68,44 +68,45 @@ The following npm package may be included in this product:
 
 This package contains the following license and notice below:
 
-# chat-core
+The files listed in this repository are licensed under the below license.  All other features and products are subject to separate agreements and certain functionality requires paid subscriptions to Yext products.
 
-a networking library for interacting with the Yext Chat API
+Contains information from the language-subtag-registry JSON Database (https://github.com/mattcg/language-subtag-registry/tree/master/data/json) which is made available under the ODC Attribution License (https://github.com/mattcg/language-subtag-registry/blob/master/LICENSE.md).
 
-- Works in both the **browser** and **Node.js**
-- 100% **TypeScript**, with detailed request and response models
-- Compatible with both **CommonJS** and **ES6** imports
+BSD 3-Clause License
 
-## Usage
+Copyright (c) 2023, Yext
+All rights reserved.
 
-```typescript
-import { ChatCore } from "@yext/chat-core";
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-const chatCore = new ChatCore({
-  botId: "YOUR_BOT_ID",
-  apiKey: "YOUR_API_KEY",
-});
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
 
-response = await chatCore.getNextMessage({
-  messages: [
-    {
-      source: "USER",
-      text: "What is Yext Chat?",
-      timestamp: 1234566789,
-    },
-  ],
-});
-```
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
 
-## Documentation
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
 
-See **[our documentation](./docs/chat-core.md)** for a more details on supported API calls and interfaces.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
 The following npm package may be included in this product:
 
- - cross-fetch@3.1.5
+ - cross-fetch@3.1.6
 
 This package contains the following license and notice below:
 
@@ -165,7 +166,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - node-fetch@2.6.7
+ - node-fetch@2.6.11
 
 This package contains the following license and notice below:
 
