@@ -37,7 +37,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-headless": "file:~/chat-headless/packages/chat-headless",
+    "@yext/chat-headless": "^0.1.0",
     "react": "^18.2.0",
     "react-redux": "^8.0.5"
   },
