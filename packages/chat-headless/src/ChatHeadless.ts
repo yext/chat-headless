@@ -147,7 +147,7 @@ export class ChatHeadless {
    *
    * @param text - the text of the next message
    * @param source - the source of the message
-   * @returns a Promise of a {@link MessageResponse} from the Chat API
+   * @returns a Promise of a response from the Chat API
    */
   async getNextMessage(
     text?: string,

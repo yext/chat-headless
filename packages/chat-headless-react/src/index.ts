@@ -1,4 +1,5 @@
 export * from "@yext/chat-headless";
-export { ChatHeadlessProvider } from "./ChatHeadlessProvider";
-export { useChatActions, ChatActions } from "./useChatActions";
+export { ChatHeadlessContext } from './ChatHeadlessContext';
+export { ChatHeadlessProvider, ChatHeadlessProviderProps } from "./ChatHeadlessProvider";
+export { useChatActions } from "./useChatActions";
 export { useChatState, StateSelector } from "./useChatState";

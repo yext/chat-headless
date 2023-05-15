@@ -21,7 +21,8 @@
     "tsc-cjs": "tsc -p tsconfig.cjs.json",
     "tsc-esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run tsc-esm -- --watch",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs"
+    "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs"
   },
   "repository": {
     "type": "git",
@@ -34,7 +35,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-core": "file:~/chat-core/yext-chat-core-0.1.0.tgz"
+    "@yext/chat-core": "^0.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",
