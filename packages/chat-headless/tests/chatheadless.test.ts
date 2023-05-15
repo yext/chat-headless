@@ -117,6 +117,7 @@ describe("Chat API methods work as expected", () => {
     timestamp: expect.any(Number),
   };
   const expectedResponse: MessageResponse = {
+    conversationId: "convo-id",
     message: {
       text: "dummy response!",
       source: MessageSource.BOT,
@@ -136,22 +137,25 @@ describe("Chat API methods work as expected", () => {
       "This is a dummy text!"
     );
     //state update before response
-    expect(chatHeadless.state).toEqual({
+    let expectedState: State = {
       conversation: {
         messages: [expectedUserMessage],
         isLoading: true,
       },
-    });
+    };
+    expect(chatHeadless.state).toEqual(expectedState);
 
     const response = await responsePromise;
     //state update after response
-    expect(chatHeadless.state).toEqual({
+    expectedState = {
       conversation: {
+        conversationId: expectedResponse.conversationId,
         messages: [expectedUserMessage, expectedResponse.message],
         notes: expectedResponse.notes,
         isLoading: false,
       },
-    });
+    };
+    expect(chatHeadless.state).toEqual(expectedState);
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
     expect(response).toEqual(expectedResponse);
   });
@@ -245,6 +249,7 @@ it("restartConversation works as expected", () => {
   const chatHeadless = new ChatHeadless(config);
   chatHeadless.setState({
     conversation: {
+      conversationId: "dummy-id",
       messages: [
         {
           text: "How can I help you?",
@@ -260,7 +265,11 @@ it("restartConversation works as expected", () => {
   });
   const stateDispatchSpy = jest.spyOn(ReduxStateManager.prototype, "dispatch");
   chatHeadless.restartConversation();
-  expect(stateDispatchSpy).toBeCalledTimes(3);
+  expect(stateDispatchSpy).toBeCalledTimes(4);
+  expect(stateDispatchSpy).toHaveBeenCalledWith({
+    type: "conversation/setConversationId",
+    payload: undefined,
+  });
   expect(stateDispatchSpy).toHaveBeenCalledWith({
     type: "conversation/setIsLoading",
     payload: false,
