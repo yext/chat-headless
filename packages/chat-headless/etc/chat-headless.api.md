@@ -32,6 +32,7 @@ export class ChatHeadless {
 
 // @public
 export interface ConversationState {
+    conversationId?: string;
     isLoading?: boolean;
     messages: Message[];
     notes?: MessageNotes;

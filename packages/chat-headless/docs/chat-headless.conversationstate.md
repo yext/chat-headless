@@ -16,6 +16,7 @@ export interface ConversationState
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [conversationId?](./chat-headless.conversationstate.conversationid.md) |  | string | _(Optional)_ The id of the current conversation. |
 |  [isLoading?](./chat-headless.conversationstate.isloading.md) |  | boolean | _(Optional)_ Whether the next message is currently processing or has finished processing. |
 |  [messages](./chat-headless.conversationstate.messages.md) |  | Message\[\] | The messages in a conversation. |
 |  [notes?](./chat-headless.conversationstate.notes.md) |  | MessageNotes | _(Optional)_ Information relevant to the current state of the conversation, generated and provided by Chat API. |
