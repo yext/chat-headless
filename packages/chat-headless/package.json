@@ -14,15 +14,17 @@
   "files": [
     "dist",
     "src",
-    "THIRD-PARTY-NOTICES"
+    "THIRD-PARTY-NOTICES",
+    "LICENSE"
   ],
   "scripts": {
     "test": "jest --config=jest.config.json",
     "tsc-cjs": "tsc -p tsconfig.cjs.json",
     "tsc-esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run tsc-esm -- --watch",
+    "generate-notices": "../../generate-notices.sh",
     "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs"
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs && npm run generate-notices"
   },
   "repository": {
     "type": "git",
