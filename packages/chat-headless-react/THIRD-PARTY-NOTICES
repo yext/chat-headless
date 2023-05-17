@@ -128,8 +128,8 @@ MIT License
 
 The following npm packages may be included in this product:
 
- - @yext/chat-core@0.1.0
- - @yext/chat-headless@0.1.1
+ - @yext/chat-core@0.2.0
+ - @yext/chat-headless@0.2.0
 
 These packages each contain the following license and notice below:
 
