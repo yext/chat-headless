@@ -1,4 +1,5 @@
 import { ConversationState } from "./slices/conversation";
+import { MetaState } from "./slices/meta";
 
 /**
  * The state representing a ChatHeadless instance.
@@ -8,4 +9,6 @@ import { ConversationState } from "./slices/conversation";
 export interface State {
   /** {@inheritdoc ConversationState} */
   conversation: ConversationState;
+  /** {@inheritdoc MetaState} */
+  meta: MetaState;
 }

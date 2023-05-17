@@ -6,6 +6,7 @@ import {
   Action,
 } from "@reduxjs/toolkit";
 import conversationReducer from "./slices/conversation";
+import metaReducer from "./slices/meta";
 import { State } from "./models/state";
 import { StateListener } from "./models/utils/StateListeners";
 
@@ -21,6 +22,7 @@ export class ReduxStateManager {
   constructor() {
     const coreReducer = combineReducers({
       conversation: conversationReducer,
+      meta: metaReducer,
     });
     this.store = configureStore({
       reducer: (state, action) => {

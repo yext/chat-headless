@@ -17,4 +17,5 @@ export interface State
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [conversation](./chat-headless.state.conversation.md) |  | [ConversationState](./chat-headless.conversationstate.md) | Maintains the data for the current conversation. |
+|  [meta](./chat-headless.state.meta.md) |  | [MetaState](./chat-headless.metastate.md) | Maintains the metadata for Chat Headless. |
 

@@ -15,6 +15,7 @@
 |  Interface | Description |
 |  --- | --- |
 |  [ConversationState](./chat-headless.conversationstate.md) | Maintains the data for the current conversation. |
+|  [MetaState](./chat-headless.metastate.md) | Maintains the metadata for Chat Headless. |
 |  [State](./chat-headless.state.md) | The state representing a ChatHeadless instance. |
 |  [StateListener](./chat-headless.statelistener.md) | Represents a listener for a specific value of type T in the state. |
 
