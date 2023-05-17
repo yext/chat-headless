@@ -13,7 +13,10 @@ import {
   MessageResponse,
 } from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
-import { initialState } from "../src/slices/conversation";
+import {
+  initialState,
+  STATE_SESSION_STORAGE_KEY,
+} from "../src/slices/conversation";
 
 jest.mock("@yext/chat-core");
 
@@ -342,4 +345,51 @@ it("restartConversation works as expected", () => {
     meta: mockedMetaState,
   };
   expect(chatHeadless.state).toEqual(expectedState);
+});
+
+describe("loadSessionState works as expected", () => {
+  const expectedState = {
+    conversationId: "dummy-id",
+    messages: [
+      {
+        text: "How can I help you?",
+        source: MessageSource.BOT,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ],
+    notes: {
+      currentGoal: "GOAL",
+    },
+    isLoading: true,
+  };
+  it("loads valid state from session storage", () => {
+    sessionStorage.setItem(
+      STATE_SESSION_STORAGE_KEY,
+      JSON.stringify(expectedState)
+    );
+    const chatHeadless = new ChatHeadless(config);
+
+    expect(chatHeadless.state).toEqual({ conversation: expectedState });
+  });
+
+  it("does not persist or load state when toggle is off", () => {
+    sessionStorage.setItem(
+      STATE_SESSION_STORAGE_KEY,
+      JSON.stringify(expectedState)
+    );
+    const chatHeadless = new ChatHeadless(config, false);
+    expect(chatHeadless.state).toEqual({ conversation: initialState });
+    const modifiedMessages = [
+      ...expectedState.messages,
+      {
+        text: "This is a new message",
+        source: MessageSource.USER,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ];
+    chatHeadless.setMessages(modifiedMessages);
+    expect(sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)).toEqual(
+      JSON.stringify(expectedState)
+    );
+  });
 });

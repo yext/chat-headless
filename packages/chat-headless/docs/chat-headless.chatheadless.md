@@ -16,7 +16,7 @@ export declare class ChatHeadless
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(config)](./chat-headless.chatheadless._constructor_.md) |  | Constructs a new instance of the <code>ChatHeadless</code> class |
+|  [(constructor)(config, saveToSessionStorage)](./chat-headless.chatheadless._constructor_.md) |  | Constructs a new instance of the [ChatHeadless](./chat-headless.chatheadless.md) class. |
 
 ## Properties
 

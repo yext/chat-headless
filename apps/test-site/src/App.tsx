@@ -32,7 +32,7 @@ function MyComponent(): JSX.Element {
     if (messages.length === 0) {
       actions.getNextMessage();
     }
-  }, [actions]);
+  }, [messages, actions]);
 
   const onClick = useCallback(() => {
     actions.getNextMessage(input);

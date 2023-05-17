@@ -2,13 +2,25 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ConversationState } from "../models/slices/conversation";
 import { Message, MessageNotes } from "@yext/chat-core";
 
-export const STATE_SESSION_STORAGE_KEY : string = "conversationState";
-export const initialState: ConversationState =
-    sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)
-    ? JSON.parse(sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)!)
-    : {
+export const STATE_SESSION_STORAGE_KEY = "yext_chat_conversation_state";
+
+export const initialState: ConversationState = {
   messages: [],
   isLoading: false,
+};
+
+/**
+ * Loads the {@link ConversationState} from session storage.
+ */
+export const loadSessionState = (): ConversationState => {
+  if (sessionStorage?.getItem(STATE_SESSION_STORAGE_KEY)) {
+    return JSON.parse(sessionStorage?.getItem(STATE_SESSION_STORAGE_KEY) ?? "");
+  } else if (!sessionStorage) {
+    console.warn(
+      "Session storage is not available. State will not be persisted across page refreshes."
+    );
+  }
+  return initialState;
 };
 
 /**

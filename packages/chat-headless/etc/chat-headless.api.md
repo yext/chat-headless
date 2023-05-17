@@ -17,7 +17,7 @@ export { ChatConfig }
 
 // @public
 export class ChatHeadless {
-    constructor(config: ChatConfig);
+    constructor(config: ChatConfig, saveToSessionStorage?: boolean);
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
     restartConversation(): void;
