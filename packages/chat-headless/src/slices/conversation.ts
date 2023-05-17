@@ -13,14 +13,14 @@ export const initialState: ConversationState = {
  * Loads the {@link ConversationState} from session storage.
  */
 export const loadSessionState = (): ConversationState => {
-  if (sessionStorage?.getItem(STATE_SESSION_STORAGE_KEY)) {
-    return JSON.parse(sessionStorage?.getItem(STATE_SESSION_STORAGE_KEY) ?? "");
-  } else if (!sessionStorage) {
+  if (!sessionStorage) {
     console.warn(
-      "Session storage is not available. State will not be persisted across page refreshes."
+        "Session storage is not available. State will not be persisted across page refreshes."
     );
+    return initialState;
   }
-  return initialState;
+  const savedState = sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)
+  return savedState ? JSON.parse(savedState) : initialState
 };
 
 /**

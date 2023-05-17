@@ -368,8 +368,12 @@ describe("loadSessionState works as expected", () => {
       JSON.stringify(expectedState)
     );
     const chatHeadless = new ChatHeadless(config);
+    chatHeadless.setState({
+      ...chatHeadless.state,
+      meta: mockedMetaState,
+    });
 
-    expect(chatHeadless.state).toEqual({ conversation: expectedState });
+    expect(chatHeadless.state).toEqual({ conversation: expectedState, meta: mockedMetaState });
   });
 
   it("does not persist or load state when toggle is off", () => {
@@ -378,7 +382,11 @@ describe("loadSessionState works as expected", () => {
       JSON.stringify(expectedState)
     );
     const chatHeadless = new ChatHeadless(config, false);
-    expect(chatHeadless.state).toEqual({ conversation: initialState });
+    chatHeadless.setState({
+      ...chatHeadless.state,
+      meta: mockedMetaState,
+    });
+    expect(chatHeadless.state).toEqual({ conversation: initialState, meta: mockedMetaState });
     const modifiedMessages = [
       ...expectedState.messages,
       {

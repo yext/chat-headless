@@ -46,11 +46,12 @@ export class ChatHeadless {
         ...this.state,
         conversation: loadSessionState(),
       });
-      this.stateManager.getStore().subscribe(() => {
-        sessionStorage.setItem(
-          STATE_SESSION_STORAGE_KEY,
-          JSON.stringify(this.stateManager.getState().conversation)
-        );
+      this.addListener({
+        valueAccessor: (s) => s.conversation,
+        callback: () => sessionStorage.setItem(
+            STATE_SESSION_STORAGE_KEY,
+            JSON.stringify(this.stateManager.getState().conversation),
+        ),
       });
     }
   }
