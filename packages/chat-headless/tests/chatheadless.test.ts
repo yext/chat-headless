@@ -1,5 +1,6 @@
 import {
   ChatHeadless,
+  ConversationState,
   Message,
   MessageNotes,
   MessageSource,
@@ -348,7 +349,7 @@ it("restartConversation works as expected", () => {
 });
 
 describe("loadSessionState works as expected", () => {
-  const expectedState = {
+  const expectedState: ConversationState = {
     conversationId: "dummy-id",
     messages: [
       {
@@ -368,12 +369,10 @@ describe("loadSessionState works as expected", () => {
       JSON.stringify(expectedState)
     );
     const chatHeadless = new ChatHeadless(config);
-    chatHeadless.setState({
-      ...chatHeadless.state,
-      meta: mockedMetaState,
+    expect(chatHeadless.state).toEqual({
+      conversation: expectedState,
+      meta: {},
     });
-
-    expect(chatHeadless.state).toEqual({ conversation: expectedState, meta: mockedMetaState });
   });
 
   it("does not persist or load state when toggle is off", () => {
@@ -382,11 +381,10 @@ describe("loadSessionState works as expected", () => {
       JSON.stringify(expectedState)
     );
     const chatHeadless = new ChatHeadless(config, false);
-    chatHeadless.setState({
-      ...chatHeadless.state,
-      meta: mockedMetaState,
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
     });
-    expect(chatHeadless.state).toEqual({ conversation: initialState, meta: mockedMetaState });
     const modifiedMessages = [
       ...expectedState.messages,
       {

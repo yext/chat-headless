@@ -15,12 +15,12 @@ export const initialState: ConversationState = {
 export const loadSessionState = (): ConversationState => {
   if (!sessionStorage) {
     console.warn(
-        "Session storage is not available. State will not be persisted across page refreshes."
+      "Session storage is not available. State will not be persisted across page refreshes."
     );
     return initialState;
   }
-  const savedState = sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)
-  return savedState ? JSON.parse(savedState) : initialState
+  const savedState = sessionStorage.getItem(STATE_SESSION_STORAGE_KEY);
+  return savedState ? JSON.parse(savedState) : initialState;
 };
 
 /**
