@@ -2,7 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ConversationState } from "../models/slices/conversation";
 import { Message, MessageNotes } from "@yext/chat-core";
 
-export const initialState: ConversationState = {
+export const STATE_SESSION_STORAGE_KEY : string = "conversationState";
+export const initialState: ConversationState =
+    sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)
+    ? JSON.parse(sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)!)
+    : {
   messages: [],
   isLoading: false,
 };

@@ -12,7 +12,7 @@ import {
   setConversationId,
   setIsLoading,
   setMessageNotes,
-  setMessages,
+  setMessages, STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
 import { Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
@@ -31,6 +31,12 @@ export class ChatHeadless {
   constructor(config: ChatConfig) {
     this.chatCore = new ChatCore(config);
     this.stateManager = new ReduxStateManager();
+    this.stateManager.getStore().subscribe(() => {
+      sessionStorage.setItem(
+        STATE_SESSION_STORAGE_KEY,
+        JSON.stringify(this.stateManager.getState().conversation)
+      );
+    });
   }
 
   /**
