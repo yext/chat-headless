@@ -16,6 +16,7 @@ import {
 } from "./slices/conversation";
 import { Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
+import { setContext } from "./slices/meta";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -65,6 +66,18 @@ export class ChatHeadless {
    */
   get store(): Store {
     return this.stateManager.getStore();
+  }
+
+  /**
+   * Sets {@link MetaState.context} to the specified context.
+   *
+   * @public
+   *
+   * @param context - The context to set
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setContext(context: any) {
+    this.stateManager.dispatch(setContext(context));
   }
 
   /**
@@ -172,6 +185,7 @@ export class ChatHeadless {
         conversationId: this.state.conversation.conversationId,
         messages,
         notes: this.state.conversation.notes,
+        context: this.state.meta.context,
       });
     } catch (e) {
       this.setChatLoadingStatus(false);

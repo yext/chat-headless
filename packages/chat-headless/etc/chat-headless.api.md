@@ -22,6 +22,7 @@ export class ChatHeadless {
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
+    setContext(context: any): void;
     setMessageNotes(notes: MessageNotes): void;
     setMessages(messages: Message[]): void;
     setState(state: State): void;
@@ -49,8 +50,14 @@ export { MessageResponse }
 export { MessageSource }
 
 // @public
+export interface MetaState {
+    context?: any;
+}
+
+// @public
 export interface State {
     conversation: ConversationState;
+    meta: MetaState;
 }
 
 // @public

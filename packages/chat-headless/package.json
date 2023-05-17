@@ -1,6 +1,6 @@
 {
   "name": "@yext/chat-headless",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A library for powering UI components for Yext Chat integrations",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -38,7 +38,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-core": "^0.1.0"
+    "@yext/chat-core": "^0.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",

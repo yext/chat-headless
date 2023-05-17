@@ -3,16 +3,29 @@ import {
   Message,
   MessageNotes,
   MessageSource,
+  MetaState,
   State,
 } from "../src";
-import { ChatConfig, ChatCore, MessageResponse } from "@yext/chat-core";
+import {
+  ChatConfig,
+  ChatCore,
+  MessageRequest,
+  MessageResponse,
+} from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
+import { initialState } from "../src/slices/conversation";
 
 jest.mock("@yext/chat-core");
 
 const config: ChatConfig = {
   botId: "MY_BOT",
   apiKey: "MY_API_KEY",
+};
+
+const mockedMetaState: MetaState = {
+  context: {
+    foo: "bar",
+  },
 };
 
 describe("setters work as expected", () => {
@@ -36,12 +49,30 @@ describe("setters work as expected", () => {
         },
         isLoading: true,
       },
+      meta: mockedMetaState,
     };
     chatHeadless.setState(state);
     expect(stateDispatchSpy).toBeCalledTimes(1);
     expect(stateDispatchSpy).toBeCalledWith({
       type: "set-state",
       payload: state,
+    });
+  });
+
+  it("setContext works as expected", () => {
+    const chatHeadless = new ChatHeadless(config);
+    const stateDispatchSpy = jest.spyOn(
+      ReduxStateManager.prototype,
+      "dispatch"
+    );
+    const context = {
+      hello: "world",
+    };
+    chatHeadless.setContext(context);
+    expect(stateDispatchSpy).toBeCalledTimes(1);
+    expect(stateDispatchSpy).toBeCalledWith({
+      type: "meta/setContext",
+      payload: context,
     });
   });
 
@@ -130,6 +161,10 @@ describe("Chat API methods work as expected", () => {
 
   it("getNextMessage works as expected", async () => {
     const chatHeadless = new ChatHeadless(config);
+    chatHeadless.setState({
+      conversation: initialState,
+      meta: mockedMetaState,
+    });
     const coreGetNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "getNextMessage")
       .mockResolvedValueOnce(expectedResponse);
@@ -137,26 +172,35 @@ describe("Chat API methods work as expected", () => {
       "This is a dummy text!"
     );
     //state update before response
-    let expectedState: State = {
+    const expectedStateBeforeRes: State = {
       conversation: {
         messages: [expectedUserMessage],
         isLoading: true,
       },
+      meta: mockedMetaState,
     };
-    expect(chatHeadless.state).toEqual(expectedState);
+    expect(chatHeadless.state).toEqual(expectedStateBeforeRes);
 
     const response = await responsePromise;
     //state update after response
-    expectedState = {
+    const expectedStateAfterRes = {
       conversation: {
         conversationId: expectedResponse.conversationId,
         messages: [expectedUserMessage, expectedResponse.message],
         notes: expectedResponse.notes,
         isLoading: false,
       },
+      meta: mockedMetaState,
     };
-    expect(chatHeadless.state).toEqual(expectedState);
+    expect(chatHeadless.state).toEqual(expectedStateAfterRes);
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
+    const expectedRequest: MessageRequest = {
+      conversationId: expectedStateBeforeRes.conversation.conversationId,
+      notes: expectedStateBeforeRes.conversation.notes,
+      messages: expectedStateBeforeRes.conversation.messages,
+      context: expectedStateBeforeRes.meta.context,
+    };
+    expect(coreGetNextMessageSpy).toBeCalledWith(expectedRequest);
     expect(response).toEqual(expectedResponse);
   });
 
@@ -180,6 +224,7 @@ describe("Chat API methods work as expected", () => {
           messages: [expectedUserMessage],
           isLoading: false,
         },
+        meta: {},
       });
     }
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
@@ -202,7 +247,11 @@ describe("Chat API methods work as expected", () => {
 
 describe("addListener works as expected", () => {
   const messages: Message[] = [
-    { text: "test", source: MessageSource.BOT, timestamp: "2023-05-15T17:39:58.019Z" },
+    {
+      text: "test",
+      source: MessageSource.BOT,
+      timestamp: "2023-05-15T17:39:58.019Z",
+    },
   ];
 
   it("invokes callback on state update", () => {
@@ -262,6 +311,7 @@ it("restartConversation works as expected", () => {
       },
       isLoading: true,
     },
+    meta: mockedMetaState,
   });
   const stateDispatchSpy = jest.spyOn(ReduxStateManager.prototype, "dispatch");
   chatHeadless.restartConversation();
@@ -289,6 +339,7 @@ it("restartConversation works as expected", () => {
       notes: {},
       isLoading: false,
     },
+    meta: mockedMetaState,
   };
   expect(chatHeadless.state).toEqual(expectedState);
 });

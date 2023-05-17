@@ -5,7 +5,7 @@ import { ChatHeadlessContext } from "./ChatHeadlessContext";
 
 /**
  * Props for {@link ChatHeadlessProvider}
- * 
+ *
  * @public
  */
 export type ChatHeadlessProviderProps = PropsWithChildren<{
