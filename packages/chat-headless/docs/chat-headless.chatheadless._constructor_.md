@@ -17,5 +17,5 @@ constructor(config: ChatConfig, saveToSessionStorage?: boolean);
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  config | ChatConfig | The configuration for the [ChatHeadless](./chat-headless.chatheadless.md) instance |
-|  saveToSessionStorage | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to session storage |
+|  saveToSessionStorage | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to session storage. Defaults to true. |
 

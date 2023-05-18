@@ -36,7 +36,7 @@ export class ChatHeadless {
    * @public
    *
    * @param config - The configuration for the {@link ChatHeadless} instance
-   * @param saveToSessionStorage - Whether to save the instance's {@link ConversationState} to session storage
+   * @param saveToSessionStorage - Whether to save the instance's {@link ConversationState} to session storage. Defaults to true.
    */
   constructor(config: ChatConfig, saveToSessionStorage = true) {
     this.chatCore = new ChatCore(config);
@@ -51,7 +51,7 @@ export class ChatHeadless {
         callback: () =>
           sessionStorage.setItem(
             STATE_SESSION_STORAGE_KEY,
-            JSON.stringify(this.stateManager.getState().conversation)
+            JSON.stringify(this.state.conversation)
           ),
       });
     }
