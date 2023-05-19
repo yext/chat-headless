@@ -29,8 +29,10 @@ function MyComponent(): JSX.Element {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    actions.getNextMessage();
-  }, [actions]);
+    if (messages.length === 0) {
+      actions.getNextMessage();
+    }
+  }, [messages, actions]);
 
   const onClick = useCallback(() => {
     actions.getNextMessage(input);

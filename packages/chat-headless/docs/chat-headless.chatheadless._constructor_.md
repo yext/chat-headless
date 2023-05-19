@@ -4,17 +4,18 @@
 
 ## ChatHeadless.(constructor)
 
-Constructs a new instance of the `ChatHeadless` class
+Constructs a new instance of the [ChatHeadless](./chat-headless.chatheadless.md) class.
 
 **Signature:**
 
 ```typescript
-constructor(config: ChatConfig);
+constructor(config: ChatConfig, saveToSessionStorage?: boolean);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  config | ChatConfig |  |
+|  config | ChatConfig | The configuration for the [ChatHeadless](./chat-headless.chatheadless.md) instance |
+|  saveToSessionStorage | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to session storage. Defaults to true. |
 

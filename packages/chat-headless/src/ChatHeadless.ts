@@ -9,10 +9,12 @@ import {
 import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
 import {
+  loadSessionState,
   setConversationId,
   setIsLoading,
   setMessageNotes,
   setMessages,
+  STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
 import { Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
@@ -28,9 +30,31 @@ export class ChatHeadless {
   private chatCore: ChatCore;
   private stateManager: ReduxStateManager;
 
-  constructor(config: ChatConfig) {
+  /**
+   * Constructs a new instance of the {@link ChatHeadless} class.
+   *
+   * @public
+   *
+   * @param config - The configuration for the {@link ChatHeadless} instance
+   * @param saveToSessionStorage - Whether to save the instance's {@link ConversationState} to session storage. Defaults to true.
+   */
+  constructor(config: ChatConfig, saveToSessionStorage = true) {
     this.chatCore = new ChatCore(config);
     this.stateManager = new ReduxStateManager();
+    if (saveToSessionStorage) {
+      this.setState({
+        ...this.state,
+        conversation: loadSessionState(),
+      });
+      this.addListener({
+        valueAccessor: (s) => s.conversation,
+        callback: () =>
+          sessionStorage.setItem(
+            STATE_SESSION_STORAGE_KEY,
+            JSON.stringify(this.state.conversation)
+          ),
+      });
+    }
   }
 
   /**

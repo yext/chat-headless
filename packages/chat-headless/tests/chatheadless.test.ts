@@ -1,5 +1,6 @@
 import {
   ChatHeadless,
+  ConversationState,
   Message,
   MessageNotes,
   MessageSource,
@@ -13,7 +14,10 @@ import {
   MessageResponse,
 } from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
-import { initialState } from "../src/slices/conversation";
+import {
+  initialState,
+  STATE_SESSION_STORAGE_KEY,
+} from "../src/slices/conversation";
 
 jest.mock("@yext/chat-core");
 
@@ -160,7 +164,7 @@ describe("Chat API methods work as expected", () => {
   };
 
   it("getNextMessage works as expected", async () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     chatHeadless.setState({
       conversation: initialState,
       meta: mockedMetaState,
@@ -207,7 +211,7 @@ describe("Chat API methods work as expected", () => {
   it("updates loading status and throw error when an API request returns an error", async () => {
     const errorMessage =
       "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)";
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     const coreGetNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "getNextMessage")
       .mockRejectedValue(errorMessage);
@@ -231,7 +235,7 @@ describe("Chat API methods work as expected", () => {
   });
 
   it("sends message array as is for initial message from bot", async () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     expect(chatHeadless.state.conversation.messages).toEqual([]);
 
     const coreGetNextMessageSpy = jest
@@ -342,4 +346,56 @@ it("restartConversation works as expected", () => {
     meta: mockedMetaState,
   };
   expect(chatHeadless.state).toEqual(expectedState);
+});
+
+describe("loadSessionState works as expected", () => {
+  const expectedState: ConversationState = {
+    conversationId: "dummy-id",
+    messages: [
+      {
+        text: "How can I help you?",
+        source: MessageSource.BOT,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ],
+    notes: {
+      currentGoal: "GOAL",
+    },
+    isLoading: true,
+  };
+  it("loads valid state from session storage", () => {
+    sessionStorage.setItem(
+      STATE_SESSION_STORAGE_KEY,
+      JSON.stringify(expectedState)
+    );
+    const chatHeadless = new ChatHeadless(config);
+    expect(chatHeadless.state).toEqual({
+      conversation: expectedState,
+      meta: {},
+    });
+  });
+
+  it("does not persist or load state when toggle is off", () => {
+    sessionStorage.setItem(
+      STATE_SESSION_STORAGE_KEY,
+      JSON.stringify(expectedState)
+    );
+    const chatHeadless = new ChatHeadless(config, false);
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
+    });
+    const modifiedMessages = [
+      ...expectedState.messages,
+      {
+        text: "This is a new message",
+        source: MessageSource.USER,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ];
+    chatHeadless.setMessages(modifiedMessages);
+    expect(sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)).toEqual(
+      JSON.stringify(expectedState)
+    );
+  });
 });
