@@ -164,7 +164,7 @@ describe("Chat API methods work as expected", () => {
   };
 
   it("getNextMessage works as expected", async () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     chatHeadless.setState({
       conversation: initialState,
       meta: mockedMetaState,
@@ -211,7 +211,7 @@ describe("Chat API methods work as expected", () => {
   it("updates loading status and throw error when an API request returns an error", async () => {
     const errorMessage =
       "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)";
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     const coreGetNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "getNextMessage")
       .mockRejectedValue(errorMessage);
@@ -235,7 +235,7 @@ describe("Chat API methods work as expected", () => {
   });
 
   it("sends message array as is for initial message from bot", async () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = new ChatHeadless(config, false);
     expect(chatHeadless.state.conversation.messages).toEqual([]);
 
     const coreGetNextMessageSpy = jest
