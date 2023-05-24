@@ -96,7 +96,7 @@ The following npm packages may be included in this product:
 
  - @types/prop-types@15.7.5
  - @types/react-dom@18.2.4
- - @types/react@18.2.6
+ - @types/react@18.2.7
  - @types/scheduler@0.16.3
  - @types/use-sync-external-store@0.0.3
 
@@ -128,8 +128,8 @@ MIT License
 
 The following npm packages may be included in this product:
 
- - @yext/chat-core@0.2.0
- - @yext/chat-headless@0.2.0
+ - @yext/chat-core@0.3.0
+ - @yext/chat-headless@0.3.0
 
 These packages each contain the following license and notice below:
 
