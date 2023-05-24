@@ -4,7 +4,7 @@ import {
   MessageSource,
   State,
   ChatConfig,
-  MetaState
+  MetaState,
 } from "../src";
 import {
   ChatCore,
@@ -13,9 +13,7 @@ import {
   RawResponse,
   StreamResponse,
 } from "@yext/chat-core";
-import {
-  initialState,
-} from "../src/slices/conversation";
+import { initialState } from "../src/slices/conversation";
 import { Readable } from "stream";
 
 const config: ChatConfig = {
@@ -31,7 +29,7 @@ const mockedMetaState: MetaState = {
 
 beforeEach(() => {
   sessionStorage.clear();
-})
+});
 
 describe("Chat API methods work as expected", () => {
   const expectedUserMessage: Message = {
@@ -97,76 +95,108 @@ describe("Chat API methods work as expected", () => {
   it("getNextMessage works as expected", async () => {
     const chatHeadless = new ChatHeadless(config);
     const coreGetNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, 'getNextMessage')
+      .spyOn(ChatCore.prototype, "getNextMessage")
       .mockResolvedValueOnce(expectedResponse);
-    await testAPI(chatHeadless, chatHeadless.getNextMessage, coreGetNextMessageSpy)
+    await testAPI(
+      chatHeadless,
+      chatHeadless.getNextMessage,
+      coreGetNextMessageSpy
+    );
   });
 
   it("streamNextMessage works as expected", async () => {
-   const chatHeadless = new ChatHeadless(config);
-   const coreStreamtNextMessageSpy = jest
-   .spyOn(ChatCore.prototype, "streamNextMessage")
-   .mockResolvedValueOnce(new StreamResponse({
-     body: new Readable({
-       read() {
-         this.push('event: startTokenStream\ndata: { "currentGoal": "SOME_GOAL" }\n\n')
-         this.push('event: streamToken\ndata: {"token": "dummy"}\n\n')
-         this.push('event: streamToken\ndata: {"token": " response"}\n\n')
-         this.push('event: streamToken\ndata: {"token": "!"}\n\n')
-         this.push('event: endStream\ndata: {"conversationId": "convo-id",' + 
-         '"message": { "timestamp": "2023-05-15T17:39:58.019Z", "source": "BOT", "text": "dummy response!"},'+ 
-         '"notes": { "currentGoal": "SOME_GOAL" }}\n\n')
-         this.push(null);
-       },
-     })
-   } as unknown as RawResponse));
+    const chatHeadless = new ChatHeadless(config);
+    const coreStreamtNextMessageSpy = jest
+      .spyOn(ChatCore.prototype, "streamNextMessage")
+      .mockResolvedValueOnce(
+        new StreamResponse({
+          body: new Readable({
+            read() {
+              this.push(
+                'event: startTokenStream\ndata: { "currentGoal": "SOME_GOAL" }\n\n'
+              );
+              this.push('event: streamToken\ndata: {"token": "dummy"}\n\n');
+              this.push('event: streamToken\ndata: {"token": " response"}\n\n');
+              this.push('event: streamToken\ndata: {"token": "!"}\n\n');
+              this.push(
+                'event: endStream\ndata: {"conversationId": "convo-id",' +
+                  '"message": { "timestamp": "2023-05-15T17:39:58.019Z", "source": "BOT", "text": "dummy response!"},' +
+                  '"notes": { "currentGoal": "SOME_GOAL" }}\n\n'
+              );
+              this.push(null);
+            },
+          }),
+        } as unknown as RawResponse)
+      );
 
-   const setMessagesSpy = jest.spyOn(chatHeadless, 'setMessages');
-   await testAPI(chatHeadless, chatHeadless.streamNextMessage, coreStreamtNextMessageSpy);
-   // 1 for user's message, 3 for each streamToken event, and 1 for endStream event
-   expect(setMessagesSpy).toBeCalledTimes(5)
-   expect(setMessagesSpy).nthCalledWith(1, [expectedUserMessage])
-   expect(setMessagesSpy).nthCalledWith(2, [expectedUserMessage, {
-      source: "BOT",
-      text: "dummy"
-    }])
-    expect(setMessagesSpy).nthCalledWith(3, [expectedUserMessage, {
-      source: "BOT",
-      text: "dummy response"
-    }])
-    expect(setMessagesSpy).nthCalledWith(4, [expectedUserMessage, {
-      source: "BOT",
-      text: "dummy response!"
-    }])
-    expect(setMessagesSpy).nthCalledWith(5, [expectedUserMessage, {
-      timestamp: "2023-05-15T17:39:58.019Z",
-      source: "BOT",
-      text: "dummy response!"
-    }])
-  })
+    const setMessagesSpy = jest.spyOn(chatHeadless, "setMessages");
+    await testAPI(
+      chatHeadless,
+      chatHeadless.streamNextMessage,
+      coreStreamtNextMessageSpy
+    );
+    // 1 for user's message, 3 for each streamToken event, and 1 for endStream event
+    expect(setMessagesSpy).toBeCalledTimes(5);
+    expect(setMessagesSpy).nthCalledWith(1, [expectedUserMessage]);
+    expect(setMessagesSpy).nthCalledWith(2, [
+      expectedUserMessage,
+      {
+        source: "BOT",
+        text: "dummy",
+      },
+    ]);
+    expect(setMessagesSpy).nthCalledWith(3, [
+      expectedUserMessage,
+      {
+        source: "BOT",
+        text: "dummy response",
+      },
+    ]);
+    expect(setMessagesSpy).nthCalledWith(4, [
+      expectedUserMessage,
+      {
+        source: "BOT",
+        text: "dummy response!",
+      },
+    ]);
+    expect(setMessagesSpy).nthCalledWith(5, [
+      expectedUserMessage,
+      {
+        timestamp: "2023-05-15T17:39:58.019Z",
+        source: "BOT",
+        text: "dummy response!",
+      },
+    ]);
+  });
 
   it("logs error when streamNextMessage failed to get full message response at end of stream", async () => {
     const chatHeadless = new ChatHeadless(config);
     const coreStreamNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "streamNextMessage")
-      .mockResolvedValueOnce(new StreamResponse({
-        body: new Readable({
-          read() {
-            this.push('event: startTokenStream\ndata: {}\n\n')
-            this.push('event: streamToken\ndata: {"token": "dummy"}\n\n')
-            this.push('event: streamToken\ndata: {"token": " response!"}\n\n')
-            //missing endStream event with full response
-            this.push(null);
-          },
-        })
-      } as unknown as RawResponse));
+      .mockResolvedValueOnce(
+        new StreamResponse({
+          body: new Readable({
+            read() {
+              this.push("event: startTokenStream\ndata: {}\n\n");
+              this.push('event: streamToken\ndata: {"token": "dummy"}\n\n');
+              this.push(
+                'event: streamToken\ndata: {"token": " response!"}\n\n'
+              );
+              //missing endStream event with full response
+              this.push(null);
+            },
+          }),
+        } as unknown as RawResponse)
+      );
     expect.assertions(2);
 
     try {
       await chatHeadless.streamNextMessage("This is a dummy text!");
     } catch (e) {
       // eslint-disable-next-line jest/no-conditional-expect
-      expect(e).toEqual("Stream Error: Missing full message response at the end of stream.");
+      expect(e).toEqual(
+        "Stream Error: Missing full message response at the end of stream."
+      );
     }
     expect(coreStreamNextMessageSpy).toBeCalledTimes(1);
   });

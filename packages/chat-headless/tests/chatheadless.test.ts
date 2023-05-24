@@ -7,14 +7,12 @@ import {
   MetaState,
   State,
 } from "../src";
-import {
-  ChatConfig,
-} from "@yext/chat-core";
+import { ChatConfig } from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
   initialState,
   STATE_SESSION_STORAGE_KEY,
-} from "../src/slices/conversation";;
+} from "../src/slices/conversation";
 
 jest.mock("@yext/chat-core");
 
@@ -31,7 +29,7 @@ const mockedMetaState: MetaState = {
 
 beforeEach(() => {
   sessionStorage.clear();
-})
+});
 
 describe("setters work as expected", () => {
   it("setState works as expected", () => {

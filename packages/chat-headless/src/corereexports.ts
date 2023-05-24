@@ -12,5 +12,5 @@ export {
   EndEvent,
   StreamResponse,
   RawResponse,
-  StreamEventCallback
+  StreamEventCallback,
 } from "@yext/chat-core";

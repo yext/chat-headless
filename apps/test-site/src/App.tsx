@@ -33,7 +33,7 @@ function ChatComponent() {
       actions.getNextMessage();
     }
   }, [messages, actions]);
-  
+
   const onClick = useCallback(() => {
     actions.getNextMessage(input);
     setInput("");
@@ -51,15 +51,17 @@ function ChatComponent() {
     []
   );
 
-  return <div>
-    {messages.map((m, i) => (
-      <p key={i}>{`${m.source}: ${m.text}`}</p>
-    ))}
-    {isLoading && <p>loading...</p>}
-    <input type="text" value={input} onChange={onInputChange} />
-    <button onClick={onClick}>Send</button>
-    <button onClick={onClickStream}>Send (Stream)</button>
-  </div>
+  return (
+    <div>
+      {messages.map((m, i) => (
+        <p key={i}>{`${m.source}: ${m.text}`}</p>
+      ))}
+      {isLoading && <p>loading...</p>}
+      <input type="text" value={input} onChange={onInputChange} />
+      <button onClick={onClick}>Send</button>
+      <button onClick={onClickStream}>Send (Stream)</button>
+    </div>
+  );
 }
 
 export default App;
