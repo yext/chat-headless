@@ -37,8 +37,7 @@ export class ChatHeadless {
     get state(): State;
     // @internal
     get store(): Store;
-    // (undocumented)
-    streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
+    streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
 }
 
 // @public
