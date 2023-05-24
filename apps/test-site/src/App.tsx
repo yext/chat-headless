@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const config: ChatConfig = {
   botId: "red-dog-bot",
-  apiKey: "API_KEY_HERE",
+  apiKey: process.env.REACT_APP_BOT_API_KEY || "BOT_KEY_HERE",
   apiDomain: "liveapi-dev.yext.com",
 };
 
@@ -16,17 +16,17 @@ function App() {
   return (
     <div className="App">
       <ChatHeadlessProvider config={config}>
-        <MyComponent />
+        <ChatComponent />
       </ChatHeadlessProvider>
     </div>
   );
 }
 
-function MyComponent(): JSX.Element {
+function ChatComponent() {
   const isLoading = useChatState((s) => s.conversation.isLoading);
   const messages = useChatState((s) => s.conversation.messages);
-  const actions = useChatActions();
   const [input, setInput] = useState("");
+  const actions = useChatActions();
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -36,6 +36,11 @@ function MyComponent(): JSX.Element {
 
   const onClick = useCallback(() => {
     actions.getNextMessage(input);
+    setInput("");
+  }, [actions, input]);
+
+  const onClickStream = useCallback(() => {
+    actions.streamNextMessage(input);
     setInput("");
   }, [actions, input]);
 
@@ -54,6 +59,7 @@ function MyComponent(): JSX.Element {
       {isLoading && <p>loading...</p>}
       <input type="text" value={input} onChange={onInputChange} />
       <button onClick={onClick}>Send</button>
+      <button onClick={onClickStream}>Send (Stream)</button>
     </div>
   );
 }

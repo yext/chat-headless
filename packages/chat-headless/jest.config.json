@@ -6,9 +6,10 @@
   "moduleFileExtensions": ["js", "ts"],
   "moduleDirectories": ["node_modules", "<rootDir>"],
   "testEnvironment": "jsdom",
-  "testPathIgnorePatterns": ["./tests/mocks/*"],
+  "testPathIgnorePatterns": ["./tests/mocks/*", "./tests/jest-setup.js"],
   "resetMocks": true,
   "restoreMocks": true,
   "clearMocks": true,
-  "testMatch": ["<rootDir>/tests/**/*.[jt]s"]
+  "testMatch": ["<rootDir>/tests/**/*.[jt]s"],
+  "setupFiles": ["<rootDir>/tests/jest-setup.js"]
 }

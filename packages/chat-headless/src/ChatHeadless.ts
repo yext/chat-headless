@@ -5,6 +5,7 @@ import {
   MessageNotes,
   MessageResponse,
   MessageSource,
+  StreamEventName,
 } from "@yext/chat-core";
 import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
@@ -190,6 +191,105 @@ export class ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse> {
+    return this.nextMessageHandler(
+      async () => {
+        const { messages, conversationId, notes } = this.state.conversation;
+        const nextMessage = await this.chatCore.getNextMessage({
+          conversationId,
+          messages,
+          notes,
+          context: this.state.meta.context,
+        });
+        this.setConversationId(nextMessage.conversationId);
+        this.setMessages([...messages, nextMessage.message]);
+        this.setMessageNotes(nextMessage.notes);
+        return nextMessage;
+      },
+      text,
+      source
+    );
+  }
+
+  /**
+   * Performs a Chat Stream API request for the next message generated
+   * by chat bot using the conversation state (e.g. message history and notes).
+   * The new message's "text" field is continously updated as tokens from the
+   * stream are consumed. Remaining conversation state are updated once the
+   * final event from the stream is recieved.
+   *
+   * @public
+   *
+   * @remarks
+   * If rejected, an Error is returned.
+   *
+   * @param text - the text of the next message
+   * @param source - the source of the message
+   * @returns a Promise of the full response from the Chat Stream API
+   */
+  async streamNextMessage(
+    text?: string,
+    source: MessageSource = MessageSource.USER
+  ): Promise<MessageResponse> {
+    return this.nextMessageHandler(
+      async () => {
+        let messageResponse: MessageResponse | undefined = undefined;
+        let nextMessage: Message = {
+          source: MessageSource.BOT,
+          text: "",
+        };
+        const { messages, conversationId, notes } = this.state.conversation;
+        const stream = await this.chatCore.streamNextMessage({
+          conversationId,
+          messages,
+          notes,
+          context: this.state.meta.context,
+        });
+        stream.addEventListener(StreamEventName.StartEvent, ({ data }) => {
+          this.setMessageNotes(data);
+        });
+        stream.addEventListener(
+          StreamEventName.TokenStreamEvent,
+          ({ data }) => {
+            nextMessage = {
+              ...nextMessage,
+              text: nextMessage.text + data.token,
+            };
+            this.setMessages([...messages, nextMessage]);
+          }
+        );
+        stream.addEventListener(StreamEventName.EndEvent, ({ data }) => {
+          this.setConversationId(data.conversationId);
+          this.setMessages([...messages, data.message]);
+          messageResponse = data;
+        });
+        await stream.consume();
+        if (!messageResponse) {
+          return Promise.reject(
+            "Stream Error: Missing full message response at the end of stream."
+          );
+        }
+        return messageResponse;
+      },
+      text,
+      source
+    );
+  }
+
+  /**
+   * Setup relevant state before hitting Chat API endpoint for next message, such as
+   * setting loading status and appending new user's message in conversation state.
+   * Also update loading state when the next message is received or an error occurred.
+   *
+   * @param nextMessageFn - function to invoke to get next message
+   * @param text - the text of the next message
+   * @param source - the source of the message
+   * @returns a Promise of a response from the Chat API
+   */
+  private async nextMessageHandler(
+    nextMessageFn: () => Promise<MessageResponse>,
+    text?: string,
+    source: MessageSource = MessageSource.USER
+  ): Promise<MessageResponse> {
     this.setChatLoadingStatus(true);
     let messages: Message[] = this.state.conversation.messages;
     if (text && text.length > 0) {
@@ -203,22 +303,14 @@ export class ChatHeadless {
       ];
       this.setMessages(messages);
     }
-    let nextMessage: MessageResponse;
+    let messageResponse;
     try {
-      nextMessage = await this.chatCore.getNextMessage({
-        conversationId: this.state.conversation.conversationId,
-        messages,
-        notes: this.state.conversation.notes,
-        context: this.state.meta.context,
-      });
+      messageResponse = await nextMessageFn();
     } catch (e) {
       this.setChatLoadingStatus(false);
       return Promise.reject(e as Error);
     }
-    this.setConversationId(nextMessage.conversationId);
     this.setChatLoadingStatus(false);
-    this.setMessages([...messages, nextMessage.message]);
-    this.setMessageNotes(nextMessage.notes);
-    return nextMessage;
+    return messageResponse;
   }
 }
