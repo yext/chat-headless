@@ -5,12 +5,20 @@
 ```ts
 
 import { ChatConfig } from '@yext/chat-core';
+import { EndEvent } from '@yext/chat-core';
 import { Message } from '@yext/chat-core';
 import { MessageNotes } from '@yext/chat-core';
 import { MessageRequest } from '@yext/chat-core';
 import { MessageResponse } from '@yext/chat-core';
 import { MessageSource } from '@yext/chat-core';
+import { RawResponse } from '@yext/chat-core';
+import { StartEvent } from '@yext/chat-core';
 import { Store } from '@reduxjs/toolkit';
+import { StreamEvent } from '@yext/chat-core';
+import { StreamEventCallback } from '@yext/chat-core';
+import { StreamEventName } from '@yext/chat-core';
+import { StreamResponse } from '@yext/chat-core';
+import { TokenStreamEvent } from '@yext/chat-core';
 import { Unsubscribe } from '@reduxjs/toolkit';
 
 export { ChatConfig }
@@ -29,6 +37,8 @@ export class ChatHeadless {
     get state(): State;
     // @internal
     get store(): Store;
+    // (undocumented)
+    streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
 }
 
 // @public
@@ -38,6 +48,8 @@ export interface ConversationState {
     messages: Message[];
     notes?: MessageNotes;
 }
+
+export { EndEvent }
 
 export { Message }
 
@@ -54,6 +66,10 @@ export interface MetaState {
     context?: any;
 }
 
+export { RawResponse }
+
+export { StartEvent }
+
 // @public
 export interface State {
     conversation: ConversationState;
@@ -65,6 +81,16 @@ export interface StateListener<T> {
     callback(currentValue: T): any;
     valueAccessor(state: State): T;
 }
+
+export { StreamEvent }
+
+export { StreamEventCallback }
+
+export { StreamEventName }
+
+export { StreamResponse }
+
+export { TokenStreamEvent }
 
 // (No @packageDocumentation comment for this package)
 

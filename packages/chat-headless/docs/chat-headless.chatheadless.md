@@ -36,4 +36,5 @@ export declare class ChatHeadless
 |  [setMessageNotes(notes)](./chat-headless.chatheadless.setmessagenotes.md) |  | Sets [ConversationState.notes](./chat-headless.conversationstate.notes.md) to the specified notes |
 |  [setMessages(messages)](./chat-headless.chatheadless.setmessages.md) |  | Sets [ConversationState.messages](./chat-headless.conversationstate.messages.md) to the specified messages |
 |  [setState(state)](./chat-headless.chatheadless.setstate.md) |  | Sets the [State](./chat-headless.state.md) to the specified state. |
+|  [streamNextMessage(text, source)](./chat-headless.chatheadless.streamnextmessage.md) |  |  |
 
