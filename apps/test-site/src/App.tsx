@@ -24,6 +24,7 @@ function App() {
 
 function ChatComponent() {
   const isLoading = useChatState((s) => s.conversation.isLoading);
+  const canSendMessage = useChatState((s) => s.conversation.canSendMessage);
   const messages = useChatState((s) => s.conversation.messages);
   const [input, setInput] = useState("");
   const actions = useChatActions();
@@ -57,7 +58,12 @@ function ChatComponent() {
         <p key={i}>{`${m.source}: ${m.text}`}</p>
       ))}
       {isLoading && <p>loading...</p>}
-      <input type="text" value={input} onChange={onInputChange} />
+      <input
+        type="text"
+        value={input}
+        disabled={!canSendMessage}
+        onChange={onInputChange}
+      />
       <button onClick={onClick}>Send</button>
       <button onClick={onClickStream}>Send (Stream)</button>
     </div>

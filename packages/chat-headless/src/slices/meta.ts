@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MetaState } from "../models/slices/meta";
+import { MetaState } from "../models/slices/MetaState";
 
 export const initialState: MetaState = {};
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ConversationState } from "../models/slices/conversation";
+import { ConversationState } from "../models/slices/ConversationState";
 import { Message, MessageNotes } from "@yext/chat-core";
 
 export const STATE_SESSION_STORAGE_KEY = "yext_chat_conversation_state";
@@ -7,6 +7,7 @@ export const STATE_SESSION_STORAGE_KEY = "yext_chat_conversation_state";
 export const initialState: ConversationState = {
   messages: [],
   isLoading: false,
+  canSendMessage: true,
 };
 
 /**
@@ -55,9 +56,20 @@ export const conversationSlice = createSlice({
     ) => {
       state.isLoading = action.payload;
     },
+    setCanSendMessage: (
+      state: ConversationState,
+      action: PayloadAction<boolean>
+    ) => {
+      state.canSendMessage = action.payload;
+    },
   },
 });
 
-export const { setMessages, setMessageNotes, setIsLoading, setConversationId } =
-  conversationSlice.actions;
+export const {
+  setMessages,
+  setMessageNotes,
+  setIsLoading,
+  setConversationId,
+  setCanSendMessage,
+} = conversationSlice.actions;
 export default conversationSlice.reducer;

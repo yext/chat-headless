@@ -1,5 +1,5 @@
-import { ConversationState } from "./slices/conversation";
-import { MetaState } from "./slices/meta";
+import { ConversationState } from "./slices/ConversationState";
+import { MetaState } from "./slices/MetaState";
 
 /**
  * The state representing a ChatHeadless instance.

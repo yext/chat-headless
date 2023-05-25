@@ -51,7 +51,7 @@ describe("Chat API methods work as expected", () => {
 
   async function testAPI(
     chatHeadless: ChatHeadless,
-    testFn: (text: string) => Promise<MessageResponse>,
+    testFn: (text: string) => Promise<MessageResponse | undefined>,
     coreTestFnSpy: unknown
   ) {
     chatHeadless.setState({
@@ -64,6 +64,7 @@ describe("Chat API methods work as expected", () => {
       conversation: {
         messages: [expectedUserMessage],
         isLoading: true,
+        canSendMessage: false,
       },
       meta: mockedMetaState,
     };
@@ -77,6 +78,7 @@ describe("Chat API methods work as expected", () => {
         messages: [expectedUserMessage, expectedResponse.message],
         notes: expectedResponse.notes,
         isLoading: false,
+        canSendMessage: true,
       },
       meta: mockedMetaState,
     };
@@ -201,7 +203,32 @@ describe("Chat API methods work as expected", () => {
     expect(coreStreamNextMessageSpy).toBeCalledTimes(1);
   });
 
-  it("updates loading status and throw error when an API request returns an error", async () => {
+  it("logs warning when attempt to send next message to API when it is still processing", async () => {
+    const chatHeadless = new ChatHeadless(config);
+    const coreGetNextMessageSpy = jest
+      .spyOn(ChatCore.prototype, "getNextMessage")
+      .mockResolvedValueOnce(expectedResponse);
+    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+    chatHeadless.getNextMessage("message 1");
+    const secondResponse = await chatHeadless.getNextMessage("message 2");
+    expect(consoleWarnSpy).toBeCalledTimes(1);
+    expect(consoleWarnSpy).toBeCalledWith(
+      "Unable to process new message at the moment. Another message is still being processed."
+    );
+    expect(secondResponse).toBeUndefined();
+    expect(coreGetNextMessageSpy).toBeCalledTimes(1);
+    expect(coreGetNextMessageSpy).toBeCalledWith({
+      messages: [
+        {
+          source: MessageSource.USER,
+          text: "message 1",
+          timestamp: expect.any(String),
+        },
+      ],
+    });
+  });
+
+  it("updates state and throw error when an API request returns an error", async () => {
     const errorMessage =
       "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)";
     const chatHeadless = new ChatHeadless(config);
@@ -215,14 +242,16 @@ describe("Chat API methods work as expected", () => {
     } catch (e) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(e).toEqual(errorMessage);
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(chatHeadless.state).toEqual({
+      const expectedState: State = {
         conversation: {
           messages: [expectedUserMessage],
           isLoading: false,
+          canSendMessage: true,
         },
         meta: {},
-      });
+      };
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(chatHeadless.state).toEqual(expectedState);
     }
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
   });

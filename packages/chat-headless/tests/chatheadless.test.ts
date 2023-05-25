@@ -1,13 +1,13 @@
 import {
   ChatHeadless,
   ConversationState,
+  HeadlessConfig,
   Message,
   MessageNotes,
   MessageSource,
   MetaState,
   State,
 } from "../src";
-import { ChatConfig } from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
   initialState,
@@ -16,7 +16,7 @@ import {
 
 jest.mock("@yext/chat-core");
 
-const config: ChatConfig = {
+const config: HeadlessConfig = {
   botId: "MY_BOT",
   apiKey: "MY_API_KEY",
 };
@@ -51,6 +51,7 @@ describe("setters work as expected", () => {
           currentGoal: "NEW_GOAL",
         },
         isLoading: true,
+        canSendMessage: false,
       },
       meta: mockedMetaState,
     };
@@ -209,12 +210,13 @@ it("restartConversation works as expected", () => {
         currentGoal: "GOAL",
       },
       isLoading: true,
+      canSendMessage: false,
     },
     meta: mockedMetaState,
   });
   const stateDispatchSpy = jest.spyOn(ReduxStateManager.prototype, "dispatch");
   chatHeadless.restartConversation();
-  expect(stateDispatchSpy).toBeCalledTimes(4);
+  expect(stateDispatchSpy).toBeCalledTimes(5);
   expect(stateDispatchSpy).toHaveBeenCalledWith({
     type: "conversation/setConversationId",
     payload: undefined,
@@ -231,12 +233,17 @@ it("restartConversation works as expected", () => {
     type: "conversation/setMessages",
     payload: [],
   });
+  expect(stateDispatchSpy).toHaveBeenCalledWith({
+    type: "conversation/setCanSendMessage",
+    payload: true,
+  });
 
   const expectedState: State = {
     conversation: {
       messages: [],
       notes: {},
       isLoading: false,
+      canSendMessage: true,
     },
     meta: mockedMetaState,
   };
@@ -257,6 +264,7 @@ describe("loadSessionState works as expected", () => {
       currentGoal: "GOAL",
     },
     isLoading: true,
+    canSendMessage: true,
   };
   it("loads valid state from session storage", () => {
     sessionStorage.setItem(
@@ -275,7 +283,10 @@ describe("loadSessionState works as expected", () => {
       STATE_SESSION_STORAGE_KEY,
       JSON.stringify(expectedState)
     );
-    const chatHeadless = new ChatHeadless(config, false);
+    const chatHeadless = new ChatHeadless({
+      ...config,
+      saveToSessionStorage: false,
+    });
     expect(chatHeadless.state).toEqual({
       conversation: initialState,
       meta: {},
