@@ -27,7 +27,7 @@ export { ChatConfig }
 export class ChatHeadless {
     constructor(config: HeadlessConfig);
     addListener<T>(listener: StateListener<T>): Unsubscribe;
-    getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
+    getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
     setContext(context: any): void;
@@ -37,7 +37,7 @@ export class ChatHeadless {
     get state(): State;
     // @internal
     get store(): Store;
-    streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
+    streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
 }
 
 // @public

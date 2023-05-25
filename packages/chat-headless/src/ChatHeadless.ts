@@ -206,7 +206,7 @@ export class ChatHeadless {
   async getNextMessage(
     text?: string,
     source: MessageSource = MessageSource.USER
-  ): Promise<MessageResponse> {
+  ): Promise<MessageResponse | undefined> {
     return this.nextMessageHandler(
       async () => {
         const { messages, conversationId, notes } = this.state.conversation;
@@ -245,7 +245,7 @@ export class ChatHeadless {
   async streamNextMessage(
     text?: string,
     source: MessageSource = MessageSource.USER
-  ): Promise<MessageResponse> {
+  ): Promise<MessageResponse | undefined> {
     return this.nextMessageHandler(
       async () => {
         let messageResponse: MessageResponse | undefined = undefined;
@@ -308,7 +308,11 @@ export class ChatHeadless {
     nextMessageFn: () => Promise<MessageResponse>,
     text?: string,
     source: MessageSource = MessageSource.USER
-  ): Promise<MessageResponse> {
+  ): Promise<MessageResponse | undefined> {
+    if (!this.state.conversation.canSendMessage) {
+      console.warn("Unable to process new message at the moment. Another message is still being processed.")
+      return;
+    }
     this.setCanSendMessage(false);
     this.setChatLoadingStatus(true);
     let messages: Message[] = this.state.conversation.messages;
