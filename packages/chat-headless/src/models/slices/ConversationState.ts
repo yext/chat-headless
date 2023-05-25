@@ -12,6 +12,11 @@ export interface ConversationState {
   messages: Message[];
   /** Information relevant to the current state of the conversation, generated and provided by Chat API. */
   notes?: MessageNotes;
-  /** Whether the next message is currently processing or has finished processing. */
-  isLoading?: boolean;
+  /** Whether the next message is currently processing or has started responding. */
+  isLoading: boolean;
+  /**
+   * Whether a new message can be sent to Chat API.
+   * This is set to false when a previous message is being processed.
+   */
+  canSendMessage: boolean;
 }

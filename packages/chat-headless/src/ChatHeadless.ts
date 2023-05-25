@@ -1,5 +1,4 @@
 import {
-  ChatConfig,
   ChatCore,
   Message,
   MessageNotes,
@@ -11,6 +10,7 @@ import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
 import {
   loadSessionState,
+  setCanSendMessage,
   setConversationId,
   setIsLoading,
   setMessageNotes,
@@ -20,6 +20,7 @@ import {
 import { Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
 import { setContext } from "./slices/meta";
+import { HeadlessConfig } from "./models/HeadlessConfig";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -35,14 +36,17 @@ export class ChatHeadless {
    * Constructs a new instance of the {@link ChatHeadless} class.
    *
    * @public
-   *
+   * 
    * @param config - The configuration for the {@link ChatHeadless} instance
-   * @param saveToSessionStorage - Whether to save the instance's {@link ConversationState} to session storage. Defaults to true.
    */
-  constructor(config: ChatConfig, saveToSessionStorage = true) {
-    this.chatCore = new ChatCore(config);
+  constructor(config: HeadlessConfig) {
+    const defaultConfig: Partial<HeadlessConfig> = {
+      saveToSessionStorage: true
+    }
+    const mergedConfig = { ...defaultConfig, ...config }
+    this.chatCore = new ChatCore(mergedConfig);
     this.stateManager = new ReduxStateManager();
-    if (saveToSessionStorage) {
+    if (mergedConfig.saveToSessionStorage) {
       this.setState({
         ...this.state,
         conversation: loadSessionState(),
@@ -150,6 +154,17 @@ export class ChatHeadless {
   }
 
   /**
+   * Sets {@link ConversationState.canSendMessage} to the specified state
+   *
+   * @internal
+   *
+   * @param canSendMessage - the state to set
+   */
+  private setCanSendMessage(canSendMessage: boolean) {
+    this.stateManager.dispatch(setCanSendMessage(canSendMessage));
+  }
+
+  /**
    * Resets all fields within {@link ConversationState}
    *
    * @public
@@ -157,6 +172,7 @@ export class ChatHeadless {
   restartConversation() {
     this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
+    this.setCanSendMessage(true);
     this.setMessageNotes({});
     this.setMessages([]);
   }
@@ -245,6 +261,7 @@ export class ChatHeadless {
           context: this.state.meta.context,
         });
         stream.addEventListener(StreamEventName.StartEvent, ({ data }) => {
+          this.setChatLoadingStatus(false);
           this.setMessageNotes(data);
         });
         stream.addEventListener(
@@ -277,8 +294,10 @@ export class ChatHeadless {
 
   /**
    * Setup relevant state before hitting Chat API endpoint for next message, such as
-   * setting loading status and appending new user's message in conversation state.
-   * Also update loading state when the next message is received or an error occurred.
+   * setting loading status, "canSendMessage" status, and appending new user's message
+   * in conversation state.
+   * 
+   * @internal
    *
    * @param nextMessageFn - function to invoke to get next message
    * @param text - the text of the next message
@@ -290,6 +309,7 @@ export class ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse> {
+    this.setCanSendMessage(false);
     this.setChatLoadingStatus(true);
     let messages: Message[] = this.state.conversation.messages;
     if (text && text.length > 0) {
@@ -307,9 +327,11 @@ export class ChatHeadless {
     try {
       messageResponse = await nextMessageFn();
     } catch (e) {
+      this.setCanSendMessage(true);
       this.setChatLoadingStatus(false);
       return Promise.reject(e as Error);
     }
+    this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
     return messageResponse;
   }

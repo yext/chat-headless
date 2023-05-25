@@ -64,6 +64,7 @@ describe("Chat API methods work as expected", () => {
       conversation: {
         messages: [expectedUserMessage],
         isLoading: true,
+        canSendMessage: false,
       },
       meta: mockedMetaState,
     };
@@ -77,6 +78,7 @@ describe("Chat API methods work as expected", () => {
         messages: [expectedUserMessage, expectedResponse.message],
         notes: expectedResponse.notes,
         isLoading: false,
+        canSendMessage: true,
       },
       meta: mockedMetaState,
     };
@@ -201,7 +203,7 @@ describe("Chat API methods work as expected", () => {
     expect(coreStreamNextMessageSpy).toBeCalledTimes(1);
   });
 
-  it("updates loading status and throw error when an API request returns an error", async () => {
+  it("updates state and throw error when an API request returns an error", async () => {
     const errorMessage =
       "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)";
     const chatHeadless = new ChatHeadless(config);
@@ -215,14 +217,16 @@ describe("Chat API methods work as expected", () => {
     } catch (e) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(e).toEqual(errorMessage);
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(chatHeadless.state).toEqual({
+      const expectedState: State = {
         conversation: {
           messages: [expectedUserMessage],
           isLoading: false,
+          canSendMessage: true
         },
         meta: {},
-      });
+      }
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(chatHeadless.state).toEqual(expectedState);
     }
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
   });

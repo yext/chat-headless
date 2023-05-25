@@ -9,13 +9,12 @@ Constructs a new instance of the [ChatHeadless](./chat-headless.chatheadless.md)
 **Signature:**
 
 ```typescript
-constructor(config: ChatConfig, saveToSessionStorage?: boolean);
+constructor(config: HeadlessConfig);
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  config | ChatConfig | The configuration for the [ChatHeadless](./chat-headless.chatheadless.md) instance |
-|  saveToSessionStorage | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to session storage. Defaults to true. |
+|  config | [HeadlessConfig](./chat-headless.headlessconfig.md) | The configuration for the [ChatHeadless](./chat-headless.chatheadless.md) instance |
 

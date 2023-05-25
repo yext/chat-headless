@@ -16,8 +16,9 @@ export interface ConversationState
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [canSendMessage](./chat-headless.conversationstate.cansendmessage.md) |  | boolean | Whether a new message can be sent to Chat API. This is set to false when a previous message is being processed. |
 |  [conversationId?](./chat-headless.conversationstate.conversationid.md) |  | string | _(Optional)_ The id of the current conversation. |
-|  [isLoading?](./chat-headless.conversationstate.isloading.md) |  | boolean | _(Optional)_ Whether the next message is currently processing or has finished processing. |
+|  [isLoading](./chat-headless.conversationstate.isloading.md) |  | boolean | Whether the next message is currently processing or has started responding. |
 |  [messages](./chat-headless.conversationstate.messages.md) |  | Message\[\] | The messages in a conversation. |
 |  [notes?](./chat-headless.conversationstate.notes.md) |  | MessageNotes | _(Optional)_ Information relevant to the current state of the conversation, generated and provided by Chat API. |
 

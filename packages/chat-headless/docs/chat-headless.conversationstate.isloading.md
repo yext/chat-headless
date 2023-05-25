@@ -4,10 +4,10 @@
 
 ## ConversationState.isLoading property
 
-Whether the next message is currently processing or has finished processing.
+Whether the next message is currently processing or has started responding.
 
 **Signature:**
 
 ```typescript
-isLoading?: boolean;
+isLoading: boolean;
 ```

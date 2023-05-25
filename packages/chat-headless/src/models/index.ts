@@ -1,4 +1,5 @@
 export { State } from "./state";
-export { ConversationState } from "./slices/conversation";
-export { MetaState } from "./slices/meta";
+export { ConversationState } from "./slices/ConversationState";
+export { MetaState } from "./slices/MetaState";
 export { StateListener } from "./utils/StateListeners";
+export { HeadlessConfig } from "./HeadlessConfig";

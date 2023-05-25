@@ -25,7 +25,7 @@ export { ChatConfig }
 
 // @public
 export class ChatHeadless {
-    constructor(config: ChatConfig, saveToSessionStorage?: boolean);
+    constructor(config: HeadlessConfig);
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse>;
     restartConversation(): void;
@@ -42,13 +42,19 @@ export class ChatHeadless {
 
 // @public
 export interface ConversationState {
+    canSendMessage: boolean;
     conversationId?: string;
-    isLoading?: boolean;
+    isLoading: boolean;
     messages: Message[];
     notes?: MessageNotes;
 }
 
 export { EndEvent }
+
+// @public
+export interface HeadlessConfig extends ChatConfig {
+    saveToSessionStorage?: boolean;
+}
 
 export { Message }
 
