@@ -10,6 +10,6 @@ Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md
 
 ```typescript
 export type ChatHeadlessProviderProps = PropsWithChildren<{
-    config: ChatConfig;
+    config: HeadlessConfig;
 }>;
 ```
