@@ -1,4 +1,4 @@
-import { ChatHeadless, ChatConfig } from "@yext/chat-headless";
+import { ChatHeadless, HeadlessConfig } from "@yext/chat-headless";
 import { PropsWithChildren, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ChatHeadlessContext } from "./ChatHeadlessContext";
@@ -8,10 +8,7 @@ import { ChatHeadlessContext } from "./ChatHeadlessContext";
  *
  * @public
  */
-export type ChatHeadlessProviderProps = PropsWithChildren<{
-  /** Chat bot configurations. */
-  config: ChatConfig;
-}>;
+export type ChatHeadlessProviderProps = PropsWithChildren<{ config: HeadlessConfig}>;
 
 /**
  * Instantiates a ChatHeadless instance for {@link ChatHeadlessContext} and provide

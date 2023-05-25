@@ -6,9 +6,9 @@
 
 /// <reference types="react" />
 
-import { ChatConfig } from '@yext/chat-headless';
 import { ChatHeadless } from '@yext/chat-headless';
 import { Context } from 'react';
+import { HeadlessConfig } from '@yext/chat-headless';
 import { PropsWithChildren } from 'react';
 import { State } from '@yext/chat-headless';
 
@@ -20,7 +20,7 @@ export function ChatHeadlessProvider(props: ChatHeadlessProviderProps): JSX.Elem
 
 // @public
 export type ChatHeadlessProviderProps = PropsWithChildren<{
-    config: ChatConfig;
+    config: HeadlessConfig;
 }>;
 
 // @public

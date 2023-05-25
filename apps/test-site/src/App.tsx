@@ -2,11 +2,11 @@ import {
   ChatHeadlessProvider,
   useChatActions,
   useChatState,
-  ChatConfig,
+  HeadlessConfig,
 } from "@yext/chat-headless-react";
 import { useCallback, useEffect, useState } from "react";
 
-const config: ChatConfig = {
+const config: HeadlessConfig = {
   botId: "red-dog-bot",
   apiKey: process.env.REACT_APP_BOT_API_KEY || "BOT_KEY_HERE",
   apiDomain: "liveapi-dev.yext.com",
