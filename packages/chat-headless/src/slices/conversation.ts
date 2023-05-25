@@ -65,6 +65,11 @@ export const conversationSlice = createSlice({
   },
 });
 
-export const { setMessages, setMessageNotes, setIsLoading, setConversationId, setCanSendMessage } =
-  conversationSlice.actions;
+export const {
+  setMessages,
+  setMessageNotes,
+  setIsLoading,
+  setConversationId,
+  setCanSendMessage,
+} = conversationSlice.actions;
 export default conversationSlice.reducer;

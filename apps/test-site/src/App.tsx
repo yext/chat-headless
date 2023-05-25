@@ -58,7 +58,12 @@ function ChatComponent() {
         <p key={i}>{`${m.source}: ${m.text}`}</p>
       ))}
       {isLoading && <p>loading...</p>}
-      <input type="text" value={input} disabled={!canSendMessage} onChange={onInputChange} />
+      <input
+        type="text"
+        value={input}
+        disabled={!canSendMessage}
+        onChange={onInputChange}
+      />
       <button onClick={onClick}>Send</button>
       <button onClick={onClickStream}>Send (Stream)</button>
     </div>

@@ -210,7 +210,7 @@ it("restartConversation works as expected", () => {
         currentGoal: "GOAL",
       },
       isLoading: true,
-      canSendMessage: false
+      canSendMessage: false,
     },
     meta: mockedMetaState,
   });
@@ -243,7 +243,7 @@ it("restartConversation works as expected", () => {
       messages: [],
       notes: {},
       isLoading: false,
-      canSendMessage: true
+      canSendMessage: true,
     },
     meta: mockedMetaState,
   };
@@ -264,7 +264,7 @@ describe("loadSessionState works as expected", () => {
       currentGoal: "GOAL",
     },
     isLoading: true,
-    canSendMessage: true
+    canSendMessage: true,
   };
   it("loads valid state from session storage", () => {
     sessionStorage.setItem(
@@ -283,7 +283,10 @@ describe("loadSessionState works as expected", () => {
       STATE_SESSION_STORAGE_KEY,
       JSON.stringify(expectedState)
     );
-    const chatHeadless = new ChatHeadless({ ...config, saveToSessionStorage: false });
+    const chatHeadless = new ChatHeadless({
+      ...config,
+      saveToSessionStorage: false,
+    });
     expect(chatHeadless.state).toEqual({
       conversation: initialState,
       meta: {},

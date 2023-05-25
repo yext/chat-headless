@@ -203,13 +203,12 @@ describe("Chat API methods work as expected", () => {
     expect(coreStreamNextMessageSpy).toBeCalledTimes(1);
   });
 
-
   it("logs warning when attempt to send next message to API when it is still processing", async () => {
     const chatHeadless = new ChatHeadless(config);
     const coreGetNextMessageSpy = jest
       .spyOn(ChatCore.prototype, "getNextMessage")
       .mockResolvedValueOnce(expectedResponse);
-    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation()
+    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
     chatHeadless.getNextMessage("message 1");
     const secondResponse = await chatHeadless.getNextMessage("message 2");
     expect(consoleWarnSpy).toBeCalledTimes(1);
@@ -219,11 +218,13 @@ describe("Chat API methods work as expected", () => {
     expect(secondResponse).toBeUndefined();
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
     expect(coreGetNextMessageSpy).toBeCalledWith({
-      messages: [{
-       source: MessageSource.USER,
-       text: "message 1",
-       timestamp: expect.any(String),
-      }]
+      messages: [
+        {
+          source: MessageSource.USER,
+          text: "message 1",
+          timestamp: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -245,10 +246,10 @@ describe("Chat API methods work as expected", () => {
         conversation: {
           messages: [expectedUserMessage],
           isLoading: false,
-          canSendMessage: true
+          canSendMessage: true,
         },
         meta: {},
-      }
+      };
       // eslint-disable-next-line jest/no-conditional-expect
       expect(chatHeadless.state).toEqual(expectedState);
     }

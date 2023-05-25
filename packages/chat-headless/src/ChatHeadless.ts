@@ -36,14 +36,14 @@ export class ChatHeadless {
    * Constructs a new instance of the {@link ChatHeadless} class.
    *
    * @public
-   * 
+   *
    * @param config - The configuration for the {@link ChatHeadless} instance
    */
   constructor(config: HeadlessConfig) {
     const defaultConfig: Partial<HeadlessConfig> = {
-      saveToSessionStorage: true
-    }
-    const mergedConfig = { ...defaultConfig, ...config }
+      saveToSessionStorage: true,
+    };
+    const mergedConfig = { ...defaultConfig, ...config };
     this.chatCore = new ChatCore(mergedConfig);
     this.stateManager = new ReduxStateManager();
     if (mergedConfig.saveToSessionStorage) {
@@ -296,7 +296,7 @@ export class ChatHeadless {
    * Setup relevant state before hitting Chat API endpoint for next message, such as
    * setting loading status, "canSendMessage" status, and appending new user's message
    * in conversation state.
-   * 
+   *
    * @internal
    *
    * @param nextMessageFn - function to invoke to get next message
@@ -310,7 +310,9 @@ export class ChatHeadless {
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
     if (!this.state.conversation.canSendMessage) {
-      console.warn("Unable to process new message at the moment. Another message is still being processed.")
+      console.warn(
+        "Unable to process new message at the moment. Another message is still being processed."
+      );
       return;
     }
     this.setCanSendMessage(false);
