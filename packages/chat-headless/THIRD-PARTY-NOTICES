@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - @babel/runtime@7.21.5
+ - @babel/runtime@7.22.5
 
 This package contains the following license and notice below:
 
@@ -64,13 +64,13 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @yext/chat-core@0.3.0
+ - @yext/chat-core@0.3.2
 
 This package contains the following license and notice below:
 
-The files listed in this repository are licensed under the below license.  All other features and products are subject to separate agreements and certain functionality requires paid subscriptions to Yext products.
-
 Contains information from the language-subtag-registry JSON Database (https://github.com/mattcg/language-subtag-registry/tree/master/data/json) which is made available under the ODC Attribution License (https://github.com/mattcg/language-subtag-registry/blob/master/LICENSE.md).
+
+The files listed in this repository are licensed under the below license.  All other features and products are subject to separate agreements and certain functionality requires paid subscriptions to Yext products.
 
 BSD 3-Clause License
 
