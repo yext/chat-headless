@@ -7,7 +7,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 
 const config: HeadlessConfig = {
-  botId: "red-dog-bot",
+  botId: "tripp-bot",
   apiKey: process.env.REACT_APP_BOT_API_KEY || "BOT_KEY_HERE",
   apiDomain: "liveapi-dev.yext.com",
 };
