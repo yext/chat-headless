@@ -112,6 +112,7 @@ describe("Chat API methods work as expected", () => {
       .spyOn(ChatCore.prototype, "streamNextMessage")
       .mockResolvedValueOnce(
         new StreamResponse({
+          ok: true,
           body: new Readable({
             read() {
               this.push(
@@ -177,6 +178,7 @@ describe("Chat API methods work as expected", () => {
       .spyOn(ChatCore.prototype, "streamNextMessage")
       .mockResolvedValueOnce(
         new StreamResponse({
+          ok: true,
           body: new Readable({
             read() {
               this.push("event: startTokenStream\ndata: {}\n\n");
