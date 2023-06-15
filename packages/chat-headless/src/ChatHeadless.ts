@@ -15,6 +15,7 @@ import {
   setIsLoading,
   setMessageNotes,
   setMessages,
+  addMessage,
   STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
 import { Store, Unsubscribe } from "@reduxjs/toolkit";
@@ -118,6 +119,17 @@ export class ChatHeadless {
    */
   setMessages(messages: Message[]) {
     this.stateManager.dispatch(setMessages(messages));
+  }
+
+  /**
+   * Adds a new message to {@link ConversationState.messages}
+   *
+   * @public
+   *
+   * @param message - the message to add to state
+   */
+  addMessage(message: Message) {
+    this.stateManager.dispatch(addMessage(message));
   }
 
   /**

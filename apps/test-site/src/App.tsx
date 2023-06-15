@@ -3,6 +3,7 @@ import {
   useChatActions,
   useChatState,
   HeadlessConfig,
+  MessageSource,
 } from "@yext/chat-headless-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -29,21 +30,33 @@ function ChatComponent() {
   const [input, setInput] = useState("");
   const actions = useChatActions();
 
+  const handleError = useCallback(
+    (e: unknown) => {
+      console.error(e);
+      actions.addMessage({
+        text: "Sorry, I'm unable to respond at the moment. Please try again later!",
+        source: MessageSource.BOT,
+        timestamp: new Date().toISOString(),
+      });
+    },
+    [actions]
+  );
+
   useEffect(() => {
     if (messages.length === 0) {
-      actions.getNextMessage();
+      actions.getNextMessage(input).catch((e) => handleError(e));
     }
-  }, [messages, actions]);
+  }, [messages, actions, input, handleError]);
 
-  const onClick = useCallback(() => {
-    actions.getNextMessage(input);
+  const onClick = useCallback(async () => {
+    actions.getNextMessage(input).catch((e) => handleError(e));
     setInput("");
-  }, [actions, input]);
+  }, [actions, handleError, input]);
 
   const onClickStream = useCallback(() => {
-    actions.streamNextMessage(input);
+    actions.streamNextMessage(input).catch((e) => handleError(e));
     setInput("");
-  }, [actions, input]);
+  }, [actions, handleError, input]);
 
   const onInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
