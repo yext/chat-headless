@@ -27,6 +27,7 @@ export { ChatConfig }
 export class ChatHeadless {
     constructor(config: HeadlessConfig);
     addListener<T>(listener: StateListener<T>): Unsubscribe;
+    addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;

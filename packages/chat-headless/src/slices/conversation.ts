@@ -44,6 +44,9 @@ export const conversationSlice = createSlice({
     ) => {
       state.messages = action.payload;
     },
+    addMessage: (state: ConversationState, action: PayloadAction<Message>) => {
+      state.messages.push(action.payload);
+    },
     setMessageNotes: (
       state: ConversationState,
       action: PayloadAction<MessageNotes>
@@ -67,6 +70,7 @@ export const conversationSlice = createSlice({
 
 export const {
   setMessages,
+  addMessage,
   setMessageNotes,
   setIsLoading,
   setConversationId,

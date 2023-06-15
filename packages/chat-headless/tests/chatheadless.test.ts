@@ -106,6 +106,25 @@ describe("setters work as expected", () => {
     });
   });
 
+  it("addMessage works as expected", () => {
+    const chatHeadless = new ChatHeadless(config);
+    const stateDispatchSpy = jest.spyOn(
+      ReduxStateManager.prototype,
+      "dispatch"
+    );
+    const message: Message = {
+      text: "What is Yext Chat?",
+      source: MessageSource.USER,
+      timestamp: "2023-05-15T17:40:58.019Z",
+    };
+    chatHeadless.addMessage(message);
+    expect(stateDispatchSpy).toBeCalledTimes(1);
+    expect(stateDispatchSpy).toBeCalledWith({
+      type: "conversation/addMessage",
+      payload: message,
+    });
+  });
+
   it("setMessageNotes works as expected", () => {
     const chatHeadless = new ChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(

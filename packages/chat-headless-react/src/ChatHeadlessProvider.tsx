@@ -8,7 +8,9 @@ import { ChatHeadlessContext } from "./ChatHeadlessContext";
  *
  * @public
  */
-export type ChatHeadlessProviderProps = PropsWithChildren<{ config: HeadlessConfig}>;
+export type ChatHeadlessProviderProps = PropsWithChildren<{
+  config: HeadlessConfig;
+}>;
 
 /**
  * Instantiates a ChatHeadless instance for {@link ChatHeadlessContext} and provide
