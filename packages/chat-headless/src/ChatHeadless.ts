@@ -18,10 +18,11 @@ import {
   addMessage,
   STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
-import { Store, Unsubscribe } from "@reduxjs/toolkit";
+import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
 import { setContext } from "./slices/meta";
 import { HeadlessConfig } from "./models/HeadlessConfig";
+import { provideChatAnalytics, ChatAnalyticsService, ChatEventPayLoad } from "@yext/analytics";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -30,8 +31,12 @@ import { HeadlessConfig } from "./models/HeadlessConfig";
  * @public
  */
 export class ChatHeadless {
+  private config: HeadlessConfig;
   private chatCore: ChatCore;
   private stateManager: ReduxStateManager;
+  private chatAnalyticsService: ChatAnalyticsService;
+
+  private isImpressionAnalyticEventSent = false;
 
   /**
    * Constructs a new instance of the {@link ChatHeadless} class.
@@ -44,10 +49,15 @@ export class ChatHeadless {
     const defaultConfig: Partial<HeadlessConfig> = {
       saveToSessionStorage: true,
     };
-    const mergedConfig = { ...defaultConfig, ...config };
-    this.chatCore = new ChatCore(mergedConfig);
+    this.config = { ...defaultConfig, ...config };
+    this.chatCore = new ChatCore(this.config);
     this.stateManager = new ReduxStateManager();
-    if (mergedConfig.saveToSessionStorage) {
+    this.chatAnalyticsService = provideChatAnalytics({
+      apiKey: this.config.apiKey,
+      env: "PRODUCTION", //CLIP-288: pull from config once ChatCore support env
+      region: "US" //CLIP-288: pull from config once ChatCore support region
+    })
+    if (this.config.saveToSessionStorage) {
       this.setState({
         ...this.state,
         conversation: loadSessionState(),
@@ -96,6 +106,41 @@ export class ChatHeadless {
    */
   get store(): Store {
     return this.stateManager.getStore();
+  }
+
+  /**
+   * Send Chat related analytics event to Yext Analytics API.
+   * 
+   * @remarks
+   * once a CHAT_IMPRESSION analytics event is reported, subsequent
+   * CHAT_IMPRESSION reports will not be send.
+   * 
+   * @public
+   */
+  async report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>) {
+    if (eventPayload.action === 'CHAT_IMPRESSION') {
+      if (this.isImpressionAnalyticEventSent) {
+        return;
+      }
+      this.isImpressionAnalyticEventSent = true;
+    }
+    const chatProps: ChatEventPayLoad['chat'] = {
+      botId: this.config.botId,
+      conversationId: this.state.conversation.conversationId,
+    }
+    try {
+      await this.chatAnalyticsService.report({
+        timestamp: new Date().toISOString(),
+        pageUrl: window?.location.href,
+        ...eventPayload,
+        chat: {
+          ...chatProps,
+          ...eventPayload.chat,
+        },
+      })
+    } catch (e) {
+      console.error("Error occured on request to Analytics API:", e)
+    }
   }
 
   /**
@@ -246,6 +291,8 @@ export class ChatHeadless {
    * final event from the stream is recieved.
    *
    * @public
+   * 
+   * @experimental
    *
    * @remarks
    * If rejected, an Error is returned.
@@ -349,6 +396,14 @@ export class ChatHeadless {
       this.setChatLoadingStatus(false);
       return Promise.reject(e as Error);
     }
+    this.report({
+      action: "CHAT_RESPONSE",
+      timestamp: messageResponse.message.timestamp,
+      chat: {
+        conversationId: messageResponse.conversationId,
+        responseId: messageResponse.responseId
+      }
+    })
     this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
     return messageResponse;
