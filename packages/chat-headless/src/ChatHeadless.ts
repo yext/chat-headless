@@ -401,7 +401,7 @@ export class ChatHeadless {
       timestamp: messageResponse.message.timestamp,
       chat: {
         conversationId: messageResponse.conversationId,
-        responseId: messageResponse.responseId
+        responseId: messageResponse.message.responseId,
       }
     })
     this.setCanSendMessage(true);

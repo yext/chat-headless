@@ -9,7 +9,7 @@ Send Chat related analytics event to Yext Analytics API.
 **Signature:**
 
 ```typescript
-report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): void;
+report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): Promise<void>;
 ```
 
 ## Parameters
@@ -20,7 +20,7 @@ report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEvent
 
 **Returns:**
 
-void
+Promise&lt;void&gt;
 
 ## Remarks
 
