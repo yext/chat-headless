@@ -15,6 +15,7 @@ import {
 } from "@yext/chat-core";
 import { initialState } from "../src/slices/conversation";
 import { Readable } from "stream";
+import * as analyticsLib from "@yext/analytics";
 
 const config: ChatConfig = {
   botId: "MY_BOT",
@@ -27,8 +28,14 @@ const mockedMetaState: MetaState = {
   },
 };
 
+jest.mock("@yext/analytics");
+
 beforeEach(() => {
   sessionStorage.clear();
+  jest.spyOn(analyticsLib, 'provideChatAnalytics')
+      .mockReturnValue({
+        report: jest.fn()
+      })
 });
 
 describe("Chat API methods work as expected", () => {
@@ -40,6 +47,7 @@ describe("Chat API methods work as expected", () => {
   const expectedResponse: MessageResponse = {
     conversationId: "convo-id",
     message: {
+      responseId: "response-id",
       text: "dummy response!",
       source: MessageSource.BOT,
       timestamp: "2023-05-15T17:39:58.019Z",
@@ -123,7 +131,7 @@ describe("Chat API methods work as expected", () => {
               this.push('event: streamToken\ndata: {"token": "!"}\n\n');
               this.push(
                 'event: endStream\ndata: {"conversationId": "convo-id",' +
-                  '"message": { "timestamp": "2023-05-15T17:39:58.019Z", "source": "BOT", "text": "dummy response!"},' +
+                  '"message": { "timestamp": "2023-05-15T17:39:58.019Z", "source": "BOT", "text": "dummy response!", "responseId": "response-id" },' +
                   '"notes": { "currentGoal": "SOME_GOAL" }}\n\n'
               );
               this.push(null);
@@ -166,6 +174,7 @@ describe("Chat API methods work as expected", () => {
       expectedUserMessage,
       {
         timestamp: "2023-05-15T17:39:58.019Z",
+        responseId: "response-id",
         source: "BOT",
         text: "dummy response!",
       },

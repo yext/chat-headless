@@ -5,6 +5,8 @@
 ```ts
 
 import { ChatConfig } from '@yext/chat-core';
+import { ChatEventPayLoad } from '@yext/analytics';
+import { DeepPartial } from '@reduxjs/toolkit';
 import { EndEvent } from '@yext/chat-core';
 import { Message } from '@yext/chat-core';
 import { MessageNotes } from '@yext/chat-core';
@@ -29,6 +31,7 @@ export class ChatHeadless {
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
+    report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): Promise<void>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
     setContext(context: any): void;
