@@ -4,16 +4,20 @@
 
 ```ts
 
+import { ChatAnalyticsConfig } from '@yext/analytics';
 import { ChatConfig } from '@yext/chat-core';
 import { ChatEventPayLoad } from '@yext/analytics';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { EndEvent } from '@yext/chat-core';
+import { Endpoints } from '@yext/chat-core';
+import { Environment } from '@yext/chat-core';
 import { Message } from '@yext/chat-core';
 import { MessageNotes } from '@yext/chat-core';
 import { MessageRequest } from '@yext/chat-core';
 import { MessageResponse } from '@yext/chat-core';
 import { MessageSource } from '@yext/chat-core';
 import { RawResponse } from '@yext/chat-core';
+import { Region } from '@yext/chat-core';
 import { StartEvent } from '@yext/chat-core';
 import { Store } from '@reduxjs/toolkit';
 import { StreamEvent } from '@yext/chat-core';
@@ -31,7 +35,7 @@ export class ChatHeadless {
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
-    report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): Promise<void>;
+    report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
     setContext(context: any): void;
@@ -55,8 +59,13 @@ export interface ConversationState {
 
 export { EndEvent }
 
+export { Endpoints }
+
+export { Environment }
+
 // @public
 export interface HeadlessConfig extends ChatConfig {
+    analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region">;
     saveToSessionStorage?: boolean;
 }
 
@@ -76,6 +85,8 @@ export interface MetaState {
 }
 
 export { RawResponse }
+
+export { Region }
 
 export { StartEvent }
 

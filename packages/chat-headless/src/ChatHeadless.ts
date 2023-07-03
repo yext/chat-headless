@@ -22,7 +22,11 @@ import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
 import { setContext } from "./slices/meta";
 import { HeadlessConfig } from "./models/HeadlessConfig";
-import { provideChatAnalytics, ChatAnalyticsService, ChatEventPayLoad } from "@yext/analytics";
+import {
+  provideChatAnalytics,
+  ChatAnalyticsService,
+  ChatEventPayLoad,
+} from "@yext/analytics";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -54,9 +58,10 @@ export class ChatHeadless {
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
-      env: "PRODUCTION", //CLIP-288: pull from config once ChatCore support env
-      region: "US" //CLIP-288: pull from config once ChatCore support region
-    })
+      env: this.config.env,
+      region: this.config.region,
+      ...this.config.analyticsConfig,
+    });
     if (this.config.saveToSessionStorage) {
       this.setState({
         ...this.state,
@@ -110,24 +115,27 @@ export class ChatHeadless {
 
   /**
    * Send Chat related analytics event to Yext Analytics API.
-   * 
+   *
    * @remarks
    * once a CHAT_IMPRESSION analytics event is reported, subsequent
    * CHAT_IMPRESSION reports will not be send.
-   * 
+   *
    * @public
    */
-  async report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>) {
-    if (eventPayload.action === 'CHAT_IMPRESSION') {
+  async report(
+    eventPayload: Omit<ChatEventPayLoad, "chat"> &
+      DeepPartial<Pick<ChatEventPayLoad, "chat">>
+  ) {
+    if (eventPayload.action === "CHAT_IMPRESSION") {
       if (this.isImpressionAnalyticEventSent) {
         return;
       }
       this.isImpressionAnalyticEventSent = true;
     }
-    const chatProps: ChatEventPayLoad['chat'] = {
+    const chatProps: ChatEventPayLoad["chat"] = {
       botId: this.config.botId,
       conversationId: this.state.conversation.conversationId,
-    }
+    };
     try {
       await this.chatAnalyticsService.report({
         timestamp: new Date().toISOString(),
@@ -137,9 +145,9 @@ export class ChatHeadless {
           ...chatProps,
           ...eventPayload.chat,
         },
-      })
+      });
     } catch (e) {
-      console.error("Error occured on request to Analytics API:", e)
+      console.error("Error occured on request to Analytics API:", e);
     }
   }
 
@@ -291,7 +299,7 @@ export class ChatHeadless {
    * final event from the stream is recieved.
    *
    * @public
-   * 
+   *
    * @experimental
    *
    * @remarks
@@ -402,8 +410,8 @@ export class ChatHeadless {
       chat: {
         conversationId: messageResponse.conversationId,
         responseId: messageResponse.message.responseId,
-      }
-    })
+      },
+    });
     this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
     return messageResponse;
