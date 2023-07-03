@@ -17,5 +17,6 @@ export interface HeadlessConfig extends ChatConfig
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [analyticsConfig?](./chat-headless.headlessconfig.analyticsconfig.md) |  | Omit&lt;ChatAnalyticsConfig, 'apiKey' \| 'env' \| 'region'&gt; | _(Optional)_ Configurations for Chat analytics |
 |  [saveToSessionStorage?](./chat-headless.headlessconfig.savetosessionstorage.md) |  | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to session storage. Defaults to true. |
 

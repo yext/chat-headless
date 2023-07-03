@@ -13,4 +13,7 @@ export {
   StreamResponse,
   RawResponse,
   StreamEventCallback,
+  Environment,
+  Region,
+  Endpoints
 } from "@yext/chat-core";

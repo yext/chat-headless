@@ -54,8 +54,9 @@ export class ChatHeadless {
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
-      env: "PRODUCTION", //CLIP-288: pull from config once ChatCore support env
-      region: "US" //CLIP-288: pull from config once ChatCore support region
+      env: this.config.env,
+      region: this.config.region,
+      ...this.config.analyticsConfig,
     })
     if (this.config.saveToSessionStorage) {
       this.setState({

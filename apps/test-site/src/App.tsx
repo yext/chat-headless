@@ -8,9 +8,15 @@ import {
 import { useCallback, useEffect, useState } from "react";
 
 const config: HeadlessConfig = {
-  botId: "tripp-bot",
+  botId: process.env.REACT_APP_TEST_BOT_ID || "BOT_ID_HERE",
   apiKey: process.env.REACT_APP_BOT_API_KEY || "BOT_KEY_HERE",
-  apiDomain: "liveapi-dev.yext.com",
+  endpoints: {
+    chat: `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message`,
+    chatStream: `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message/streaming`,
+  },
+  analyticsConfig: {
+    endpoint: "https://www.dev.us.yextevents.com/accounts/me/events"
+  }
 };
 
 function App() {
@@ -65,6 +71,12 @@ function ChatComponent() {
     []
   );
 
+  const onReport = useCallback(async () => {
+    await actions.report({
+      action: "CHAT_LINK_CLICK",
+    })
+  }, [actions])
+
   return (
     <div>
       {messages.map((m, i) => (
@@ -79,6 +91,7 @@ function ChatComponent() {
       />
       <button onClick={onClick}>Send</button>
       <button onClick={onClickStream}>Send (Stream)</button>
+      <button onClick={onReport}>report</button>
     </div>
   );
 }
