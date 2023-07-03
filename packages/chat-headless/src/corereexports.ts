@@ -15,5 +15,5 @@ export {
   StreamEventCallback,
   Environment,
   Region,
-  Endpoints
+  Endpoints,
 } from "@yext/chat-core";

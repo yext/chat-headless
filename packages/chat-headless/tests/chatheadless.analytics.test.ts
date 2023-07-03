@@ -1,8 +1,8 @@
-import { ChatHeadless, HeadlessConfig } from "../src"
+import { ChatHeadless, HeadlessConfig } from "../src";
 import * as AnalyticsLib from "@yext/analytics";
 
-jest.mock("@yext/analytics")
-jest.mock("@yext/chat-core")
+jest.mock("@yext/analytics");
+jest.mock("@yext/chat-core");
 
 const config: HeadlessConfig = {
   botId: "MY_BOT",
@@ -10,22 +10,22 @@ const config: HeadlessConfig = {
 };
 
 it("passes though apiKey, env, region from core config to analytics config", () => {
-  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics")
+  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
   new ChatHeadless({
     ...config,
     env: "SANDBOX",
-    region: "US"
-  })
+    region: "US",
+  });
   expect(chatAnalyticsSpy).toBeCalledTimes(1);
   expect(chatAnalyticsSpy).toBeCalledWith({
     apiKey: "MY_API_KEY",
     env: "SANDBOX",
-    region: "US"
+    region: "US",
   });
-})
+});
 
 it("passes through analytics specific configurations", () => {
-  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics")
+  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
   new ChatHeadless({
     ...config,
     env: "SANDBOX",
@@ -33,8 +33,8 @@ it("passes through analytics specific configurations", () => {
     analyticsConfig: {
       endpoint: "http://www.my-endpoint.com",
       sessionTrackingEnabled: true,
-    }
-  })
+    },
+  });
   expect(chatAnalyticsSpy).toBeCalledTimes(1);
   expect(chatAnalyticsSpy).toBeCalledWith({
     apiKey: "MY_API_KEY",
@@ -43,4 +43,4 @@ it("passes through analytics specific configurations", () => {
     endpoint: "http://www.my-endpoint.com",
     sessionTrackingEnabled: true,
   });
-})
+});

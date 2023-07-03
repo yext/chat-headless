@@ -15,8 +15,8 @@ const config: HeadlessConfig = {
     chatStream: `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message/streaming`,
   },
   analyticsConfig: {
-    endpoint: "https://www.dev.us.yextevents.com/accounts/me/events"
-  }
+    endpoint: "https://www.dev.us.yextevents.com/accounts/me/events",
+  },
 };
 
 function App() {
@@ -74,8 +74,8 @@ function ChatComponent() {
   const onReport = useCallback(async () => {
     await actions.report({
       action: "CHAT_LINK_CLICK",
-    })
-  }, [actions])
+    });
+  }, [actions]);
 
   return (
     <div>

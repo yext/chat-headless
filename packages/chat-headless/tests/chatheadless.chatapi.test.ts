@@ -32,10 +32,9 @@ jest.mock("@yext/analytics");
 
 beforeEach(() => {
   sessionStorage.clear();
-  jest.spyOn(analyticsLib, 'provideChatAnalytics')
-      .mockReturnValue({
-        report: jest.fn()
-      })
+  jest.spyOn(analyticsLib, "provideChatAnalytics").mockReturnValue({
+    report: jest.fn(),
+  });
 });
 
 describe("Chat API methods work as expected", () => {
