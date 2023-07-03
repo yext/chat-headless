@@ -9,5 +9,5 @@ Configurations for Chat analytics
 **Signature:**
 
 ```typescript
-analyticsConfig?: Omit<ChatAnalyticsConfig, 'apiKey' | 'env' | 'region'>;
+analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region">;
 ```

@@ -9,14 +9,14 @@ Send Chat related analytics event to Yext Analytics API.
 **Signature:**
 
 ```typescript
-report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): Promise<void>;
+report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  eventPayload | Omit&lt;ChatEventPayLoad, 'chat'&gt; &amp; DeepPartial&lt;Pick&lt;ChatEventPayLoad, 'chat'&gt;&gt; |  |
+|  eventPayload | Omit&lt;ChatEventPayLoad, "chat"&gt; &amp; DeepPartial&lt;Pick&lt;ChatEventPayLoad, "chat"&gt;&gt; |  |
 
 **Returns:**
 

@@ -35,7 +35,7 @@ export class ChatHeadless {
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
-    report(eventPayload: Omit<ChatEventPayLoad, 'chat'> & DeepPartial<Pick<ChatEventPayLoad, 'chat'>>): Promise<void>;
+    report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
     setContext(context: any): void;
@@ -65,7 +65,7 @@ export { Environment }
 
 // @public
 export interface HeadlessConfig extends ChatConfig {
-    analyticsConfig?: Omit<ChatAnalyticsConfig, 'apiKey' | 'env' | 'region'>;
+    analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region">;
     saveToSessionStorage?: boolean;
 }
 
