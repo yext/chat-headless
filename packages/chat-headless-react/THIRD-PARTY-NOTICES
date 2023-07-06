@@ -128,7 +128,7 @@ MIT License
 
 The following npm package may be included in this product:
 
- - @yext/analytics@0.6.0
+ - @yext/analytics@0.6.1
 
 This package contains the following license and notice below:
 
@@ -170,7 +170,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The following npm packages may be included in this product:
 
  - @yext/chat-core@0.5.3
- - @yext/chat-headless@0.5.1
+ - @yext/chat-headless@0.5.2
 
 These packages each contain the following license and notice below:
 
