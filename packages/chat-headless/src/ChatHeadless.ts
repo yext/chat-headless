@@ -140,9 +140,11 @@ export class ChatHeadless {
       await this.chatAnalyticsService.report({
         timestamp: new Date().toISOString(),
         pageUrl: window?.location.href,
+        ...this.config.analyticsConfig?.baseEventPayload,
         ...eventPayload,
         chat: {
           ...chatProps,
+          ...this.config.analyticsConfig?.baseEventPayload?.chat,
           ...eventPayload.chat,
         },
       });

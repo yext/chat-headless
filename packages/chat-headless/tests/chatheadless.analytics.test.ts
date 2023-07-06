@@ -44,3 +44,40 @@ it("passes through analytics specific configurations", () => {
     sessionTrackingEnabled: true,
   });
 });
+
+it("merges base payload with event specific payload (latter overrides)", () => {
+  jest.spyOn(Date.prototype, "toISOString").mockReturnValue("mocked-time");
+  const reportSpy = jest.fn();
+  jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
+    report: reportSpy,
+  }));
+  const headless = new ChatHeadless({
+    ...config,
+    analyticsConfig: {
+      baseEventPayload: {
+        internalUser: true,
+        pageUrl: "base-page",
+        chat: {
+          botId: "base-bot-id",
+        },
+      },
+    },
+  });
+  headless.report({
+    action: "CHAT_LINK_CLICK",
+    pageUrl: "event-specific-page",
+    chat: {
+      botId: "event-specific-bot",
+    },
+  });
+  expect(reportSpy).toBeCalledTimes(1);
+  expect(reportSpy).toBeCalledWith({
+    action: "CHAT_LINK_CLICK",
+    internalUser: true,
+    pageUrl: "event-specific-page",
+    timestamp: "mocked-time",
+    chat: {
+      botId: "event-specific-bot",
+    },
+  });
+});

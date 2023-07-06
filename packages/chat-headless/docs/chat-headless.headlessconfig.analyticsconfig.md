@@ -4,10 +4,12 @@
 
 ## HeadlessConfig.analyticsConfig property
 
-Configurations for Chat analytics
+Configurations for Chat analytics.
 
 **Signature:**
 
 ```typescript
-analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region">;
+analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
+        baseEventPayload?: DeepPartial<ChatEventPayLoad>;
+    };
 ```

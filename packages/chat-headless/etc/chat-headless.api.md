@@ -65,7 +65,9 @@ export { Environment }
 
 // @public
 export interface HeadlessConfig extends ChatConfig {
-    analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region">;
+    analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
+        baseEventPayload?: DeepPartial<ChatEventPayLoad>;
+    };
     saveToSessionStorage?: boolean;
 }
 
