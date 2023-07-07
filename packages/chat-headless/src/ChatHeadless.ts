@@ -27,6 +27,7 @@ import {
   ChatAnalyticsService,
   ChatEventPayLoad,
 } from "@yext/analytics";
+import { getClientSdk } from "./utils/clientSdk";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -136,15 +137,20 @@ export class ChatHeadless {
       botId: this.config.botId,
       conversationId: this.state.conversation.conversationId,
     };
+    const baseEventPayload = this.config.analyticsConfig?.baseEventPayload;
     try {
       await this.chatAnalyticsService.report({
         timestamp: new Date().toISOString(),
         pageUrl: window?.location.href,
-        ...this.config.analyticsConfig?.baseEventPayload,
+        ...baseEventPayload,
         ...eventPayload,
+        clientSdk: getClientSdk({
+          ...baseEventPayload?.clientSdk,
+          ...eventPayload.clientSdk,
+        }),
         chat: {
           ...chatProps,
-          ...this.config.analyticsConfig?.baseEventPayload?.chat,
+          ...baseEventPayload?.chat,
           ...eventPayload.chat,
         },
       });

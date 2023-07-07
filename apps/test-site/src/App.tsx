@@ -16,6 +16,9 @@ const config: HeadlessConfig = {
   },
   analyticsConfig: {
     endpoint: "https://www.dev.us.yextevents.com/accounts/me/events",
+    baseEventPayload: {
+      internalUser: true,
+    },
   },
 };
 
