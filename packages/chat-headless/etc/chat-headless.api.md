@@ -32,6 +32,8 @@ export { ChatConfig }
 // @public
 export class ChatHeadless {
     constructor(config: HeadlessConfig);
+    // @internal
+    addClientSdk(additionalClientSdk: Record<string, string>): void;
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
