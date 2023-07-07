@@ -60,6 +60,9 @@ it("merges base payload with event specific payload (latter overrides)", () => {
         chat: {
           botId: "base-bot-id",
         },
+        clientSdk: {
+          CHAT_RANDOM_SDK: "0.0.0",
+        },
       },
     },
   });
@@ -78,6 +81,11 @@ it("merges base payload with event specific payload (latter overrides)", () => {
     timestamp: "mocked-time",
     chat: {
       botId: "event-specific-bot",
+    },
+    clientSdk: {
+      CHAT_CORE: expect.any(String),
+      CHAT_HEADLESS: expect.any(String),
+      CHAT_RANDOM_SDK: "0.0.0",
     },
   });
 });
