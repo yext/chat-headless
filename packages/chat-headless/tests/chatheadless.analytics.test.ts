@@ -89,3 +89,38 @@ it("merges base payload with event specific payload (latter overrides)", () => {
     },
   });
 });
+
+it("addClientSdk works as expected", () => {
+  jest.spyOn(Date.prototype, "toISOString").mockReturnValue("mocked-time");
+  const reportSpy = jest.fn();
+  jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
+    report: reportSpy,
+  }));
+  const headless = new ChatHeadless({
+    ...config,
+    analyticsConfig: {
+      baseEventPayload: {
+        clientSdk: {
+          CHAT_RANDOM_SDK: "0.0.0",
+        },
+      },
+    },
+  });
+  headless.addClientSdk({
+    CHAT_NEW_SDK: "1.1.1",
+  });
+  headless.report({
+    action: "CHAT_LINK_CLICK",
+  });
+  expect(reportSpy).toBeCalledTimes(1);
+  expect(reportSpy).toBeCalledWith(
+    expect.objectContaining({
+      clientSdk: expect.objectContaining({
+        CHAT_CORE: expect.any(String),
+        CHAT_HEADLESS: expect.any(String),
+        CHAT_RANDOM_SDK: "0.0.0",
+        CHAT_NEW_SDK: "1.1.1",
+      }),
+    })
+  );
+});

@@ -115,6 +115,28 @@ export class ChatHeadless {
   }
 
   /**
+   * Adds additional client SDKs to the base event payload for Yext Analytics API.
+   *
+   * @remarks
+   * This is intended for internal usage in the Yext Chat related packages only.
+   *
+   * @internal
+   */
+  addClientSdk(additionalClientSdk: Record<string, string>) {
+    const { analyticsConfig } = this.config;
+    this.config.analyticsConfig = {
+      ...analyticsConfig,
+      baseEventPayload: {
+        ...analyticsConfig?.baseEventPayload,
+        clientSdk: {
+          ...analyticsConfig?.baseEventPayload?.clientSdk,
+          ...additionalClientSdk,
+        },
+      },
+    };
+  }
+
+  /**
    * Send Chat related analytics event to Yext Analytics API.
    *
    * @remarks
