@@ -37,6 +37,7 @@ export class ChatHeadless {
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
+    initSessionStorage(): void;
     report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;

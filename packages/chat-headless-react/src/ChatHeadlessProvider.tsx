@@ -1,5 +1,5 @@
 import { ChatHeadless, HeadlessConfig } from "@yext/chat-headless";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useMemo, useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { ChatHeadlessContext } from "./ChatHeadlessContext";
 import { updateClientSdk } from "./utils/clientSdk";
@@ -25,14 +25,24 @@ export function ChatHeadlessProvider(
   props: ChatHeadlessProviderProps
 ): JSX.Element {
   const { children, config } = props;
-  const headless = useMemo(
-    () => new ChatHeadless(updateClientSdk(config)),
-    [config]
-  );
+  const [deferLoad, setDeferLoad] = useState(config.saveToSessionStorage);
+
+  const headless = useMemo(() => {
+    const configWithoutSession = { ...config, saveToSessionStorage: false };
+    const headless = new ChatHeadless(updateClientSdk(configWithoutSession));
+    return headless;
+  }, [config]);
+  useEffect(() => {
+    if (!config.saveToSessionStorage || !headless) {
+      return;
+    }
+    headless.initSessionStorage();
+    setDeferLoad(false);
+  }, [headless, config]);
 
   return (
     <ChatHeadlessContext.Provider value={headless}>
-      <Provider store={headless.store}>{children}</Provider>
+      {deferLoad || <Provider store={headless.store}>{children}</Provider>}
     </ChatHeadlessContext.Provider>
   );
 }
