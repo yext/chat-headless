@@ -1,14 +1,15 @@
 {
   "bail": 0,
   "collectCoverage": true,
-  "collectCoverageFrom": ["src/**", "!src/models/**/*.ts"],
+  "collectCoverageFrom": ["src/**"],
   "verbose": true,
   "moduleFileExtensions": ["js", "ts", "tsx"],
   "moduleDirectories": ["node_modules", "<rootDir>"],
   "testEnvironment": "jsdom",
-  "testPathIgnorePatterns": ["./tests/mocks/*"],
+  "testPathIgnorePatterns": ["./tests/mocks/*", "./tests/jest-setup.js"],
   "resetMocks": true,
   "restoreMocks": true,
   "clearMocks": true,
-  "testMatch": ["<rootDir>/tests/**/*.(test).ts(x)?"]
+  "testMatch": ["<rootDir>/tests/**/*.[jt]s?(x)"],
+  "setupFiles": ["<rootDir>/tests/jest-setup.js"]
 }

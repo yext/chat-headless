@@ -64,18 +64,7 @@ export class ChatHeadless {
       ...this.config.analyticsConfig,
     });
     if (this.config.saveToSessionStorage) {
-      this.setState({
-        ...this.state,
-        conversation: loadSessionState(),
-      });
-      this.addListener({
-        valueAccessor: (s) => s.conversation,
-        callback: () =>
-          sessionStorage.setItem(
-            STATE_SESSION_STORAGE_KEY,
-            JSON.stringify(this.state.conversation)
-          ),
-      });
+      this.initSessionStorage();
     }
   }
 
@@ -134,6 +123,32 @@ export class ChatHeadless {
         },
       },
     };
+  }
+
+  /**
+   * Loads the {@link ConversationState} from session storage, if present,
+   * and adds a listener to keep the conversation state in sync with the stored
+   * state
+   *
+   * @remarks
+   * This is called by default if {@link HeadlessConfig.saveToSessionStorage} is
+   * true.
+   *
+   * @public
+   */
+  initSessionStorage() {
+    this.setState({
+      ...this.state,
+      conversation: loadSessionState(),
+    });
+    this.addListener({
+      valueAccessor: (s) => s.conversation,
+      callback: () =>
+        sessionStorage.setItem(
+          STATE_SESSION_STORAGE_KEY,
+          JSON.stringify(this.state.conversation)
+        ),
+    });
   }
 
   /**
