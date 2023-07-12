@@ -18,5 +18,6 @@ export interface StateListener<T> {
    *
    * @param currentValue - The current state value
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback(currentValue: T): any;
 }
