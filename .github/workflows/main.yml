@@ -1,4 +1,4 @@
-name: Semgrep
+name: Semgrep - Team Vaccine
 on:
   workflow_dispatch: {}
   pull_request: {}
