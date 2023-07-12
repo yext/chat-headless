@@ -35,9 +35,9 @@ it("only fetches session storage on client-side render", async () => {
         <TestComponent />
       </ChatHeadlessProvider>
     );
-  expect(windowSpy).not.toHaveBeenCalled();
   const container = document.body.appendChild(document.createElement("div"));
   container.innerHTML = str();
+  expect(windowSpy).not.toHaveBeenCalled();
   expect(str()).not.toContain("foobar");
 
   const view = render(
@@ -47,17 +47,16 @@ it("only fetches session storage on client-side render", async () => {
     { container, hydrate: true }
   );
   expect(await view.findByText("foobar")).toBeTruthy();
+  expect(windowSpy).toHaveBeenCalled();
 });
 
 const TestComponent = () => {
   const messages = useChatState((state) => state.conversation.messages);
   return (
     <div>
-      <div>
-        {messages.map((msg, i) => (
-          <span key={i}>{msg.text}</span>
-        ))}
-      </div>
+      {messages.map((msg, i) => (
+        <span key={i}>{msg.text}</span>
+      ))}
     </div>
   );
 };
