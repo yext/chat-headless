@@ -3,10 +3,10 @@
   "name": "chat-headless",
   "version": "0.1.0",
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter='./packages/*'",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "autofix": "prettier --write . && eslint --fix --max-warnings=0 ."
+    "lint": "prettier --write . && eslint --fix --max-warnings=0 .",
+    "test": "turbo run test --filter='./packages/*'"
   },
   "devDependencies": {
     "@yext/eslint-config": "^1.0.0",

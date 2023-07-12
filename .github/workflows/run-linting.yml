@@ -1,0 +1,7 @@
+name: Run Linter
+
+on: [pull_request]
+
+jobs:
+  linting:
+    uses: yext/slapshot-reusable-workflows/.github/workflows/run-linting.yml@v1

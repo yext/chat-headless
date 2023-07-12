@@ -2,6 +2,7 @@ node_modules/
 coverage/
 temp/
 dist/
+build/
 .DS_Store
 .env
 .turbo
