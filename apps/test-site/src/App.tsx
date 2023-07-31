@@ -77,6 +77,9 @@ function ChatComponent() {
   const onReport = useCallback(async () => {
     await actions.report({
       action: "CHAT_LINK_CLICK",
+      visitor: {
+        "test-id": "test-method",
+      },
     });
   }, [actions]);
 
