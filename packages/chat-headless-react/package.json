@@ -1,6 +1,6 @@
 {
   "name": "@yext/chat-headless-react",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "the official React UI Bindings layer for Chat Headless",
   "main": "./dist/commonjs/src/index.js",
   "module": "./dist/esm/src/index.js",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-headless": "^0.5.6",
+    "@yext/chat-headless": "^0.5.7",
     "react-redux": "^8.0.5"
   },
   "peerDependencies": {
