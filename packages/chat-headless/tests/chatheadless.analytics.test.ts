@@ -57,6 +57,10 @@ it("merges base payload with event specific payload (latter overrides)", () => {
       baseEventPayload: {
         internalUser: true,
         pageUrl: "base-page",
+        referrerUrl: "referrer-page",
+        visitor: {
+          "some-id": "some-method",
+        },
         chat: {
           botId: "base-bot-id",
         },
@@ -76,9 +80,13 @@ it("merges base payload with event specific payload (latter overrides)", () => {
   expect(reportSpy).toBeCalledTimes(1);
   expect(reportSpy).toBeCalledWith({
     action: "CHAT_LINK_CLICK",
+    timestamp: "mocked-time",
     internalUser: true,
     pageUrl: "event-specific-page",
-    timestamp: "mocked-time",
+    referrerUrl: "referrer-page",
+    visitor: {
+      "some-id": "some-method",
+    },
     chat: {
       botId: "event-specific-bot",
     },
