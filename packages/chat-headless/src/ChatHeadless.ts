@@ -28,6 +28,7 @@ import {
   ChatEventPayLoad,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
+import { ChatClient } from "./models/ChatClient";
 
 /**
  * Provides the functionality for interacting with a Chat Bot
@@ -37,7 +38,7 @@ import { getClientSdk } from "./utils/clientSdk";
  */
 export class ChatHeadless {
   private config: HeadlessConfig;
-  private chatCore: ChatCore;
+  private chatClient: ChatClient;
   private stateManager: ReduxStateManager;
   private chatAnalyticsService: ChatAnalyticsService;
 
@@ -49,13 +50,14 @@ export class ChatHeadless {
    * @public
    *
    * @param config - The configuration for the {@link ChatHeadless} instance
+   * @param chatClient - An optional override for the default {@link ChatClient} instance
    */
-  constructor(config: HeadlessConfig) {
+  constructor(config: HeadlessConfig, chatClient?: ChatClient) {
     const defaultConfig: Partial<HeadlessConfig> = {
       saveToSessionStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    this.chatCore = new ChatCore(this.config);
+    this.chatClient = chatClient ?? new ChatCore(this.config);
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
@@ -321,7 +323,7 @@ export class ChatHeadless {
     return this.nextMessageHandler(
       async () => {
         const { messages, conversationId, notes } = this.state.conversation;
-        const nextMessage = await this.chatCore.getNextMessage({
+        const nextMessage = await this.chatClient.getNextMessage({
           conversationId,
           messages,
           notes,
@@ -367,7 +369,7 @@ export class ChatHeadless {
           text: "",
         };
         const { messages, conversationId, notes } = this.state.conversation;
-        const stream = await this.chatCore.streamNextMessage({
+        const stream = await this.chatClient.streamNextMessage({
           conversationId,
           messages,
           notes,

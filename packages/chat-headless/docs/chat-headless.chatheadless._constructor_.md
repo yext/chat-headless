@@ -9,7 +9,7 @@ Constructs a new instance of the [ChatHeadless](./chat-headless.chatheadless.md)
 **Signature:**
 
 ```typescript
-constructor(config: HeadlessConfig);
+constructor(config: HeadlessConfig, chatClient?: ChatClient);
 ```
 
 ## Parameters
@@ -17,4 +17,5 @@ constructor(config: HeadlessConfig);
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  config | [HeadlessConfig](./chat-headless.headlessconfig.md) | The configuration for the [ChatHeadless](./chat-headless.chatheadless.md) instance |
+|  chatClient | [ChatClient](./chat-headless.chatclient.md) | _(Optional)_ An optional override for the default [ChatClient](./chat-headless.chatclient.md) instance |
 

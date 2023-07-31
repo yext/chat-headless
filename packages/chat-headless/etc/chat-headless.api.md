@@ -27,11 +27,17 @@ import { StreamResponse } from '@yext/chat-core';
 import { TokenStreamEvent } from '@yext/chat-core';
 import { Unsubscribe } from '@reduxjs/toolkit';
 
+// @public
+export interface ChatClient {
+    getNextMessage(request: MessageRequest): Promise<MessageResponse>;
+    streamNextMessage(request: MessageRequest): Promise<StreamResponse>;
+}
+
 export { ChatConfig }
 
 // @public
 export class ChatHeadless {
-    constructor(config: HeadlessConfig);
+    constructor(config: HeadlessConfig, chatClient?: ChatClient);
     // @internal
     addClientSdk(additionalClientSdk: Record<string, string>): void;
     addListener<T>(listener: StateListener<T>): Unsubscribe;
