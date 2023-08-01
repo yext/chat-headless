@@ -180,8 +180,8 @@ export class ChatHeadless {
     try {
       await this.chatAnalyticsService.report({
         timestamp: new Date().toISOString(),
-        pageUrl: window?.location.href,
-        referrerUrl: window?.document.referrer,
+        pageUrl: window?.location.href || undefined,
+        referrerUrl: window?.document.referrer || undefined,
         ...baseEventPayload,
         ...eventPayload,
         clientSdk: getClientSdk({
