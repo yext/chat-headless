@@ -1,5 +1,5 @@
 import {
-  ChatCore,
+  provideChatCore,
   Message,
   MessageNotes,
   MessageResponse,
@@ -57,7 +57,7 @@ export class ChatHeadless {
       saveToSessionStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    this.chatClient = chatClient ?? new ChatCore(this.config);
+    this.chatClient = chatClient ?? provideChatCore(this.config);
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
