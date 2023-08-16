@@ -36,8 +36,7 @@ export interface ChatClient {
 export { ChatConfig }
 
 // @public
-export class ChatHeadless {
-    constructor(config: HeadlessConfig, chatClient?: ChatClient);
+export interface ChatHeadless {
     // @internal
     addClientSdk(additionalClientSdk: Record<string, string>): void;
     addListener<T>(listener: StateListener<T>): Unsubscribe;
@@ -47,7 +46,7 @@ export class ChatHeadless {
     report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
     setChatLoadingStatus(isLoading: boolean): void;
-    setContext(context: any): void;
+    setContext(context: unknown): void;
     setMessageNotes(notes: MessageNotes): void;
     setMessages(messages: Message[]): void;
     setState(state: State): void;
@@ -94,6 +93,9 @@ export { MessageSource }
 export interface MetaState {
     context?: any;
 }
+
+// @public
+export function provideChatHeadless(config: HeadlessConfig, chatClient?: ChatClient): ChatHeadless;
 
 export { RawResponse }
 

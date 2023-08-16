@@ -4,17 +4,18 @@
 
 ## chat-headless package
 
-## Classes
+## Functions
 
-|  Class | Description |
+|  Function | Description |
 |  --- | --- |
-|  [ChatHeadless](./chat-headless.chatheadless.md) | Provides the functionality for interacting with a Chat Bot and the relevant application state. |
+|  [provideChatHeadless(config, chatClient)](./chat-headless.providechatheadless.md) | Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all functionality built in. |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
 |  [ChatClient](./chat-headless.chatclient.md) | The client interface used to make requests to the Chat API. |
+|  [ChatHeadless](./chat-headless.chatheadless.md) | Provides the functionality needed to interact with the Chat API in a stateful manner. |
 |  [ConversationState](./chat-headless.conversationstate.md) | Maintains the data for the current conversation. |
 |  [HeadlessConfig](./chat-headless.headlessconfig.md) | The configuration for a SearchHeadless instance. |
 |  [MetaState](./chat-headless.metastate.md) | Maintains the metadata for Chat Headless. |
