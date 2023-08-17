@@ -14,9 +14,11 @@ import {
   RawResponse,
   StreamResponse,
 } from "@yext/chat-core";
+import * as coreLib from "@yext/chat-core";
 import { initialState } from "../src/slices/conversation";
 import { Readable } from "stream";
 import * as analyticsLib from "@yext/analytics";
+import { mock as mockInterface } from "jest-mock-extended";
 
 const config: ChatConfig = {
   botId: "MY_BOT",
@@ -29,13 +31,18 @@ const mockedMetaState: MetaState = {
   },
 };
 
+let coreMock = mockInterface<ChatCore>();
+
 jest.mock("@yext/analytics");
+jest.mock("@yext/chat-core");
 
 beforeEach(() => {
   sessionStorage.clear();
   jest.spyOn(analyticsLib, "provideChatAnalytics").mockReturnValue({
     report: jest.fn(),
   });
+  coreMock = mockInterface<ChatCore>();
+  jest.spyOn(coreLib, "provideChatCore").mockReturnValue(coreMock);
 });
 
 describe("Chat API methods work as expected", () => {
@@ -103,10 +110,9 @@ describe("Chat API methods work as expected", () => {
   }
 
   it("getNextMessage works as expected", async () => {
+    const coreGetNextMessageSpy =
+      coreMock.getNextMessage.mockResolvedValueOnce(expectedResponse);
     const chatHeadless = provideChatHeadless(config);
-    const coreGetNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "getNextMessage")
-      .mockResolvedValueOnce(expectedResponse);
     await testAPI(
       chatHeadless,
       chatHeadless.getNextMessage,
@@ -116,13 +122,15 @@ describe("Chat API methods work as expected", () => {
 
   it("streamNextMessage works as expected", async () => {
     const chatHeadless = provideChatHeadless(config);
-    const coreStreamtNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "streamNextMessage")
-      .mockResolvedValueOnce(
+    const coreStreamNextMessageSpy =
+      coreMock.streamNextMessage.mockResolvedValueOnce(
         new StreamResponse({
           ok: true,
           body: new Readable({
             read() {
+              console.log(
+                "For some reason this doesn't ever get run, is it mocking the StreamResponse somehow?"
+              );
               this.push(
                 'event: startTokenStream\ndata: { "currentGoal": "SOME_GOAL" }\n\n'
               );
@@ -144,7 +152,7 @@ describe("Chat API methods work as expected", () => {
     await testAPI(
       chatHeadless,
       chatHeadless.streamNextMessage,
-      coreStreamtNextMessageSpy
+      coreStreamNextMessageSpy
     );
     // 1 for user's message, 3 for each streamToken event, and 1 for endStream event
     expect(setMessagesSpy).toBeCalledTimes(5);
@@ -183,9 +191,8 @@ describe("Chat API methods work as expected", () => {
 
   it("logs error when streamNextMessage failed to get full message response at end of stream", async () => {
     const chatHeadless = provideChatHeadless(config);
-    const coreStreamNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "streamNextMessage")
-      .mockResolvedValueOnce(
+    const coreStreamNextMessageSpy =
+      coreMock.streamNextMessage.mockResolvedValueOnce(
         new StreamResponse({
           ok: true,
           body: new Readable({
@@ -201,7 +208,8 @@ describe("Chat API methods work as expected", () => {
           }),
         } as unknown as RawResponse)
       );
-    expect.assertions(2);
+    expect.assertions(3);
+    const setMessagesSpy = jest.spyOn(chatHeadless, "setMessages");
 
     try {
       await chatHeadless.streamNextMessage("This is a dummy text!");
@@ -212,13 +220,13 @@ describe("Chat API methods work as expected", () => {
       );
     }
     expect(coreStreamNextMessageSpy).toBeCalledTimes(1);
+    expect(setMessagesSpy).toBeCalledTimes(4);
   });
 
   it("logs warning when attempt to send next message to API when it is still processing", async () => {
     const chatHeadless = provideChatHeadless(config);
-    const coreGetNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "getNextMessage")
-      .mockResolvedValueOnce(expectedResponse);
+    const coreGetNextMessageSpy =
+      coreMock.getNextMessage.mockResolvedValueOnce(expectedResponse);
     const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
     chatHeadless.getNextMessage("message 1");
     const secondResponse = await chatHeadless.getNextMessage("message 2");
@@ -243,9 +251,8 @@ describe("Chat API methods work as expected", () => {
     const errorMessage =
       "Chat API error: FATAL_ERROR: Invalid API Key. (code: 1)";
     const chatHeadless = provideChatHeadless(config);
-    const coreGetNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "getNextMessage")
-      .mockRejectedValue(errorMessage);
+    const coreGetNextMessageSpy =
+      coreMock.getNextMessage.mockRejectedValue(errorMessage);
     expect.assertions(3);
 
     try {
@@ -271,9 +278,8 @@ describe("Chat API methods work as expected", () => {
     const chatHeadless = provideChatHeadless(config);
     expect(chatHeadless.state.conversation.messages).toEqual([]);
 
-    const coreGetNextMessageSpy = jest
-      .spyOn(ChatCore.prototype, "getNextMessage")
-      .mockResolvedValueOnce(expectedResponse);
+    const coreGetNextMessageSpy =
+      coreMock.getNextMessage.mockResolvedValueOnce(expectedResponse);
     await chatHeadless.getNextMessage();
     expect(coreGetNextMessageSpy).toBeCalledTimes(1);
     expect(coreGetNextMessageSpy).toBeCalledWith({
