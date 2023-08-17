@@ -95,7 +95,7 @@ export interface MetaState {
 }
 
 // @public
-export function provideChatHeadless(config: HeadlessConfig, chatClient?: ChatClient): ChatHeadless;
+export function provideChatHeadless(config: HeadlessConfig): ChatHeadless;
 
 export { RawResponse }
 

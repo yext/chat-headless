@@ -8,7 +8,7 @@
 
 |  Function | Description |
 |  --- | --- |
-|  [provideChatHeadless(config, chatClient)](./chat-headless.providechatheadless.md) | Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all functionality built in. |
+|  [provideChatHeadless(config)](./chat-headless.providechatheadless.md) | Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all functionality built in. |
 
 ## Interfaces
 

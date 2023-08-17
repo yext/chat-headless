@@ -9,7 +9,7 @@ Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all 
 **Signature:**
 
 ```typescript
-export declare function provideChatHeadless(config: HeadlessConfig, chatClient?: ChatClient): ChatHeadless;
+export declare function provideChatHeadless(config: HeadlessConfig): ChatHeadless;
 ```
 
 ## Parameters
@@ -17,7 +17,6 @@ export declare function provideChatHeadless(config: HeadlessConfig, chatClient?:
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  config | [HeadlessConfig](./chat-headless.headlessconfig.md) |  |
-|  chatClient | [ChatClient](./chat-headless.chatclient.md) | _(Optional)_ |
 
 **Returns:**
 
