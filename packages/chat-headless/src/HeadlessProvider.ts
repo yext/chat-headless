@@ -1,5 +1,6 @@
 import { InternalConfig, provideChatCoreInternal } from "@yext/chat-core";
-import { ChatHeadless, ChatHeadlessImpl } from "./ChatHeadless";
+import { ChatHeadless } from "./models";
+import { ChatHeadlessImpl } from "./ChatHeadlessImpl";
 import { HeadlessConfig } from "./models";
 
 /**
