@@ -15,6 +15,19 @@ import { State } from '@yext/chat-headless';
 // @public
 export const ChatHeadlessContext: Context<ChatHeadless>;
 
+// Warning: (ae-internal-missing-underscore) The name "ChatHeadlessInstanceProvider" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export function ChatHeadlessInstanceProvider(props: ChatHeadlessInstanceProviderProps): JSX.Element;
+
+// Warning: (ae-internal-missing-underscore) The name "ChatHeadlessInstanceProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
+    deferRender?: boolean;
+    headless: ChatHeadless;
+}>;
+
 // @public
 export function ChatHeadlessProvider(props: ChatHeadlessProviderProps): JSX.Element;
 

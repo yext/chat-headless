@@ -1,6 +1,6 @@
 {
   "name": "@yext/chat-headless-react",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "the official React UI Bindings layer for Chat Headless",
   "main": "./dist/commonjs/src/index.js",
   "module": "./dist/esm/src/index.js",
