@@ -38,7 +38,7 @@ export function ChatHeadlessProvider(
 
   return (
     <ChatHeadlessInstanceProvider
-      saveToSessionStorage={config.saveToSessionStorage}
+      deferRender={config.saveToSessionStorage}
       headless={headless}
     >
       {children}
@@ -52,7 +52,9 @@ export function ChatHeadlessProvider(
  * @public
  */
 export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
-  saveToSessionStorage?: boolean;
+  // Set this to true when using server-side rendering in conjunction with
+  // browser-specific APIs like session storage.
+  deferRender?: boolean;
   headless: ChatHeadless;
 }>;
 
@@ -66,22 +68,22 @@ export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
 export function ChatHeadlessInstanceProvider(
   props: ChatHeadlessInstanceProviderProps
 ): JSX.Element {
-  const { children, saveToSessionStorage, headless } = props;
-  // deferLoad is used with sessionStorage so that the children won't be
+  const { children, deferRender, headless } = props;
+  // deferLoad is typically used with sessionStorage so that the children won't be
   // immediately rendered and trigger the "load initial message" flow before
   // the state can be loaded from session.
-  const [deferLoad, setDeferLoad] = useState(saveToSessionStorage);
+  const [deferLoad, setDeferLoad] = useState(deferRender);
 
   // sessionStorage is overridden here so that it is compatible with server-
   // side rendering, which cannot have browser api calls like session storage
   // outside of hooks.
   useEffect(() => {
-    if (!saveToSessionStorage || !headless) {
+    if (!deferRender || !headless) {
       return;
     }
     headless.initSessionStorage();
     setDeferLoad(false);
-  }, [headless, saveToSessionStorage]);
+  }, [headless, deferRender]);
 
   return (
     <ChatHeadlessContext.Provider value={headless}>
