@@ -49,7 +49,7 @@ export function ChatHeadlessProvider(
 /**
  * Props for {@link ChatHeadlessInstanceProvider}
  *
- * @public
+ * @internal
  */
 export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
   // Set this to true when using server-side rendering in conjunction with
@@ -63,7 +63,7 @@ export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
  * the context to all children components.
  * @param props - {@link ChatHeadlessInstanceProviderProps}
  *
- * @public
+ * @internal
  */
 export function ChatHeadlessInstanceProvider(
   props: ChatHeadlessInstanceProviderProps
