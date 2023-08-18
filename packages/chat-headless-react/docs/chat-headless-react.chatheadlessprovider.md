@@ -4,7 +4,7 @@
 
 ## ChatHeadlessProvider() function
 
-Instantiates a ChatHeadless instance for [ChatHeadlessContext](./chat-headless-react.chatheadlesscontext.md) and provide the context for all children components.
+Instantiates a ChatHeadless instance for [ChatHeadlessContext](./chat-headless-react.chatheadlesscontext.md) and provides the context to all children components.
 
 **Signature:**
 

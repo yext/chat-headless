@@ -8,7 +8,7 @@
 
 |  Function | Description |
 |  --- | --- |
-|  [ChatHeadlessProvider(props)](./chat-headless-react.chatheadlessprovider.md) | Instantiates a ChatHeadless instance for [ChatHeadlessContext](./chat-headless-react.chatheadlesscontext.md) and provide the context for all children components. |
+|  [ChatHeadlessProvider(props)](./chat-headless-react.chatheadlessprovider.md) | Instantiates a ChatHeadless instance for [ChatHeadlessContext](./chat-headless-react.chatheadlesscontext.md) and provides the context to all children components. |
 |  [useChatActions()](./chat-headless-react.usechatactions.md) | A React hook that returns a ChatHeadless instance with setter methods to update state. |
 |  [useChatState(stateSelector)](./chat-headless-react.usechatstate.md) | A React hook that returns a Chat state in store as specified by the map function. |
 
