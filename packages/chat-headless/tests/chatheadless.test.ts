@@ -1,5 +1,4 @@
 import {
-  ChatHeadless,
   ConversationState,
   HeadlessConfig,
   Message,
@@ -7,6 +6,7 @@ import {
   MessageSource,
   MetaState,
   State,
+  provideChatHeadless,
 } from "../src";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
@@ -33,7 +33,7 @@ beforeEach(() => {
 
 describe("setters work as expected", () => {
   it("setState works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -64,7 +64,7 @@ describe("setters work as expected", () => {
   });
 
   it("setContext works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -81,7 +81,7 @@ describe("setters work as expected", () => {
   });
 
   it("setMessages works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -107,7 +107,7 @@ describe("setters work as expected", () => {
   });
 
   it("addMessage works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -126,7 +126,7 @@ describe("setters work as expected", () => {
   });
 
   it("setMessageNotes works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -150,7 +150,7 @@ describe("setters work as expected", () => {
   });
 
   it("setChatLoadingStatus works as expected", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
       ReduxStateManager.prototype,
       "dispatch"
@@ -174,7 +174,7 @@ describe("addListener works as expected", () => {
   ];
 
   it("invokes callback on state update", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const mockedCallback = jest.fn();
     chatHeadless.addListener({
       valueAccessor: (s) => s.conversation.messages,
@@ -188,7 +188,7 @@ describe("addListener works as expected", () => {
   });
 
   it("unsubscribes to state update event when the returned function is invoked", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const mockedCallback = jest.fn();
     const unsubscribedFn = chatHeadless.addListener({
       valueAccessor: (s) => s.conversation.messages,
@@ -201,7 +201,7 @@ describe("addListener works as expected", () => {
   });
 
   it("does not invoke callback on a different state update", () => {
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     const mockedCallback = jest.fn();
     chatHeadless.addListener({
       valueAccessor: (s) => s.conversation.messages,
@@ -214,7 +214,7 @@ describe("addListener works as expected", () => {
 });
 
 it("restartConversation works as expected", () => {
-  const chatHeadless = new ChatHeadless(config);
+  const chatHeadless = provideChatHeadless(config);
   chatHeadless.setState({
     conversation: {
       conversationId: "dummy-id",
@@ -290,7 +290,7 @@ describe("loadSessionState works as expected", () => {
       STATE_SESSION_STORAGE_KEY,
       JSON.stringify(expectedState)
     );
-    const chatHeadless = new ChatHeadless(config);
+    const chatHeadless = provideChatHeadless(config);
     expect(chatHeadless.state).toEqual({
       conversation: expectedState,
       meta: {},
@@ -302,7 +302,7 @@ describe("loadSessionState works as expected", () => {
       STATE_SESSION_STORAGE_KEY,
       JSON.stringify(expectedState)
     );
-    const chatHeadless = new ChatHeadless({
+    const chatHeadless = provideChatHeadless({
       ...config,
       saveToSessionStorage: false,
     });

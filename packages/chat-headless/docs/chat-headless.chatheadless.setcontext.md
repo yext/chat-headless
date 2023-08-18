@@ -9,14 +9,14 @@ Sets [MetaState.context](./chat-headless.metastate.context.md) to the specified 
 **Signature:**
 
 ```typescript
-setContext(context: any): void;
+setContext(context: unknown): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  context | any | The context to set |
+|  context | unknown | The context to set |
 
 **Returns:**
 

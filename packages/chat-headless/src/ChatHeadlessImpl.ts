@@ -1,5 +1,5 @@
 import {
-  ChatCore,
+  provideChatCore,
   Message,
   MessageNotes,
   MessageResponse,
@@ -29,14 +29,14 @@ import {
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
 import { ChatClient } from "./models/ChatClient";
+import { ChatHeadless } from "./models";
 
 /**
- * Provides the functionality for interacting with a Chat Bot
- * and the relevant application state.
+ * Concrete implementation of {@link ChatHeadless}
  *
- * @public
+ * @internal
  */
-export class ChatHeadless {
+export class ChatHeadlessImpl implements ChatHeadless {
   private config: HeadlessConfig;
   private chatClient: ChatClient;
   private stateManager: ReduxStateManager;
@@ -45,11 +45,11 @@ export class ChatHeadless {
   private isImpressionAnalyticEventSent = false;
 
   /**
-   * Constructs a new instance of the {@link ChatHeadless} class.
+   * Constructs a new instance of the {@link ChatHeadlessImpl} class.
    *
-   * @public
+   * @internal
    *
-   * @param config - The configuration for the {@link ChatHeadless} instance
+   * @param config - The configuration for the {@link ChatHeadlessImpl} instance
    * @param chatClient - An optional override for the default {@link ChatClient} instance
    */
   constructor(config: HeadlessConfig, chatClient?: ChatClient) {
@@ -57,7 +57,7 @@ export class ChatHeadless {
       saveToSessionStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    this.chatClient = chatClient ?? new ChatCore(this.config);
+    this.chatClient = chatClient ?? provideChatCore(this.config);
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
@@ -70,22 +70,10 @@ export class ChatHeadless {
     }
   }
 
-  /**
-   * Gets the current state of the ChatHeadless instance.
-   *
-   * @public
-   */
   get state(): State {
     return this.stateManager.getState();
   }
 
-  /**
-   * Sets the {@link State} to the specified state.
-   *
-   * @public
-   *
-   * @param state - The state to set
-   */
   setState(state: State): void {
     this.stateManager.dispatch({
       type: "set-state",
@@ -93,26 +81,10 @@ export class ChatHeadless {
     });
   }
 
-  /**
-   * Gets the store that holds the application's state tree.
-   *
-   * @remarks
-   * This is intended for internal usage in the binding packages only.
-   *
-   * @internal
-   */
   get store(): Store {
     return this.stateManager.getStore();
   }
 
-  /**
-   * Adds additional client SDKs to the base event payload for Yext Analytics API.
-   *
-   * @remarks
-   * This is intended for internal usage in the Yext Chat related packages only.
-   *
-   * @internal
-   */
   addClientSdk(additionalClientSdk: Record<string, string>) {
     const { analyticsConfig } = this.config;
     this.config.analyticsConfig = {
@@ -127,17 +99,6 @@ export class ChatHeadless {
     };
   }
 
-  /**
-   * Loads the {@link ConversationState} from session storage, if present,
-   * and adds a listener to keep the conversation state in sync with the stored
-   * state
-   *
-   * @remarks
-   * This is called by default if {@link HeadlessConfig.saveToSessionStorage} is
-   * true.
-   *
-   * @public
-   */
   initSessionStorage() {
     this.setState({
       ...this.state,
@@ -153,15 +114,6 @@ export class ChatHeadless {
     });
   }
 
-  /**
-   * Send Chat related analytics event to Yext Analytics API.
-   *
-   * @remarks
-   * once a CHAT_IMPRESSION analytics event is reported, subsequent
-   * CHAT_IMPRESSION reports will not be send.
-   *
-   * @public
-   */
   async report(
     eventPayload: Omit<ChatEventPayLoad, "chat"> &
       DeepPartial<Pick<ChatEventPayLoad, "chat">>
@@ -199,58 +151,22 @@ export class ChatHeadless {
     }
   }
 
-  /**
-   * Sets {@link MetaState.context} to the specified context.
-   *
-   * @public
-   *
-   * @param context - The context to set
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setContext(context: any) {
+  setContext(context: unknown) {
     this.stateManager.dispatch(setContext(context));
   }
 
-  /**
-   * Sets {@link ConversationState.messages} to the specified messages
-   *
-   * @public
-   *
-   * @param messages - the messages to set
-   */
   setMessages(messages: Message[]) {
     this.stateManager.dispatch(setMessages(messages));
   }
 
-  /**
-   * Adds a new message to {@link ConversationState.messages}
-   *
-   * @public
-   *
-   * @param message - the message to add to state
-   */
   addMessage(message: Message) {
     this.stateManager.dispatch(addMessage(message));
   }
 
-  /**
-   * Sets {@link ConversationState.notes} to the specified notes
-   *
-   * @public
-   *
-   * @param notes - the notes to set
-   */
   setMessageNotes(notes: MessageNotes) {
     this.stateManager.dispatch(setMessageNotes(notes));
   }
 
-  /**
-   * Sets {@link ConversationState.isLoading} to the specified loading state
-   *
-   * @public
-   *
-   * @param isLoading - the loading state to set
-   */
   setChatLoadingStatus(isLoading: boolean) {
     this.stateManager.dispatch(setIsLoading(isLoading));
   }
@@ -277,11 +193,6 @@ export class ChatHeadless {
     this.stateManager.dispatch(setCanSendMessage(canSendMessage));
   }
 
-  /**
-   * Resets all fields within {@link ConversationState}
-   *
-   * @public
-   */
   restartConversation() {
     this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
@@ -290,32 +201,10 @@ export class ChatHeadless {
     this.setMessages([]);
   }
 
-  /**
-   * Adds a listener for a specific state value of type T.
-   *
-   * @public
-   *
-   * @param listener - The state listener to add
-   * @returns The function for removing the added listener
-   */
   addListener<T>(listener: StateListener<T>): Unsubscribe {
     return this.stateManager.addListener<T>(listener);
   }
 
-  /**
-   * Performs a Chat API request for the next message generated by chat bot
-   * using the conversation state (e.g. message history and notes). Update
-   * the state with the response data.
-   *
-   * @public
-   *
-   * @remarks
-   * If rejected, an Error is returned.
-   *
-   * @param text - the text of the next message
-   * @param source - the source of the message
-   * @returns a Promise of a response from the Chat API
-   */
   async getNextMessage(
     text?: string,
     source: MessageSource = MessageSource.USER
@@ -339,24 +228,6 @@ export class ChatHeadless {
     );
   }
 
-  /**
-   * Performs a Chat Stream API request for the next message generated
-   * by chat bot using the conversation state (e.g. message history and notes).
-   * The new message's "text" field is continously updated as tokens from the
-   * stream are consumed. Remaining conversation state are updated once the
-   * final event from the stream is recieved.
-   *
-   * @public
-   *
-   * @experimental
-   *
-   * @remarks
-   * If rejected, an Error is returned.
-   *
-   * @param text - the text of the next message
-   * @param source - the source of the message
-   * @returns a Promise of the full response from the Chat Stream API
-   */
   async streamNextMessage(
     text?: string,
     source: MessageSource = MessageSource.USER

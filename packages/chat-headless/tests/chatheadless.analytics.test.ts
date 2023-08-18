@@ -1,4 +1,4 @@
-import { ChatHeadless, HeadlessConfig } from "../src";
+import { provideChatHeadless, HeadlessConfig } from "../src";
 import * as AnalyticsLib from "@yext/analytics";
 
 jest.mock("@yext/analytics");
@@ -11,7 +11,7 @@ const config: HeadlessConfig = {
 
 it("passes though apiKey, env, region from core config to analytics config", () => {
   const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
-  new ChatHeadless({
+  provideChatHeadless({
     ...config,
     env: "SANDBOX",
     region: "US",
@@ -26,7 +26,7 @@ it("passes though apiKey, env, region from core config to analytics config", () 
 
 it("passes through analytics specific configurations", () => {
   const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
-  new ChatHeadless({
+  provideChatHeadless({
     ...config,
     env: "SANDBOX",
     region: "US",
@@ -51,7 +51,7 @@ it("merges base payload with event specific payload (latter overrides)", () => {
   jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
     report: reportSpy,
   }));
-  const headless = new ChatHeadless({
+  const headless = provideChatHeadless({
     ...config,
     analyticsConfig: {
       baseEventPayload: {
@@ -104,7 +104,7 @@ it("addClientSdk works as expected", () => {
   jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
     report: reportSpy,
   }));
-  const headless = new ChatHeadless({
+  const headless = provideChatHeadless({
     ...config,
     analyticsConfig: {
       baseEventPayload: {
