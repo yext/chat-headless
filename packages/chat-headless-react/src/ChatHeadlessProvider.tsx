@@ -1,4 +1,8 @@
-import { ChatHeadless, HeadlessConfig } from "@yext/chat-headless";
+import {
+  provideChatHeadless,
+  ChatHeadless,
+  HeadlessConfig,
+} from "@yext/chat-headless";
 import { PropsWithChildren, useMemo, useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { ChatHeadlessContext } from "./ChatHeadlessContext";
@@ -28,7 +32,7 @@ export function ChatHeadlessProvider(
 
   const headless = useMemo(() => {
     const configWithoutSession = { ...config, saveToSessionStorage: false };
-    const headless = new ChatHeadless(updateClientSdk(configWithoutSession));
+    const headless = provideChatHeadless(updateClientSdk(configWithoutSession));
     return headless;
   }, [config]);
 
