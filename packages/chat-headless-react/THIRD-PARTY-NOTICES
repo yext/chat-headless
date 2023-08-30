@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - @babel/runtime@7.22.10
+ - @babel/runtime@7.22.11
 
 This package contains the following license and notice below:
 
@@ -96,7 +96,7 @@ The following npm packages may be included in this product:
 
  - @types/prop-types@15.7.5
  - @types/react-dom@18.2.7
- - @types/react@18.2.20
+ - @types/react@18.2.21
  - @types/scheduler@0.16.3
  - @types/use-sync-external-store@0.0.3
 
@@ -128,7 +128,7 @@ MIT License
 
 The following npm package may be included in this product:
 
- - @yext/analytics@0.6.3
+ - @yext/analytics@0.6.4
 
 This package contains the following license and notice below:
 
@@ -428,7 +428,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - node-fetch@2.6.12
+ - node-fetch@2.7.0
 
 This package contains the following license and notice below:
 

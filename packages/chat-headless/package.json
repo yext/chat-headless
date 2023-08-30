@@ -1,6 +1,6 @@
 {
   "name": "@yext/chat-headless",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A library for powering UI components for Yext Chat integrations",
   "main": "./dist/commonjs/src/index.js",
   "module": "./dist/esm/src/index.js",
@@ -25,8 +25,9 @@
     "tsc-esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run tsc-esm -- --watch",
     "generate-notices": "../../generate-notices.sh",
+    "update-lib-package": "node ../../update-lib-package.js",
     "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run generate-docs && npm run generate-notices"
+    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run update-lib-package && npm run generate-docs && npm run generate-notices"
   },
   "repository": {
     "type": "git",
