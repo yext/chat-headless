@@ -8,6 +8,7 @@ module.exports = {
     "**/index.ts",
     "**/build",
     "**/coverage",
+    "rollup.config.mjs",
     "*.d.ts",
   ],
   parserOptions: {

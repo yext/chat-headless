@@ -1,8 +1,7 @@
 import { ChatEventPayLoad } from "@yext/analytics";
-import packageJson from "../../package.json";
+import { version, dependencies } from "../../package.json";
 
-const { version } = packageJson;
-const coreVersion = packageJson.dependencies["@yext/chat-core"];
+const coreVersion = dependencies["@yext/chat-core"];
 
 /**
  * Creates new mapping for clientSdk by merging data from param additionalClientSdk
