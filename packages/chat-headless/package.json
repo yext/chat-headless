@@ -1,9 +1,9 @@
 {
   "name": "@yext/chat-headless",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A library for powering UI components for Yext Chat integrations",
   "main": "./dist/commonjs/src/index.js",
-  "module": "./dist/esm/src/index.js",
+  "module": "./dist/esm/src/index.mjs",
   "types": "./dist/esm/src/index.d.ts",
   "sideEffects": false,
   "keywords": [
@@ -21,13 +21,12 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "jest --config=jest.config.json",
-    "tsc-cjs": "tsc -p tsconfig.cjs.json",
-    "tsc-esm": "tsc -p tsconfig.esm.json",
-    "dev": "npm run tsc-esm -- --watch",
+    "tsc": "tsc -p tsconfig.json",
+    "dev": "npm run tsc -- --watch",
     "generate-notices": "../../generate-notices.sh",
-    "update-lib-package": "node ../../update-lib-package.js",
     "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
-    "build": "rm -rf dist/** && npm run tsc-esm && npm run tsc-cjs && npm run update-lib-package && npm run generate-docs && npm run generate-notices"
+    "build:js": "rollup --config ../../rollup.config.mjs",
+    "build": "rm -rf dist/** && npm run build:js && npm run generate-docs && npm run generate-notices"
   },
   "repository": {
     "type": "git",
@@ -41,17 +40,20 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "@yext/analytics": "^0.6.3",
-    "@yext/chat-core": "^0.6.1"
+    "@yext/chat-core": "0.7.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",
     "@babel/preset-typescript": "^7.21.5",
     "@microsoft/api-documenter": "^7.22.4",
     "@microsoft/api-extractor": "^7.34.8",
+    "@rollup/plugin-json": "^6.0.0",
     "@types/jest": "^29.5.1",
     "babel-jest": "^29.5.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
+    "rollup": "^3.29.0",
+    "rollup-plugin-typescript2": "^0.35.0",
     "typescript": "^5.0.4"
   }
 }

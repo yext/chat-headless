@@ -6,16 +6,14 @@ import {
   ChatConfig,
   MetaState,
   provideChatHeadless,
-} from "../src";
-import {
   MessageRequest,
   MessageResponse,
   RawResponse,
   StreamResponse,
-} from "@yext/chat-core";
+} from "../src";
 import { initialState } from "../src/slices/conversation";
 import { Readable } from "stream";
-import * as coreLib from "@yext/chat-core";
+import coreLib from "@yext/chat-core";
 import * as analyticsLib from "@yext/analytics";
 
 const config: ChatConfig = {

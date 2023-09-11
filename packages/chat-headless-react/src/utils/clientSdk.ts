@@ -1,6 +1,5 @@
 import { HeadlessConfig } from "@yext/chat-headless";
-import packageJson from "../../package.json";
-const { version } = packageJson;
+import { version } from "../../package.json";
 
 /**
  * Appends chat-headless-react's package version to the
