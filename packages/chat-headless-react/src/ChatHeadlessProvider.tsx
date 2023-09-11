@@ -3,7 +3,7 @@ import {
   ChatHeadless,
   HeadlessConfig,
 } from "@yext/chat-headless";
-import { PropsWithChildren, useMemo, useEffect, useState } from "react";
+import React, { PropsWithChildren, useMemo, useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { ChatHeadlessContext } from "./ChatHeadlessContext";
 import { updateClientSdk } from "./utils/clientSdk";

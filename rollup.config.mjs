@@ -7,23 +7,8 @@ import typescript from "rollup-plugin-typescript2";
 import json from "@rollup/plugin-json";
 import { defineConfig } from "rollup";
 
-/**
- * (for chat-headless-react lib)
- * This is required because only React 18 contains "exports" field point to
- * "react/jsx-runtime.js" file in package.json. The file is backported to
- * React 16 and 17 but wasn't explicitly included in package.json so we need to
- * maps the external module id to the file path with extension.
- * 
- * https://github.com/facebook/react/issues/20235
- */
-const externalModulePaths = {
-  "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
-  "react/jsx-runtime": "react/jsx-runtime.js",
-}
-
 export default defineConfig({
   input: "src/index.ts",
-  external: externalModulePaths,
   output: [
     {
       dir: "./dist/esm",
