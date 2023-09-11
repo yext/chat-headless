@@ -8,13 +8,12 @@ import {
   State,
   provideChatHeadless,
 } from "../src";
+import coreLib from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
   initialState,
   STATE_SESSION_STORAGE_KEY,
 } from "../src/slices/conversation";
-
-jest.mock("@yext/chat-core");
 
 const config: HeadlessConfig = {
   botId: "MY_BOT",
@@ -28,6 +27,7 @@ const mockedMetaState: MetaState = {
 };
 
 beforeEach(() => {
+  jest.spyOn(coreLib, "provideChatCore").mockImplementation();
   sessionStorage.clear();
 });
 
