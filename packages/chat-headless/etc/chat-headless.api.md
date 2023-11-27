@@ -45,6 +45,7 @@ export interface ChatHeadless {
     initSessionStorage(): void;
     report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
+    setCanSendMessage(canSendMessage: boolean): void;
     setChatLoadingStatus(isLoading: boolean): void;
     setContext(context: unknown): void;
     setMessageNotes(notes: MessageNotes): void;

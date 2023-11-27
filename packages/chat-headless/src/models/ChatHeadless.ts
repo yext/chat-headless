@@ -81,6 +81,14 @@ export interface ChatHeadless {
    */
   setChatLoadingStatus(isLoading: boolean): void;
   /**
+   * Sets {@link ConversationState.canSendMessage} to the specified state
+   *
+   * @public
+   *
+   * @param canSendMessage - the state to set
+   */
+  setCanSendMessage(canSendMessage: boolean): void;
+  /**
    * Adds additional client SDKs to the base event payload for Yext Analytics API.
    *
    * @remarks

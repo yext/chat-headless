@@ -170,6 +170,10 @@ export class ChatHeadlessImpl implements ChatHeadless {
   setChatLoadingStatus(isLoading: boolean) {
     this.stateManager.dispatch(setIsLoading(isLoading));
   }
+  
+  setCanSendMessage(canSendMessage: boolean) {
+    this.stateManager.dispatch(setCanSendMessage(canSendMessage));
+  }
 
   /**
    * Sets {@link ConversationState.conversationId} to the specified id
@@ -180,17 +184,6 @@ export class ChatHeadlessImpl implements ChatHeadless {
    */
   private setConversationId(id: string | undefined) {
     this.stateManager.dispatch(setConversationId(id));
-  }
-
-  /**
-   * Sets {@link ConversationState.canSendMessage} to the specified state
-   *
-   * @internal
-   *
-   * @param canSendMessage - the state to set
-   */
-  private setCanSendMessage(canSendMessage: boolean) {
-    this.stateManager.dispatch(setCanSendMessage(canSendMessage));
   }
 
   restartConversation() {
