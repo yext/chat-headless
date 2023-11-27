@@ -22,6 +22,7 @@ export interface ChatHeadless
 |  [initSessionStorage()](./chat-headless.chatheadless.initsessionstorage.md) | Loads the [ConversationState](./chat-headless.conversationstate.md) from session storage, if present, and adds a listener to keep the conversation state in sync with the stored state |
 |  [report(eventPayload)](./chat-headless.chatheadless.report.md) | Send Chat related analytics event to Yext Analytics API. |
 |  [restartConversation()](./chat-headless.chatheadless.restartconversation.md) | Resets all fields within [ConversationState](./chat-headless.conversationstate.md) |
+|  [setCanSendMessage(canSendMessage)](./chat-headless.chatheadless.setcansendmessage.md) | Sets [ConversationState.canSendMessage](./chat-headless.conversationstate.cansendmessage.md) to the specified state |
 |  [setChatLoadingStatus(isLoading)](./chat-headless.chatheadless.setchatloadingstatus.md) | Sets [ConversationState.isLoading](./chat-headless.conversationstate.isloading.md) to the specified loading state |
 |  [setContext(context)](./chat-headless.chatheadless.setcontext.md) | Sets [MetaState.context](./chat-headless.metastate.context.md) to the specified context. |
 |  [setMessageNotes(notes)](./chat-headless.chatheadless.setmessagenotes.md) | Sets [ConversationState.notes](./chat-headless.conversationstate.notes.md) to the specified notes |
