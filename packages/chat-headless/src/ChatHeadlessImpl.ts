@@ -15,6 +15,7 @@ import {
   setIsLoading,
   setMessageNotes,
   setMessages,
+  setMessageSuggestions,
   addMessage,
   STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
@@ -170,9 +171,13 @@ export class ChatHeadlessImpl implements ChatHeadless {
   setChatLoadingStatus(isLoading: boolean) {
     this.stateManager.dispatch(setIsLoading(isLoading));
   }
-  
+
   setCanSendMessage(canSendMessage: boolean) {
     this.stateManager.dispatch(setCanSendMessage(canSendMessage));
+  }
+
+  setMessageSuggestions(messageSuggestions: string[] | undefined) {
+    this.stateManager.dispatch(setMessageSuggestions(messageSuggestions));
   }
 
   /**

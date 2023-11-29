@@ -65,6 +65,12 @@ export const conversationSlice = createSlice({
     ) => {
       state.canSendMessage = action.payload;
     },
+    setMessageSuggestions: (
+      state: ConversationState,
+      action: PayloadAction<string[] | undefined>
+    ) => {
+      state.messageSuggestions = action.payload;
+    },
   },
 });
 
@@ -75,5 +81,6 @@ export const {
   setIsLoading,
   setConversationId,
   setCanSendMessage,
+  setMessageSuggestions,
 } = conversationSlice.actions;
 export default conversationSlice.reducer;

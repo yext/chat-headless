@@ -89,6 +89,14 @@ export interface ChatHeadless {
    */
   setCanSendMessage(canSendMessage: boolean): void;
   /**
+   * Sets {@link ConversationState.messageSuggestions} to the specified string array
+   *
+   * @public
+   *
+   * @param messageSuggestions - the list of strings to be given as suggested messages
+   */
+  setMessageSuggestions(messageSuggestions: string[] | undefined): void;
+  /**
    * Adds additional client SDKs to the base event payload for Yext Analytics API.
    *
    * @remarks

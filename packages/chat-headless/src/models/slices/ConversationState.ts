@@ -19,4 +19,6 @@ export interface ConversationState {
    * This is set to false when a previous message is being processed.
    */
   canSendMessage: boolean;
+  /** A set of strings that can be provided to the user as pre-written messages to send. */
+  messageSuggestions?: string[];
 }

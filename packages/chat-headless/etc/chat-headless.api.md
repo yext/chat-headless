@@ -50,6 +50,7 @@ export interface ChatHeadless {
     setContext(context: unknown): void;
     setMessageNotes(notes: MessageNotes): void;
     setMessages(messages: Message[]): void;
+    setMessageSuggestions(messageSuggestions: string[] | undefined): void;
     setState(state: State): void;
     get state(): State;
     // @internal
@@ -63,6 +64,7 @@ export interface ConversationState {
     conversationId?: string;
     isLoading: boolean;
     messages: Message[];
+    messageSuggestions?: string[];
     notes?: MessageNotes;
 }
 

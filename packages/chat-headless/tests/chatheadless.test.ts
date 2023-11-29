@@ -149,6 +149,20 @@ describe("setters work as expected", () => {
     });
   });
 
+  it("setMessageSuggestions works as expected", () => {
+    const chatHeadless = provideChatHeadless(config);
+    const stateDispatchSpy = jest.spyOn(
+      ReduxStateManager.prototype,
+      "dispatch"
+    );
+    chatHeadless.setMessageSuggestions(["foo", "bar"]);
+    expect(stateDispatchSpy).toBeCalledTimes(1);
+    expect(stateDispatchSpy).toBeCalledWith({
+      type: "conversation/setMessageSuggestions",
+      payload: ["foo", "bar"],
+    });
+  });
+
   it("setChatLoadingStatus works as expected", () => {
     const chatHeadless = provideChatHeadless(config);
     const stateDispatchSpy = jest.spyOn(
