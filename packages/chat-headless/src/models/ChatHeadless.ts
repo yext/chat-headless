@@ -11,7 +11,7 @@ import { ChatEventPayLoad } from "@yext/analytics";
 
 /**
  * Provides the functionality needed to interact with the Chat API in a
- * stateful manner.
+ * stateful manner. test
  *
  * @public
  */
