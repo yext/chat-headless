@@ -4,7 +4,7 @@
 
 ## ChatHeadless interface
 
-Provides the functionality needed to interact with the Chat API in a stateful manner.
+Provides the functionality needed to interact with the Chat API in a stateful manner. test
 
 **Signature:**
 

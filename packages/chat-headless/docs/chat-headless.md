@@ -15,7 +15,7 @@
 |  Interface | Description |
 |  --- | --- |
 |  [ChatClient](./chat-headless.chatclient.md) | The client interface used to make requests to the Chat API. |
-|  [ChatHeadless](./chat-headless.chatheadless.md) | Provides the functionality needed to interact with the Chat API in a stateful manner. |
+|  [ChatHeadless](./chat-headless.chatheadless.md) | Provides the functionality needed to interact with the Chat API in a stateful manner. test |
 |  [ConversationState](./chat-headless.conversationstate.md) | Maintains the data for the current conversation. |
 |  [HeadlessConfig](./chat-headless.headlessconfig.md) | The configuration for a SearchHeadless instance. |
 |  [MetaState](./chat-headless.metastate.md) | Maintains the metadata for Chat Headless. |

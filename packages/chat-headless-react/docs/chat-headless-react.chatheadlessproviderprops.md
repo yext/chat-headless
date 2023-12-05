@@ -4,7 +4,7 @@
 
 ## ChatHeadlessProviderProps type
 
-Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md)
+Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md)<!-- -->. test
 
 **Signature:**
 
