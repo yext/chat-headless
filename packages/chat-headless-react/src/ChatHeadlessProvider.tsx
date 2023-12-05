@@ -9,7 +9,7 @@ import { ChatHeadlessContext } from "./ChatHeadlessContext";
 import { updateClientSdk } from "./utils/clientSdk";
 
 /**
- * Props for {@link ChatHeadlessProvider}. test
+ * Props for {@link ChatHeadlessProvider}
  *
  * @public
  */
