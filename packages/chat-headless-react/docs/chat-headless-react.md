@@ -22,6 +22,6 @@
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [ChatHeadlessProviderProps](./chat-headless-react.chatheadlessproviderprops.md) | Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md)<!-- -->. test |
+|  [ChatHeadlessProviderProps](./chat-headless-react.chatheadlessproviderprops.md) | Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md) |
 |  [StateSelector](./chat-headless-react.stateselector.md) | Map function to specify what part of the Chat state to use |
 
