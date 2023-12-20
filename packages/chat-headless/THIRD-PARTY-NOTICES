@@ -1,4 +1,7 @@
-The following NPM package may be included in this product:
+This file was generated with the generate-license-file npm package!
+https://www.npmjs.com/package/generate-license-file
+
+The following npm package may be included in this product:
 
  - @babel/runtime@7.23.6
 
@@ -29,7 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - @reduxjs/toolkit@1.9.7
 
@@ -59,7 +62,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - @yext/analytics@0.6.5
 
@@ -100,7 +103,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - @yext/chat-core@0.7.0
 
@@ -142,7 +145,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - cross-fetch@3.1.8
 
@@ -172,7 +175,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - immer@9.0.21
 
@@ -202,7 +205,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - layerr@2.0.1
 
@@ -232,7 +235,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - node-fetch@2.7.0
 
@@ -262,7 +265,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - redux-thunk@2.4.2
 
@@ -292,7 +295,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - redux@4.2.1
 
@@ -322,7 +325,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - regenerator-runtime@0.14.1
 
@@ -352,7 +355,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - reselect@4.1.8
 
@@ -382,7 +385,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - tr46@0.0.3
 
@@ -392,7 +395,7 @@ This package contains the following license and notice below:
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - ulidx@2.2.1
 
@@ -422,7 +425,7 @@ SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - webidl-conversions@3.0.1
 
@@ -443,7 +446,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -----------
 
-The following NPM package may be included in this product:
+The following npm package may be included in this product:
 
  - whatwg-url@5.0.0
 
@@ -473,4 +476,5 @@ THE SOFTWARE.
 
 -----------
 
-This file was generated with generate-license-file! https://www.npmjs.com/package/generate-license-file
+This file was generated with the generate-license-file npm package!
+https://www.npmjs.com/package/generate-license-file
