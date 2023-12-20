@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ConversationState } from "../models/slices/ConversationState";
 import { Message, MessageNotes } from "@yext/chat-core";
 
-export const STATE_SESSION_STORAGE_KEY = "yext_chat_conversation_state";
+const BASE_STATE_SESSION_STORAGE_KEY = "yext_chat_state";
 
 export const initialState: ConversationState = {
   messages: [],
@@ -10,18 +10,54 @@ export const initialState: ConversationState = {
   canSendMessage: true,
 };
 
+export function getStateSessionStorageKey(
+  hostname: string,
+  botId: string
+): string {
+  return `${BASE_STATE_SESSION_STORAGE_KEY}__${hostname}__${botId}`;
+}
+
 /**
  * Loads the {@link ConversationState} from session storage.
  */
-export const loadSessionState = (): ConversationState => {
+export const loadSessionState = (botId: string): ConversationState => {
   if (!sessionStorage) {
     console.warn(
       "Session storage is not available. State will not be persisted across page refreshes."
     );
     return initialState;
   }
-  const savedState = sessionStorage.getItem(STATE_SESSION_STORAGE_KEY);
+  const hostname = window?.location?.hostname;
+  if (!hostname) {
+    console.warn(
+      "Unable to get hostname of current page. State will not be persisted across page refreshes."
+    );
+    return initialState;
+  }
+  const savedState = sessionStorage.getItem(
+    getStateSessionStorageKey(hostname, botId)
+  );
   return savedState ? JSON.parse(savedState) : initialState;
+};
+
+export const saveSessionState = (botId: string, state: ConversationState) => {
+  if (!sessionStorage) {
+    console.warn(
+      "Session storage is not available. State will not be persisted across page refreshes."
+    );
+    return initialState;
+  }
+  const hostname = window?.location?.hostname;
+  if (!hostname) {
+    console.warn(
+      "Unable to get hostname of current page. State will not be persisted across page refreshes."
+    );
+    return initialState;
+  }
+  sessionStorage.setItem(
+    getStateSessionStorageKey(hostname, botId),
+    JSON.stringify(state)
+  );
 };
 
 /**

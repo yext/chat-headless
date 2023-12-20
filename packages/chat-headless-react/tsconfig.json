@@ -12,12 +12,12 @@
     "sourceMap": true,
     /**
      * Use "react" instead of "react-jsx" to be compatible with lower React versions (e.g. 16)
-     * 
+     *
      * "react/jsx-runtime" have explicit "exports" field in React 18 but not in React 16/17 when
      * it was backported. This would require our SDK to provide two bundles, one for React 18 and
      * one for legacy versions that require us to define explicit paths
      * (https://github.com/facebook/react/issues/20235).
-     * 
+     *
      * by using "react", we avoid the syntactic sugar JSX and output code directly using "React.createElement"
      */
     "jsx": "react",
