@@ -10,13 +10,13 @@ import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
 import {
   loadSessionState,
+  saveSessionState,
   setCanSendMessage,
   setConversationId,
   setIsLoading,
   setMessageNotes,
   setMessages,
   addMessage,
-  STATE_SESSION_STORAGE_KEY,
 } from "./slices/conversation";
 import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
 import { StateListener } from "./models";
@@ -102,15 +102,12 @@ export class ChatHeadlessImpl implements ChatHeadless {
   initSessionStorage() {
     this.setState({
       ...this.state,
-      conversation: loadSessionState(),
+      conversation: loadSessionState(this.config.botId),
     });
     this.addListener({
       valueAccessor: (s) => s.conversation,
       callback: () =>
-        sessionStorage.setItem(
-          STATE_SESSION_STORAGE_KEY,
-          JSON.stringify(this.state.conversation)
-        ),
+        saveSessionState(this.config.botId, this.state.conversation),
     });
   }
 
@@ -170,7 +167,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
   setChatLoadingStatus(isLoading: boolean) {
     this.stateManager.dispatch(setIsLoading(isLoading));
   }
-  
+
   setCanSendMessage(canSendMessage: boolean) {
     this.stateManager.dispatch(setCanSendMessage(canSendMessage));
   }

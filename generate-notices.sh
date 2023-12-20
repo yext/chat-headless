@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Because of the monorepo structure, license-check from generate-license-file lib is an unable
 # to properly parse all the relevant depedencies in the node_modules of a package. This script
 # will temporarily copy the target package outside of the packages/ to generate the

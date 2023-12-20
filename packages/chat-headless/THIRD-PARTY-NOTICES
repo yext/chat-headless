@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - @babel/runtime@7.23.5
+ - @babel/runtime@7.23.6
 
 This package contains the following license and notice below:
 
@@ -327,7 +327,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - regenerator-runtime@0.14.0
+ - regenerator-runtime@0.14.1
 
 This package contains the following license and notice below:
 

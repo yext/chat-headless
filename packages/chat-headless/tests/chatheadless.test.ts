@@ -11,14 +11,15 @@ import {
 import coreLib from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
+  getStateSessionStorageKey,
   initialState,
-  STATE_SESSION_STORAGE_KEY,
 } from "../src/slices/conversation";
 
 const config: HeadlessConfig = {
   botId: "MY_BOT",
   apiKey: "MY_API_KEY",
 };
+const jestHostname = "localhost";
 
 const mockedMetaState: MetaState = {
   context: {
@@ -287,7 +288,7 @@ describe("loadSessionState works as expected", () => {
   };
   it("loads valid state from session storage", () => {
     sessionStorage.setItem(
-      STATE_SESSION_STORAGE_KEY,
+      getStateSessionStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless(config);
@@ -299,7 +300,7 @@ describe("loadSessionState works as expected", () => {
 
   it("does not persist or load state when toggle is off", () => {
     sessionStorage.setItem(
-      STATE_SESSION_STORAGE_KEY,
+      getStateSessionStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless({
@@ -319,8 +320,10 @@ describe("loadSessionState works as expected", () => {
       },
     ];
     chatHeadless.setMessages(modifiedMessages);
-    expect(sessionStorage.getItem(STATE_SESSION_STORAGE_KEY)).toEqual(
-      JSON.stringify(expectedState)
-    );
+    expect(
+      sessionStorage.getItem(
+        getStateSessionStorageKey(jestHostname, config.botId)
+      )
+    ).toEqual(JSON.stringify(expectedState));
   });
 });
