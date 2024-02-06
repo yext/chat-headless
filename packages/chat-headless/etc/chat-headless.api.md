@@ -6,8 +6,8 @@
 
 import { ChatAnalyticsConfig } from '@yext/analytics';
 import { ChatConfig } from '@yext/chat-core';
-import { ChatCore } from '@yext/chat-core';
 import { ChatEventPayLoad } from '@yext/analytics';
+import { ChatPrompt } from '@yext/chat-core';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { EndEvent } from '@yext/chat-core';
 import { Endpoints } from '@yext/chat-core';
@@ -37,8 +37,6 @@ export interface ChatClient {
 
 export { ChatConfig }
 
-export { ChatCore }
-
 // @public
 export interface ChatHeadless {
     // @internal
@@ -60,6 +58,8 @@ export interface ChatHeadless {
     get store(): Store;
     streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
 }
+
+export { ChatPrompt }
 
 // @public
 export interface ConversationState {
