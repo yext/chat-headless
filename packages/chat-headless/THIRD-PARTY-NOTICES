@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - @babel/runtime@7.23.6
+ - @babel/runtime@7.23.9
 
 This package contains the following license and notice below:
 
@@ -397,7 +397,7 @@ This package contains the following license and notice below:
 
 The following npm package may be included in this product:
 
- - ulidx@2.2.1
+ - ulidx@2.3.0
 
 This package contains the following license and notice below:
 
