@@ -6,11 +6,13 @@
 
 import { ChatAnalyticsConfig } from '@yext/analytics';
 import { ChatConfig } from '@yext/chat-core';
+import { ChatCore } from '@yext/chat-core';
 import { ChatEventPayLoad } from '@yext/analytics';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { EndEvent } from '@yext/chat-core';
 import { Endpoints } from '@yext/chat-core';
 import { Environment } from '@yext/chat-core';
+import { InternalConfig } from '@yext/chat-core';
 import { Message } from '@yext/chat-core';
 import { MessageNotes } from '@yext/chat-core';
 import { MessageRequest } from '@yext/chat-core';
@@ -34,6 +36,8 @@ export interface ChatClient {
 }
 
 export { ChatConfig }
+
+export { ChatCore }
 
 // @public
 export interface ChatHeadless {
@@ -80,6 +84,8 @@ export interface HeadlessConfig extends ChatConfig {
     saveToSessionStorage?: boolean;
 }
 
+export { InternalConfig }
+
 export { Message }
 
 export { MessageNotes }
@@ -97,6 +103,11 @@ export interface MetaState {
 
 // @public
 export function provideChatHeadless(config: HeadlessConfig): ChatHeadless;
+
+// Warning: (ae-internal-missing-underscore) The name "provideChatHeadlessInternal" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export function provideChatHeadlessInternal(config: HeadlessConfig, internalConfig: InternalConfig): ChatHeadless;
 
 export { RawResponse }
 
