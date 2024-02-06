@@ -17,5 +17,5 @@ export {
   Region,
   Endpoints,
   InternalConfig,
-  ChatCore
+  ChatPrompt
 } from "@yext/chat-core";
