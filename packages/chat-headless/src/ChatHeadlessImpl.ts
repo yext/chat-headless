@@ -5,6 +5,7 @@ import {
   MessageResponse,
   MessageSource,
   StreamEventName,
+  ApiError,
 } from "@yext/chat-core";
 import { State } from "./models/state";
 import { ReduxStateManager } from "./ReduxStateManager";
@@ -258,7 +259,9 @@ export class ChatHeadlessImpl implements ChatHeadless {
         await stream.consume();
         if (!messageResponse) {
           return Promise.reject(
-            "Stream Error: Missing full message response at the end of stream."
+            new ApiError(
+              "Stream Error: Missing full message response at the end of stream."
+            )
           );
         }
         return messageResponse;
@@ -311,7 +314,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     } catch (e) {
       this.setCanSendMessage(true);
       this.setChatLoadingStatus(false);
-      return Promise.reject(e as Error);
+      return Promise.reject(e);
     }
     this.report({
       action: "CHAT_RESPONSE",

@@ -137,7 +137,8 @@ export interface ChatHeadless {
    * @public
    *
    * @remarks
-   * If rejected, an Error is returned.
+   * If rejected, an ApiError is returned.
+   * A new message is added to the conversation history only if the provided text is not empty.
    *
    * @param text - the text of the next message
    * @param source - the source of the message
@@ -168,7 +169,8 @@ export interface ChatHeadless {
    * @experimental
    *
    * @remarks
-   * If rejected, an Error is returned.
+   * If rejected, an ApiError is returned.
+   * A new message is added to the conversation history only if the provided text is not empty.
    *
    * @param text - the text of the next message
    * @param source - the source of the message
