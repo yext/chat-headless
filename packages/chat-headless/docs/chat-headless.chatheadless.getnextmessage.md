@@ -27,5 +27,5 @@ a Promise of a response from the Chat API
 
 ## Remarks
 
-If rejected, an Error is returned.
+If rejected, an ApiError is returned. A new message is added to the conversation history only if the provided text is not empty.
 

@@ -4,6 +4,7 @@
 
 ```ts
 
+import { ApiError } from '@yext/chat-core';
 import { ChatAnalyticsConfig } from '@yext/analytics';
 import { ChatConfig } from '@yext/chat-core';
 import { ChatEventPayLoad } from '@yext/analytics';
@@ -28,6 +29,8 @@ import { StreamEventName } from '@yext/chat-core';
 import { StreamResponse } from '@yext/chat-core';
 import { TokenStreamEvent } from '@yext/chat-core';
 import { Unsubscribe } from '@reduxjs/toolkit';
+
+export { ApiError }
 
 // @public
 export interface ChatClient {

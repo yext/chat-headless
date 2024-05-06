@@ -10,6 +10,7 @@ import {
   MessageResponse,
   RawResponse,
   StreamResponse,
+  ApiError,
 } from "../src";
 import { initialState } from "../src/slices/conversation";
 import { Readable } from "stream";
@@ -203,13 +204,15 @@ describe("Chat API methods work as expected", () => {
     );
     mockChatCore(coreStreamNextMessageSpy);
     const chatHeadless = provideChatHeadless(config);
-    expect.assertions(2);
+    expect.assertions(3);
 
     try {
       await chatHeadless.streamNextMessage("This is a dummy text!");
     } catch (e) {
       // eslint-disable-next-line jest/no-conditional-expect
-      expect(e).toEqual(
+      expect(e).toBeInstanceOf(ApiError);
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(e.message).toEqual(
         "Stream Error: Missing full message response at the end of stream."
       );
     }
