@@ -1,6 +1,6 @@
 {
   "name": "@yext/chat-headless",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A state manager library powered by Redux for Yext Chat integrations",
   "main": "./dist/commonjs/src/index.js",
   "module": "./dist/esm/src/index.mjs",

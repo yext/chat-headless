@@ -47,7 +47,7 @@ export interface ChatHeadless {
     addListener<T>(listener: StateListener<T>): Unsubscribe;
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
-    initSessionStorage(): void;
+    initLocalStorage(): void;
     report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
     restartConversation(): void;
     setCanSendMessage(canSendMessage: boolean): void;
@@ -84,7 +84,7 @@ export interface HeadlessConfig extends ChatConfig {
     analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
         baseEventPayload?: DeepPartial<ChatEventPayLoad>;
     };
-    saveToSessionStorage?: boolean;
+    saveToLocalStorage?: boolean;
 }
 
 export { InternalConfig }

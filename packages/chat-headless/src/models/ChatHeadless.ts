@@ -98,17 +98,17 @@ export interface ChatHeadless {
    */
   addClientSdk(additionalClientSdk: Record<string, string>): void;
   /**
-   * Loads the {@link ConversationState} from session storage, if present,
+   * Loads the {@link ConversationState} from local storage, if present,
    * and adds a listener to keep the conversation state in sync with the stored
    * state
    *
    * @remarks
-   * This is called by default if {@link HeadlessConfig.saveToSessionStorage} is
+   * This is called by default if {@link HeadlessConfig.saveToLocalStorage} is
    * true.
    *
    * @public
    */
-  initSessionStorage(): void;
+  initLocalStorage(): void;
   /**
    * Resets all fields within {@link ConversationState}
    *

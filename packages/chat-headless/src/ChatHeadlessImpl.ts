@@ -55,7 +55,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
    */
   constructor(config: HeadlessConfig, chatClient?: ChatClient) {
     const defaultConfig: Partial<HeadlessConfig> = {
-      saveToSessionStorage: true,
+      saveToLocalStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
     this.chatClient = chatClient ?? provideChatCore(this.config);
@@ -66,8 +66,8 @@ export class ChatHeadlessImpl implements ChatHeadless {
       region: this.config.region,
       ...this.config.analyticsConfig,
     });
-    if (this.config.saveToSessionStorage) {
-      this.initSessionStorage();
+    if (this.config.saveToLocalStorage) {
+      this.initLocalStorage();
     }
   }
 
@@ -100,7 +100,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     };
   }
 
-  initSessionStorage() {
+  initLocalStorage() {
     this.setState({
       ...this.state,
       conversation: loadSessionState(this.config.botId),

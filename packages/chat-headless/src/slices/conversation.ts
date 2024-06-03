@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ConversationState } from "../models/slices/ConversationState";
 import { Message, MessageNotes } from "@yext/chat-core";
 
-const BASE_STATE_SESSION_STORAGE_KEY = "yext_chat_state";
+const BASE_STATE_LOCAL_STORAGE_KEY = "yext_chat_state";
 
 export const initialState: ConversationState = {
   messages: [],
@@ -10,20 +10,20 @@ export const initialState: ConversationState = {
   canSendMessage: true,
 };
 
-export function getStateSessionStorageKey(
+export function getStateLocalStorageKey(
   hostname: string,
   botId: string
 ): string {
-  return `${BASE_STATE_SESSION_STORAGE_KEY}__${hostname}__${botId}`;
+  return `${BASE_STATE_LOCAL_STORAGE_KEY}__${hostname}__${botId}`;
 }
 
 /**
- * Loads the {@link ConversationState} from session storage.
+ * Loads the {@link ConversationState} from local storage.
  */
 export const loadSessionState = (botId: string): ConversationState => {
-  if (!sessionStorage) {
+  if (!localStorage) {
     console.warn(
-      "Session storage is not available. State will not be persisted across page refreshes."
+      "Local storage is not available. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
@@ -34,16 +34,16 @@ export const loadSessionState = (botId: string): ConversationState => {
     );
     return initialState;
   }
-  const savedState = sessionStorage.getItem(
-    getStateSessionStorageKey(hostname, botId)
+  const savedState = localStorage.getItem(
+    getStateLocalStorageKey(hostname, botId)
   );
   return savedState ? JSON.parse(savedState) : initialState;
 };
 
 export const saveSessionState = (botId: string, state: ConversationState) => {
-  if (!sessionStorage) {
+  if (!localStorage) {
     console.warn(
-      "Session storage is not available. State will not be persisted across page refreshes."
+      "Local storage is not available. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
@@ -54,8 +54,8 @@ export const saveSessionState = (botId: string, state: ConversationState) => {
     );
     return initialState;
   }
-  sessionStorage.setItem(
-    getStateSessionStorageKey(hostname, botId),
+  localStorage.setItem(
+    getStateLocalStorageKey(hostname, botId),
     JSON.stringify(state)
   );
 };

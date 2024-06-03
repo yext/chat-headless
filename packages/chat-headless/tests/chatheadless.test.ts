@@ -11,7 +11,7 @@ import {
 import coreLib from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
-  getStateSessionStorageKey,
+  getStateLocalStorageKey,
   initialState,
 } from "../src/slices/conversation";
 
@@ -29,7 +29,7 @@ const mockedMetaState: MetaState = {
 
 beforeEach(() => {
   jest.spyOn(coreLib, "provideChatCore").mockImplementation();
-  sessionStorage.clear();
+  localStorage.clear();
 });
 
 describe("setters work as expected", () => {
@@ -286,9 +286,9 @@ describe("loadSessionState works as expected", () => {
     isLoading: true,
     canSendMessage: true,
   };
-  it("loads valid state from session storage", () => {
-    sessionStorage.setItem(
-      getStateSessionStorageKey(jestHostname, config.botId),
+  it("loads valid state from local storage", () => {
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless(config);
@@ -299,13 +299,13 @@ describe("loadSessionState works as expected", () => {
   });
 
   it("does not persist or load state when toggle is off", () => {
-    sessionStorage.setItem(
-      getStateSessionStorageKey(jestHostname, config.botId),
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless({
       ...config,
-      saveToSessionStorage: false,
+      saveToLocalStorage: false,
     });
     expect(chatHeadless.state).toEqual({
       conversation: initialState,
@@ -321,9 +321,7 @@ describe("loadSessionState works as expected", () => {
     ];
     chatHeadless.setMessages(modifiedMessages);
     expect(
-      sessionStorage.getItem(
-        getStateSessionStorageKey(jestHostname, config.botId)
-      )
+      localStorage.getItem(getStateLocalStorageKey(jestHostname, config.botId))
     ).toEqual(JSON.stringify(expectedState));
   });
 });
