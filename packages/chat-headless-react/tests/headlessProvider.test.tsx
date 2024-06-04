@@ -14,7 +14,13 @@ it("only fetches local storage on client-side render", async () => {
       ...win.localStorage,
       getItem: (_: string): string => {
         return JSON.stringify({
-          messages: [{ text: "foobar", source: "BOT" }],
+          messages: [
+            {
+              text: "foobar",
+              source: "BOT",
+              timestamp: new Date().toISOString(),
+            },
+          ],
           isLoading: false,
           canSendMessage: false,
         } satisfies ConversationState);
