@@ -18,5 +18,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "chat-headless": "github:yext/chat-headless"
+  }
 }
