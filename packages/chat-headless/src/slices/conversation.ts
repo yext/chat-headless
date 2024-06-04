@@ -37,7 +37,24 @@ export const loadSessionState = (botId: string): ConversationState => {
   const savedState = localStorage.getItem(
     getStateLocalStorageKey(hostname, botId)
   );
-  return savedState ? JSON.parse(savedState) : initialState;
+
+  if (savedState) {
+    const parsedState: ConversationState = JSON.parse(savedState);
+    if (parsedState.messages.length > 0) {
+      const lastTimestamp =
+        parsedState.messages[parsedState.messages.length - 1].timestamp;
+      const currentDate = new Date();
+      const lastDate = new Date(lastTimestamp || 0);
+      const diff = currentDate.getTime() - lastDate.getTime();
+      // If the last message was sent within the last day, we consider the session to be active
+      if (diff < 24 * 60 * 60 * 1000) {
+        return parsedState;
+      }
+      localStorage.removeItem(getStateLocalStorageKey(hostname, botId));
+    }
+  }
+
+  return initialState;
 };
 
 export const saveSessionState = (botId: string, state: ConversationState) => {

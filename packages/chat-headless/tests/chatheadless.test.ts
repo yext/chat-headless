@@ -277,7 +277,7 @@ describe("loadSessionState works as expected", () => {
       {
         text: "How can I help you?",
         source: MessageSource.BOT,
-        timestamp: "2023-05-15T17:39:58.019Z",
+        timestamp: new Date().toISOString(),
       },
     ],
     notes: {
@@ -286,6 +286,7 @@ describe("loadSessionState works as expected", () => {
     isLoading: true,
     canSendMessage: true,
   };
+
   it("loads valid state from local storage", () => {
     localStorage.setItem(
       getStateLocalStorageKey(jestHostname, config.botId),
@@ -323,5 +324,32 @@ describe("loadSessionState works as expected", () => {
     expect(
       localStorage.getItem(getStateLocalStorageKey(jestHostname, config.botId))
     ).toEqual(JSON.stringify(expectedState));
+  });
+
+  const oldState: ConversationState = {
+    conversationId: "dummy-id",
+    messages: [
+      {
+        text: "How can I help you?",
+        source: MessageSource.BOT,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ],
+    notes: {
+      currentGoal: "GOAL",
+    },
+    isLoading: true,
+    canSendMessage: true,
+  };
+
+  it("ignores and removes state when older than 24 hours", () => {
+    const oldStateKey = getStateLocalStorageKey(jestHostname, config.botId);
+    localStorage.setItem(oldStateKey, JSON.stringify(oldState));
+    const chatHeadless = provideChatHeadless(config);
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
+    });
+    expect(localStorage.getItem(oldStateKey)).toBeNull();
   });
 });

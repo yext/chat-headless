@@ -7,11 +7,11 @@ import {
 import { renderToString } from "react-dom/server";
 import { useChatState } from "../src/useChatState";
 
-it("only fetches local storage on client-side render", async () => {
+it("only fetches session storage on client-side render", async () => {
   const win = window;
-  Object.defineProperty(win, "localStorage", {
+  Object.defineProperty(win, "sessionStorage", {
     value: {
-      ...win.localStorage,
+      ...win.sessionStorage,
       getItem: (_: string): string => {
         return JSON.stringify({
           messages: [{ text: "foobar", source: "BOT" }],
@@ -27,7 +27,7 @@ it("only fetches local storage on client-side render", async () => {
   const config: HeadlessConfig = {
     botId: "123",
     apiKey: "1234",
-    saveToLocalStorage: true,
+    saveToSessionStorage: true,
   };
   const str = () =>
     renderToString(
