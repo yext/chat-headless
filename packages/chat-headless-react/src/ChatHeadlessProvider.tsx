@@ -31,16 +31,14 @@ export function ChatHeadlessProvider(
   const { children, config } = props;
 
   const headless = useMemo(() => {
-    const configWithoutLocalStorage = { ...config, saveToLocalStorage: false };
-    const headless = provideChatHeadless(
-      updateClientSdk(configWithoutLocalStorage)
-    );
+    const configWithoutSession = { ...config, saveToSessionStorage: false };
+    const headless = provideChatHeadless(updateClientSdk(configWithoutSession));
     return headless;
   }, [config]);
 
   return (
     <ChatHeadlessInstanceProvider
-      deferRender={config.saveToLocalStorage}
+      deferRender={config.saveToSessionStorage}
       headless={headless}
     >
       {children}
@@ -55,7 +53,7 @@ export function ChatHeadlessProvider(
  */
 export type ChatHeadlessInstanceProviderProps = PropsWithChildren<{
   // Set this to true when using server-side rendering in conjunction with
-  // browser-specific APIs like local storage.
+  // browser-specific APIs like session storage.
   deferRender?: boolean;
   headless: ChatHeadless;
 }>;
@@ -71,19 +69,19 @@ export function ChatHeadlessInstanceProvider(
   props: ChatHeadlessInstanceProviderProps
 ): JSX.Element {
   const { children, deferRender, headless } = props;
-  // deferLoad is typically used with localStorage so that the children won't be
+  // deferLoad is typically used with sessionStorage so that the children won't be
   // immediately rendered and trigger the "load initial message" flow before
-  // the state can be loaded from local storage.
+  // the state can be loaded from session.
   const [deferLoad, setDeferLoad] = useState(deferRender);
 
-  // localStorage is overridden here so that it is compatible with server-
-  // side rendering, which cannot have browser api calls like local storage
+  // sessionStorage is overridden here so that it is compatible with server-
+  // side rendering, which cannot have browser api calls like session storage
   // outside of hooks.
   useEffect(() => {
     if (!deferRender || !headless) {
       return;
     }
-    headless.initLocalStorage();
+    headless.initSessionStorage();
     setDeferLoad(false);
   }, [headless, deferRender]);
 

@@ -299,6 +299,23 @@ describe("loadSessionState works as expected", () => {
     });
   });
 
+  it("handles invalid state in local storage", () => {
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
+      JSON.stringify({ hello: "world" })
+    );
+    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+    const chatHeadless = provideChatHeadless(config);
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
+    });
+    expect(consoleWarnSpy).toBeCalledTimes(1);
+    expect(consoleWarnSpy).toBeCalledWith(
+      "Unabled to load saved state: error parsing state. Starting with a fresh state."
+    );
+  });
+
   it("does not persist or load state when toggle is off", () => {
     localStorage.setItem(
       getStateLocalStorageKey(jestHostname, config.botId),

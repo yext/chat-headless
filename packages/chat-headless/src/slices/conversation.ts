@@ -30,7 +30,7 @@ export const loadSessionState = (botId: string): ConversationState => {
   const hostname = window?.location?.hostname;
   if (!hostname) {
     console.warn(
-      "Unable to get hostname of current page. State will not be persisted across page refreshes."
+      "Unable to get hostname of current page. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
@@ -39,17 +39,24 @@ export const loadSessionState = (botId: string): ConversationState => {
   );
 
   if (savedState) {
-    const parsedState: ConversationState = JSON.parse(savedState);
-    if (parsedState.messages.length > 0) {
-      const lastTimestamp =
-        parsedState.messages[parsedState.messages.length - 1].timestamp;
-      const currentDate = new Date();
-      const lastDate = new Date(lastTimestamp || 0);
-      const diff = currentDate.getTime() - lastDate.getTime();
-      // If the last message was sent within the last day, we consider the session to be active
-      if (diff < 24 * 60 * 60 * 1000) {
-        return parsedState;
+    try {
+      const parsedState: ConversationState = JSON.parse(savedState);
+      if (parsedState.messages.length > 0) {
+        const lastTimestamp =
+          parsedState.messages[parsedState.messages.length - 1].timestamp;
+        const currentDate = new Date();
+        const lastDate = new Date(lastTimestamp || 0);
+        const diff = currentDate.getTime() - lastDate.getTime();
+        // If the last message was sent within the last day, we consider the session to be active
+        if (diff < 24 * 60 * 60 * 1000) {
+          return parsedState;
+        }
+        localStorage.removeItem(getStateLocalStorageKey(hostname, botId));
       }
+    } catch (e) {
+      console.warn(
+        "Unabled to load saved state: error parsing state. Starting with a fresh state."
+      );
       localStorage.removeItem(getStateLocalStorageKey(hostname, botId));
     }
   }
