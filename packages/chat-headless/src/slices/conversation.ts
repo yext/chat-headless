@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ConversationState } from "../models/slices/ConversationState";
 import { Message, MessageNotes } from "@yext/chat-core";
 
-const BASE_STATE_SESSION_STORAGE_KEY = "yext_chat_state";
+const BASE_STATE_LOCAL_STORAGE_KEY = "yext_chat_state";
 
 export const initialState: ConversationState = {
   messages: [],
@@ -10,40 +10,64 @@ export const initialState: ConversationState = {
   canSendMessage: true,
 };
 
-export function getStateSessionStorageKey(
+export function getStateLocalStorageKey(
   hostname: string,
   botId: string
 ): string {
-  return `${BASE_STATE_SESSION_STORAGE_KEY}__${hostname}__${botId}`;
+  return `${BASE_STATE_LOCAL_STORAGE_KEY}__${hostname}__${botId}`;
 }
 
 /**
- * Loads the {@link ConversationState} from session storage.
+ * Loads the {@link ConversationState} from local storage.
  */
 export const loadSessionState = (botId: string): ConversationState => {
-  if (!sessionStorage) {
+  if (!localStorage) {
     console.warn(
-      "Session storage is not available. State will not be persisted across page refreshes."
+      "Local storage is not available. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
   const hostname = window?.location?.hostname;
   if (!hostname) {
     console.warn(
-      "Unable to get hostname of current page. State will not be persisted across page refreshes."
+      "Unable to get hostname of current page. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
-  const savedState = sessionStorage.getItem(
-    getStateSessionStorageKey(hostname, botId)
+  const savedState = localStorage.getItem(
+    getStateLocalStorageKey(hostname, botId)
   );
-  return savedState ? JSON.parse(savedState) : initialState;
+
+  if (savedState) {
+    try {
+      const parsedState: ConversationState = JSON.parse(savedState);
+      if (parsedState.messages.length > 0) {
+        const lastTimestamp =
+          parsedState.messages[parsedState.messages.length - 1].timestamp;
+        const currentDate = new Date();
+        const lastDate = new Date(lastTimestamp || 0);
+        const diff = currentDate.getTime() - lastDate.getTime();
+        // If the last message was sent within the last day, we consider the session to be active
+        if (diff < 24 * 60 * 60 * 1000) {
+          return parsedState;
+        }
+        localStorage.removeItem(getStateLocalStorageKey(hostname, botId));
+      }
+    } catch (e) {
+      console.warn(
+        "Unabled to load saved state: error parsing state. Starting with a fresh state."
+      );
+      localStorage.removeItem(getStateLocalStorageKey(hostname, botId));
+    }
+  }
+
+  return initialState;
 };
 
 export const saveSessionState = (botId: string, state: ConversationState) => {
-  if (!sessionStorage) {
+  if (!localStorage) {
     console.warn(
-      "Session storage is not available. State will not be persisted across page refreshes."
+      "Local storage is not available. State will not be persisted while navigating across pages."
     );
     return initialState;
   }
@@ -54,8 +78,8 @@ export const saveSessionState = (botId: string, state: ConversationState) => {
     );
     return initialState;
   }
-  sessionStorage.setItem(
-    getStateSessionStorageKey(hostname, botId),
+  localStorage.setItem(
+    getStateLocalStorageKey(hostname, botId),
     JSON.stringify(state)
   );
 };

@@ -11,7 +11,7 @@ import {
 import coreLib from "@yext/chat-core";
 import { ReduxStateManager } from "../src/ReduxStateManager";
 import {
-  getStateSessionStorageKey,
+  getStateLocalStorageKey,
   initialState,
 } from "../src/slices/conversation";
 
@@ -29,7 +29,7 @@ const mockedMetaState: MetaState = {
 
 beforeEach(() => {
   jest.spyOn(coreLib, "provideChatCore").mockImplementation();
-  sessionStorage.clear();
+  localStorage.clear();
 });
 
 describe("setters work as expected", () => {
@@ -277,7 +277,7 @@ describe("loadSessionState works as expected", () => {
       {
         text: "How can I help you?",
         source: MessageSource.BOT,
-        timestamp: "2023-05-15T17:39:58.019Z",
+        timestamp: new Date().toISOString(),
       },
     ],
     notes: {
@@ -286,9 +286,10 @@ describe("loadSessionState works as expected", () => {
     isLoading: true,
     canSendMessage: true,
   };
-  it("loads valid state from session storage", () => {
-    sessionStorage.setItem(
-      getStateSessionStorageKey(jestHostname, config.botId),
+
+  it("loads valid state from local storage", () => {
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless(config);
@@ -298,14 +299,31 @@ describe("loadSessionState works as expected", () => {
     });
   });
 
+  it("handles invalid state in local storage", () => {
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
+      JSON.stringify({ hello: "world" })
+    );
+    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+    const chatHeadless = provideChatHeadless(config);
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
+    });
+    expect(consoleWarnSpy).toBeCalledTimes(1);
+    expect(consoleWarnSpy).toBeCalledWith(
+      "Unabled to load saved state: error parsing state. Starting with a fresh state."
+    );
+  });
+
   it("does not persist or load state when toggle is off", () => {
-    sessionStorage.setItem(
-      getStateSessionStorageKey(jestHostname, config.botId),
+    localStorage.setItem(
+      getStateLocalStorageKey(jestHostname, config.botId),
       JSON.stringify(expectedState)
     );
     const chatHeadless = provideChatHeadless({
       ...config,
-      saveToSessionStorage: false,
+      saveToLocalStorage: false,
     });
     expect(chatHeadless.state).toEqual({
       conversation: initialState,
@@ -321,9 +339,34 @@ describe("loadSessionState works as expected", () => {
     ];
     chatHeadless.setMessages(modifiedMessages);
     expect(
-      sessionStorage.getItem(
-        getStateSessionStorageKey(jestHostname, config.botId)
-      )
+      localStorage.getItem(getStateLocalStorageKey(jestHostname, config.botId))
     ).toEqual(JSON.stringify(expectedState));
+  });
+
+  const oldState: ConversationState = {
+    conversationId: "dummy-id",
+    messages: [
+      {
+        text: "How can I help you?",
+        source: MessageSource.BOT,
+        timestamp: "2023-05-15T17:39:58.019Z",
+      },
+    ],
+    notes: {
+      currentGoal: "GOAL",
+    },
+    isLoading: true,
+    canSendMessage: true,
+  };
+
+  it("ignores and removes state when older than 24 hours", () => {
+    const oldStateKey = getStateLocalStorageKey(jestHostname, config.botId);
+    localStorage.setItem(oldStateKey, JSON.stringify(oldState));
+    const chatHeadless = provideChatHeadless(config);
+    expect(chatHeadless.state).toEqual({
+      conversation: initialState,
+      meta: {},
+    });
+    expect(localStorage.getItem(oldStateKey)).toBeNull();
   });
 });

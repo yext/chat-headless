@@ -38,7 +38,7 @@ function mockChatCore(spy?: jest.Mock) {
 }
 
 beforeEach(() => {
-  sessionStorage.clear();
+  localStorage.clear();
   jest.spyOn(analyticsLib, "provideChatAnalytics").mockReturnValue({
     report: jest.fn(),
   });
