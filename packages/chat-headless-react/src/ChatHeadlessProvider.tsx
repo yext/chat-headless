@@ -29,7 +29,7 @@ export function ChatHeadlessProvider(
   props: ChatHeadlessProviderProps
 ): JSX.Element {
   const { children, config } = props;
-
+  console.log('test headless react')
   const headless = useMemo(() => {
     const configWithoutLocalStorage = { ...config, saveToLocalStorage: false };
     const headless = provideChatHeadless(

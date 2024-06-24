@@ -26,7 +26,7 @@
     "generate-notices": "../../generate-notices.sh",
     "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
     "build:js": "rollup --config ../../rollup.config.mjs",
-    "build": "rm -rf dist/** && npm run build:js && npm run generate-docs && npm run generate-notices"
+    "build": "rm -rf dist/** && npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-headless": "^0.9.0",
+    "@yext/chat-headless": "file:~/chat-headless/packages/chat-headless",
     "react-redux": "^8.0.5"
   },
   "peerDependencies": {

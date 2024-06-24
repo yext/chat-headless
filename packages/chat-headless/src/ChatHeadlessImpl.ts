@@ -29,8 +29,22 @@ import {
   ChatEventPayLoad,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
-import { ChatClient } from "./models/ChatClient";
+import { ChatClient, isChatEventClient } from "./models/ChatClient";
 import { ChatHeadless } from "./models";
+
+// ChatClient | ChatEventClient
+// ChatClient
+// - getNextMessage
+// - streamNextMessage
+
+// ChatEventClient
+// - processMesage
+// - on
+// - emit
+// - getSession
+// - init
+// - close
+
 
 /**
  * Concrete implementation of {@link ChatHeadless}
@@ -40,6 +54,8 @@ import { ChatHeadless } from "./models";
 export class ChatHeadlessImpl implements ChatHeadless {
   private config: HeadlessConfig;
   private chatClient: ChatClient;
+  private botClient: ChatClient;
+  private agentClient?: ChatClient;
   private stateManager: ReduxStateManager;
   private chatAnalyticsService: ChatAnalyticsService;
 
@@ -53,12 +69,18 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * @param config - The configuration for the {@link ChatHeadlessImpl} instance
    * @param chatClient - An optional override for the default {@link ChatClient} instance
    */
-  constructor(config: HeadlessConfig, chatClient?: ChatClient) {
+  constructor(config: HeadlessConfig, botClient?: ChatClient, agentClient?: ChatClient) {
     const defaultConfig: Partial<HeadlessConfig> = {
       saveToLocalStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    this.chatClient = chatClient ?? provideChatCore(this.config);
+    this.botClient = botClient ?? provideChatCore(this.config);
+    this.agentClient = agentClient;
+    this.setClientEventListeners();
+
+    //by default we start with botClient
+    this.chatClient = this.botClient
+    
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
@@ -84,6 +106,33 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
   get store(): Store {
     return this.stateManager.getStore();
+  }
+
+  private setClientEventListeners() {
+    [this.botClient, this.agentClient].forEach((client) => {
+      if (!client || !isChatEventClient(client)) {
+        return;
+      }
+
+      client.on("message", (data: any) => {
+        const { messages } = this.state.conversation;
+        this.setMessages([...messages, {
+          source: MessageSource.BOT,
+          text: data,
+          timestamp: new Date().toISOString(),
+        }]);
+      });
+      //over in UI, we may also need a way to emit user typing event
+      client.on("typing", (data: any) => {
+        this.setChatLoadingStatus(data);
+      });
+      client.on("close/handoff", (_data: any) => {
+        this.chatClient = this.botClient;
+        //resume
+        console.log("Handoff closed")
+        this.getNextMessage('');
+      });
+    });
   }
 
   addClientSdk(additionalClientSdk: Record<string, string>) {
@@ -200,15 +249,40 @@ export class ChatHeadlessImpl implements ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
+    const client = this.chatClient;
+    if (isChatEventClient(client)) {
+      console.log('1')
+      const { conversationId, notes } = this.state.conversation;
+      let messages: Message[] = this.state.conversation.messages;
+      if (text && text.length > 0) {
+        messages = [
+          ...messages,
+          {
+            timestamp: new Date().toISOString(),
+            source,
+            text,
+          },
+        ];
+        this.setMessages(messages);
+      }
+      return client.processMessage({
+        conversationId,
+        messages,
+        notes,
+        context: this.state.meta.context,
+      });
+    }
+    console.log('2')
     return this.nextMessageHandler(
       async () => {
         const { messages, conversationId, notes } = this.state.conversation;
-        const nextMessage = await this.chatClient.getNextMessage({
+        const nextMessage = await client.getNextMessage({
           conversationId,
           messages,
           notes,
           context: this.state.meta.context,
         });
+        console.log("MESSAGE", nextMessage)
         this.setConversationId(nextMessage.conversationId);
         this.setMessages([...messages, nextMessage.message]);
         this.setMessageNotes(nextMessage.notes);
@@ -216,13 +290,23 @@ export class ChatHeadlessImpl implements ChatHeadless {
       },
       text,
       source
-    );
+    ); 
   }
 
   async streamNextMessage(
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
+    const client = this.chatClient;
+    if (isChatEventClient(client)) {
+      const { messages, conversationId, notes } = this.state.conversation;
+      return client.processMessage({
+        conversationId,
+        messages,
+        notes,
+        context: this.state.meta.context,
+      });
+    }
     return this.nextMessageHandler(
       async () => {
         let messageResponse: MessageResponse | undefined = undefined;
@@ -231,7 +315,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
           text: "",
         };
         const { messages, conversationId, notes } = this.state.conversation;
-        const stream = await this.chatClient.streamNextMessage({
+        const stream = await client.streamNextMessage({
           conversationId,
           messages,
           notes,
@@ -308,7 +392,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
       ];
       this.setMessages(messages);
     }
-    let messageResponse;
+    let messageResponse: MessageResponse;
     try {
       messageResponse = await nextMessageFn();
     } catch (e) {
@@ -326,6 +410,26 @@ export class ChatHeadlessImpl implements ChatHeadless {
     });
     this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
+
+    //if response contains integrationDetails, swap to agentClient
+    if (!!messageResponse.integrationDetails && this.agentClient) {
+      console.log('3')
+      this.chatClient = this.agentClient
+      if (isChatEventClient(this.chatClient)) {
+        try {
+          await this.chatClient.init(messageResponse);
+        } catch(e) {
+          console.error("Error occured on request to AWS Connect:", e);
+          //if init fails, revert back to botClient. Also inform the user that the handoff failed
+          this.chatClient = this.botClient
+          this.addMessage({
+            text: "Sorry, I'm unable to connect you to an agent at the moment. Please try again later!",
+            source: MessageSource.BOT,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      }
+    }
     return messageResponse;
   }
 }

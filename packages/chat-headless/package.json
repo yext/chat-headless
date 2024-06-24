@@ -26,7 +26,7 @@
     "generate-notices": "../../generate-notices.sh",
     "generate-docs": "api-extractor run --local --verbose && api-documenter markdown --input-folder temp --output-folder docs && rm -rf temp",
     "build:js": "rollup --config ../../rollup.config.mjs",
-    "build": "rm -rf dist/** && npm run build:js && npm run generate-docs && npm run generate-notices"
+    "build": "rm -rf dist/** && npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "@yext/analytics": "^0.6.3",
-    "@yext/chat-core": "^0.8.0"
+    "@yext/chat-core": "file:~/chat-core/yext-chat-core-0.8.0-1.tgz",
+    "amazon-connect-chatjs": "^2.2.4"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",
