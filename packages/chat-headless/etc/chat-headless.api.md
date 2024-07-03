@@ -42,7 +42,7 @@ export interface ChatEventClient {
     emit(eventName: string, data: any): void;
     getSession(): any;
     init(messageResponse: MessageResponse): Promise<void>;
-    on(eventName: string, cb: (data: any) => void): void;
+    on(eventName: "message" | "typing" | "close", cb: (data: any) => void): void;
     processMessage(request: MessageRequest): Promise<void>;
 }
 

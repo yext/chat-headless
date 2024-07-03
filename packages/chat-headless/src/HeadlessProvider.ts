@@ -10,7 +10,7 @@ import { HeadlessConfig } from "./models";
  */
 export function provideChatHeadless(
   config: HeadlessConfig,
-  clients?: { bot?: ChatClient, agent?: ChatClient },
+  clients?: { bot?: ChatClient; agent?: ChatClient }
 ): ChatHeadless {
   return new ChatHeadlessImpl(config, clients?.bot, clients?.agent);
 }

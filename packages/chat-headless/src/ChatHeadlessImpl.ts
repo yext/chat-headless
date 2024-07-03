@@ -58,12 +58,16 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * @param config - The configuration for the {@link ChatHeadlessImpl} instance
    * @param chatClient - An optional override for the default {@link ChatClient} instance
    */
-  constructor(config: HeadlessConfig, botClient?: ChatClient, agentClient?: ChatClient) {
+  constructor(
+    config: HeadlessConfig,
+    botClient?: ChatClient,
+    agentClient?: ChatClient
+  ) {
     const defaultConfig: Partial<HeadlessConfig> = {
       saveToLocalStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    
+
     // bot client is the default client.
     // If agent client is provided, it will be used as the second client on handoff
     this.chatClient = botClient ?? provideChatCore(this.config);
@@ -116,7 +120,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
           timestamp: new Date().toISOString(),
         });
       });
-      
+
       client.on("typing", (data: boolean) => {
         this.setChatLoadingStatus(data);
       });
@@ -275,7 +279,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
-    const client = this.chatClient
+    const client = this.chatClient;
     if (isChatEventClient(client)) {
       const { conversationId, notes } = this.state.conversation;
       if (text && text.length > 0) {
@@ -372,7 +376,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * Setup relevant state before hitting Chat API endpoint for next message, such as
    * setting loading status, "canSendMessage" status, and appending new user's message
    * in conversation state.
-   * 
+   *
    * @remarks
    * If the response contains integration details, it will trigger a handoff to the next client.
    *

@@ -9,14 +9,14 @@ Registers an event listener for a specified event. Supported events are: - `mess
 **Signature:**
 
 ```typescript
-on(eventName: string, cb: (data: any) => void): void;
+on(eventName: "message" | "typing" | "close", cb: (data: any) => void): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  eventName | string | The name of the event to listen to. |
+|  eventName | "message" \| "typing" \| "close" | The name of the event to listen to. |
 |  cb | (data: any) =&gt; void | The callback function to be executed when the event is triggered. |
 
 **Returns:**
