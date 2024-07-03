@@ -33,12 +33,18 @@ import { Unsubscribe } from '@reduxjs/toolkit';
 export { ApiError }
 
 // @public
-export interface ChatClient {
-    getNextMessage(request: MessageRequest): Promise<MessageResponse>;
-    streamNextMessage(request: MessageRequest): Promise<StreamResponse>;
-}
+export type ChatClient = ChatHttpClient | ChatEventClient;
 
 export { ChatConfig }
+
+// @public
+export interface ChatEventClient {
+    emit(eventName: string, data: any): void;
+    getSession(): any;
+    init(messageResponse: MessageResponse): Promise<void>;
+    on(eventName: string, cb: (data: any) => void): void;
+    processMessage(request: MessageRequest): Promise<void>;
+}
 
 // @public
 export interface ChatHeadless {
@@ -60,6 +66,12 @@ export interface ChatHeadless {
     // @internal
     get store(): Store;
     streamNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
+}
+
+// @public
+export interface ChatHttpClient {
+    getNextMessage(request: MessageRequest): Promise<MessageResponse>;
+    streamNextMessage(request: MessageRequest): Promise<StreamResponse>;
 }
 
 export { ChatPrompt }
@@ -105,7 +117,10 @@ export interface MetaState {
 }
 
 // @public
-export function provideChatHeadless(config: HeadlessConfig): ChatHeadless;
+export function provideChatHeadless(config: HeadlessConfig, clients?: {
+    bot?: ChatClient;
+    agent?: ChatClient;
+}): ChatHeadless;
 
 // Warning: (ae-internal-missing-underscore) The name "provideChatHeadlessInternal" should be prefixed with an underscore because the declaration is marked as @internal
 //

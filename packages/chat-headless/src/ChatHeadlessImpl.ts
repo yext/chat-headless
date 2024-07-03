@@ -6,8 +6,15 @@ import {
   MessageSource,
   StreamEventName,
   ApiError,
+  IntegrationDetails,
 } from "@yext/chat-core";
-import { State } from "./models/state";
+import {
+  ChatClient,
+  ChatHeadless,
+  HeadlessConfig,
+  State,
+  StateListener,
+} from "./models";
 import { ReduxStateManager } from "./ReduxStateManager";
 import {
   loadSessionState,
@@ -20,17 +27,14 @@ import {
   addMessage,
 } from "./slices/conversation";
 import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
-import { StateListener } from "./models";
 import { setContext } from "./slices/meta";
-import { HeadlessConfig } from "./models/HeadlessConfig";
 import {
   provideChatAnalytics,
   ChatAnalyticsService,
   ChatEventPayLoad,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
-import { ChatClient } from "./models/ChatClient";
-import { ChatHeadless } from "./models";
+import { isChatEventClient } from "./models/clients/ChatEventClient";
 
 /**
  * Concrete implementation of {@link ChatHeadless}
@@ -40,6 +44,7 @@ import { ChatHeadless } from "./models";
 export class ChatHeadlessImpl implements ChatHeadless {
   private config: HeadlessConfig;
   private chatClient: ChatClient;
+  private clients: ChatClient[];
   private stateManager: ReduxStateManager;
   private chatAnalyticsService: ChatAnalyticsService;
 
@@ -53,12 +58,21 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * @param config - The configuration for the {@link ChatHeadlessImpl} instance
    * @param chatClient - An optional override for the default {@link ChatClient} instance
    */
-  constructor(config: HeadlessConfig, chatClient?: ChatClient) {
+  constructor(config: HeadlessConfig, botClient?: ChatClient, agentClient?: ChatClient) {
     const defaultConfig: Partial<HeadlessConfig> = {
       saveToLocalStorage: true,
     };
     this.config = { ...defaultConfig, ...config };
-    this.chatClient = chatClient ?? provideChatCore(this.config);
+    
+    // bot client is the default client.
+    // If agent client is provided, it will be used as the second client on handoff
+    this.chatClient = botClient ?? provideChatCore(this.config);
+    this.clients = [this.chatClient];
+    if (agentClient) {
+      this.clients.push(agentClient);
+    }
+    this.setClientEventListeners();
+
     this.stateManager = new ReduxStateManager();
     this.chatAnalyticsService = provideChatAnalytics({
       apiKey: this.config.apiKey,
@@ -84,6 +98,67 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
   get store(): Store {
     return this.stateManager.getStore();
+  }
+
+  /**
+   * Sets up event listeners to update state for event-driven clients.
+   */
+  private setClientEventListeners() {
+    this.clients.forEach((client) => {
+      if (!client || !isChatEventClient(client)) {
+        return;
+      }
+
+      client.on("message", (data: string) => {
+        this.addMessage({
+          source: MessageSource.BOT,
+          text: data,
+          timestamp: new Date().toISOString(),
+        });
+      });
+      
+      client.on("typing", (data: boolean) => {
+        this.setChatLoadingStatus(data);
+      });
+
+      client.on("close", async (_data: unknown) => {
+        this.handoff();
+      });
+    });
+  }
+
+  /**
+   * Switches the current chat client with the next client, if available.
+   */
+  private async handoff(integrationDetails?: IntegrationDetails) {
+    let nextClient: ChatClient | undefined = undefined;
+    for (const client of this.clients) {
+      if (this.chatClient !== client) {
+        nextClient = client;
+      }
+    }
+    if (!nextClient) {
+      console.warn("No next client available for handoff.");
+      return;
+    }
+
+    if (isChatEventClient(nextClient)) {
+      try {
+        await nextClient.init({
+          conversationId: this.state.conversation.conversationId,
+          message: this.state.conversation.messages.at(-1) || {
+            source: MessageSource.BOT,
+            text: "",
+          },
+          notes: this.state.conversation.notes || {},
+          integrationDetails,
+        });
+      } catch (e) {
+        console.error("Error occurred while initializing next client:", e);
+        return;
+      }
+    }
+    this.chatClient = nextClient;
   }
 
   addClientSdk(additionalClientSdk: Record<string, string>) {
@@ -200,17 +275,35 @@ export class ChatHeadlessImpl implements ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
+    const client = this.chatClient
+    if (isChatEventClient(client)) {
+      const { conversationId, notes } = this.state.conversation;
+      if (text && text.length > 0) {
+        this.addMessage({
+          timestamp: new Date().toISOString(),
+          source,
+          text,
+        });
+      }
+      client.processMessage({
+        conversationId,
+        notes,
+        messages: this.state.conversation.messages,
+        context: this.state.meta.context,
+      });
+      return;
+    }
     return this.nextMessageHandler(
       async () => {
         const { messages, conversationId, notes } = this.state.conversation;
-        const nextMessage = await this.chatClient.getNextMessage({
+        const nextMessage = await client.getNextMessage({
           conversationId,
           messages,
           notes,
           context: this.state.meta.context,
         });
         this.setConversationId(nextMessage.conversationId);
-        this.setMessages([...messages, nextMessage.message]);
+        this.addMessage(nextMessage.message);
         this.setMessageNotes(nextMessage.notes);
         return nextMessage;
       },
@@ -223,6 +316,10 @@ export class ChatHeadlessImpl implements ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
+    const client = this.chatClient;
+    if (isChatEventClient(client)) {
+      throw new Error("streamNextMessage is not supported by this client.");
+    }
     return this.nextMessageHandler(
       async () => {
         let messageResponse: MessageResponse | undefined = undefined;
@@ -231,7 +328,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
           text: "",
         };
         const { messages, conversationId, notes } = this.state.conversation;
-        const stream = await this.chatClient.streamNextMessage({
+        const stream = await client.streamNextMessage({
           conversationId,
           messages,
           notes,
@@ -275,6 +372,9 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * Setup relevant state before hitting Chat API endpoint for next message, such as
    * setting loading status, "canSendMessage" status, and appending new user's message
    * in conversation state.
+   * 
+   * @remarks
+   * If the response contains integration details, it will trigger a handoff to the next client.
    *
    * @internal
    *
@@ -326,6 +426,9 @@ export class ChatHeadlessImpl implements ChatHeadless {
     });
     this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
+    if (!!messageResponse.integrationDetails) {
+      this.handoff(messageResponse.integrationDetails);
+    }
     return messageResponse;
   }
 }

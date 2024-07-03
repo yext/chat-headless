@@ -1,3 +1,4 @@
+import { provideChatCoreAwsConnect } from "@yext/chat-core-aws-connect";
 import {
   ChatHeadlessProvider,
   useChatActions,
@@ -22,10 +23,19 @@ const config: HeadlessConfig = {
   },
 };
 
+const chatCoreAwsConnect = provideChatCoreAwsConnect({
+  loggerConfig: {
+    level: 'DEBUG'
+  }
+})
+const clients = {
+  agent: chatCoreAwsConnect,
+}
+
 function App() {
   return (
     <div className="App">
-      <ChatHeadlessProvider config={config}>
+      <ChatHeadlessProvider config={config} clients={clients}>
         <ChatComponent />
       </ChatHeadlessProvider>
     </div>
