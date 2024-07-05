@@ -8,17 +8,24 @@
 
 |  Function | Description |
 |  --- | --- |
-|  [provideChatHeadless(config)](./chat-headless.providechatheadless.md) | Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all functionality built in. |
+|  [provideChatHeadless(config, clients)](./chat-headless.providechatheadless.md) | Provide an instance of [ChatHeadless](./chat-headless.chatheadless.md) with all functionality built in. |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
-|  [ChatClient](./chat-headless.chatclient.md) | The client interface used to make requests to the Chat API. |
+|  [ChatEventClient](./chat-headless.chateventclient.md) | An event-driven client for processing user message and provide responses by emitting and listening to events. |
 |  [ChatHeadless](./chat-headless.chatheadless.md) | Provides the functionality needed to interact with the Chat API in a stateful manner. |
+|  [ChatHttpClient](./chat-headless.chathttpclient.md) | An HTTP-based client for processing user messages and generating corresponding responses via a chat service API. |
 |  [ConversationState](./chat-headless.conversationstate.md) | Maintains the data for the current conversation. |
 |  [HeadlessConfig](./chat-headless.headlessconfig.md) | The configuration for a SearchHeadless instance. |
 |  [MetaState](./chat-headless.metastate.md) | Maintains the metadata for Chat Headless. |
 |  [State](./chat-headless.state.md) | The state representing a ChatHeadless instance. |
 |  [StateListener](./chat-headless.statelistener.md) | Represents a listener for a specific value of type T in the state. |
+
+## Type Aliases
+
+|  Type Alias | Description |
+|  --- | --- |
+|  [ChatClient](./chat-headless.chatclient.md) | A client that can be used to process user messages and provide responses. |
 

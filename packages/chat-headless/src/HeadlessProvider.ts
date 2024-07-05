@@ -1,5 +1,5 @@
 import { InternalConfig, provideChatCoreInternal } from "@yext/chat-core";
-import { ChatHeadless } from "./models";
+import { ChatClient, ChatHeadless } from "./models";
 import { ChatHeadlessImpl } from "./ChatHeadlessImpl";
 import { HeadlessConfig } from "./models";
 
@@ -8,8 +8,11 @@ import { HeadlessConfig } from "./models";
  *
  * @public
  */
-export function provideChatHeadless(config: HeadlessConfig): ChatHeadless {
-  return new ChatHeadlessImpl(config);
+export function provideChatHeadless(
+  config: HeadlessConfig,
+  clients?: { bot?: ChatClient; agent?: ChatClient }
+): ChatHeadless {
+  return new ChatHeadlessImpl(config, clients?.bot, clients?.agent);
 }
 
 /**
