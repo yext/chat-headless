@@ -6,6 +6,7 @@
 
 /// <reference types="react" />
 
+import { ChatClient } from '@yext/chat-headless';
 import { ChatHeadless } from '@yext/chat-headless';
 import { Context } from 'react';
 import { HeadlessConfig } from '@yext/chat-headless';
@@ -34,6 +35,10 @@ export function ChatHeadlessProvider(props: ChatHeadlessProviderProps): JSX.Elem
 // @public
 export type ChatHeadlessProviderProps = PropsWithChildren<{
     config: HeadlessConfig;
+    clients?: {
+        bot?: ChatClient;
+        agent?: ChatClient;
+    };
 }>;
 
 // @public
