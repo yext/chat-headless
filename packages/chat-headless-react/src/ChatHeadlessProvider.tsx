@@ -2,6 +2,7 @@ import {
   provideChatHeadless,
   ChatHeadless,
   HeadlessConfig,
+  ChatClient,
 } from "@yext/chat-headless";
 import React, { PropsWithChildren, useMemo, useEffect, useState } from "react";
 import { Provider } from "react-redux";
@@ -15,6 +16,13 @@ import { updateClientSdk } from "./utils/clientSdk";
  */
 export type ChatHeadlessProviderProps = PropsWithChildren<{
   config: HeadlessConfig;
+  /**
+   * Optional clients to provide to the ChatHeadless instance.
+   */
+  clients?: {
+    bot?: ChatClient;
+    agent?: ChatClient;
+  };
 }>;
 
 /**
@@ -28,15 +36,16 @@ export type ChatHeadlessProviderProps = PropsWithChildren<{
 export function ChatHeadlessProvider(
   props: ChatHeadlessProviderProps
 ): JSX.Element {
-  const { children, config } = props;
+  const { children, config, clients } = props;
 
   const headless = useMemo(() => {
     const configWithoutLocalStorage = { ...config, saveToLocalStorage: false };
     const headless = provideChatHeadless(
-      updateClientSdk(configWithoutLocalStorage)
+      updateClientSdk(configWithoutLocalStorage),
+      clients
     );
     return headless;
-  }, [config]);
+  }, [config, clients]);
 
   return (
     <ChatHeadlessInstanceProvider

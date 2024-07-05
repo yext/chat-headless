@@ -11,5 +11,9 @@ Props for [ChatHeadlessProvider()](./chat-headless-react.chatheadlessprovider.md
 ```typescript
 export type ChatHeadlessProviderProps = PropsWithChildren<{
     config: HeadlessConfig;
+    clients?: {
+        bot?: ChatClient;
+        agent?: ChatClient;
+    };
 }>;
 ```
