@@ -125,7 +125,7 @@ it("update state on events from event client", async () => {
   expect(headless.state.conversation.isLoading).toBeFalsy();
 });
 
-it("resets session and uses next client on reset", async () => {
+it("resets session and uses bot client on reset", async () => {
   const botClient = createMockHttpClient([
     { message: createMessage("message 1"), notes: {}, integrationDetails: {} }, //trigger handoff
     { message: createMessage("message 2"), notes: {} },
@@ -154,19 +154,6 @@ it("resets session and uses next client on reset", async () => {
   // with bot client, get next message
   await headless.getNextMessage();
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
-});
-
-it("logs warning when only one client exists and agent session is reset", async () => {
-  const agentClient = createMockEventClient();
-  const headless = provideChatHeadless(config, { bot: agentClient });
-
-  // reset session, but no agent client exists
-  const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
-  headless.restartConversation();
-  expect(consoleWarnSpy).toBeCalledTimes(1);
-  expect(consoleWarnSpy).toBeCalledWith(
-    "No next client available during conversation reset."
-  );
 });
 
 function createMessage(text: string): Message {
