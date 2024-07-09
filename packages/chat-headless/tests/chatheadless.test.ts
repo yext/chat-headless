@@ -30,10 +30,11 @@ const mockedMetaState: MetaState = {
 
 beforeEach(() => {
   jest.spyOn(coreLib, "provideChatCore").mockImplementation(() => {
-    return {
+    const client: ChatHttpClient = {
       getNextMessage: jest.fn(),
-      on: jest.fn(),
-    } as Partial<ChatHttpClient> as ChatHttpClient;
+      streamNextMessage: jest.fn(),
+    };
+    return client;
   });
   localStorage.clear();
 });
