@@ -4,7 +4,7 @@
 
 ## ChatHeadless.restartConversation() method
 
-Resets all fields within [ConversationState](./chat-headless.conversationstate.md)
+Resets all fields within [ConversationState](./chat-headless.conversationstate.md) and the agent session, if one exists.
 
 **Signature:**
 

@@ -125,6 +125,50 @@ it("update state on events from event client", async () => {
   expect(headless.state.conversation.isLoading).toBeFalsy();
 });
 
+it("resets session and uses next client on reset", async () => {
+  const botClient = createMockHttpClient([
+    { message: createMessage("message 1"), notes: {}, integrationDetails: {} }, //trigger handoff
+    { message: createMessage("message 2"), notes: {} },
+  ]);
+  const callbacks: Record<string, any[]> = {};
+  const agentClient = createMockEventClient(callbacks);
+  const headless = provideChatHeadless(config, {
+    bot: botClient,
+    agent: agentClient,
+  });
+
+  // start with bot client, immediately trigger handoff
+  await headless.getNextMessage();
+  expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
+  expect(agentClient.init).toHaveBeenCalledTimes(1);
+
+  // with agent client, get next message
+  await headless.getNextMessage();
+  expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
+
+  // reset session, switching back to bot client
+  headless.restartConversation();
+  expect(agentClient.resetSession).toHaveBeenCalledTimes(1);
+  expect(agentClient.getSession()).toBeUndefined();
+
+  // with bot client, get next message
+  await headless.getNextMessage();
+  expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
+});
+
+it("logs warning when only one client exists and agent session is reset", async () => {
+  const agentClient = createMockEventClient();
+  const headless = provideChatHeadless(config, { bot: agentClient });
+
+  // reset session, but no agent client exists
+  const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+  headless.restartConversation();
+  expect(consoleWarnSpy).toBeCalledTimes(1);
+  expect(consoleWarnSpy).toBeCalledWith(
+    "No next client available during conversation reset."
+  );
+});
+
 function createMessage(text: string): Message {
   return {
     text,
@@ -149,21 +193,28 @@ function createMockHttpClient(
 }
 
 function createMockEventClient(
-  callbacks: Record<string, any[]>
+  callbacks?: Record<string, any[]>
 ): ChatEventClient {
   const client: ChatEventClient = {
     init: jest.fn(),
     on: (event, cb) => {
+      if (!callbacks) {
+        return;
+      }
       if (!callbacks[event]) {
         callbacks[event] = [];
       }
       callbacks[event].push(cb);
     },
     processMessage: jest.fn(async () => {
+      if (!callbacks) {
+        return;
+      }
       callbacks["message"]?.forEach((cb) => cb("bot message"));
     }),
     emit: jest.fn(),
     getSession: jest.fn(),
+    resetSession: jest.fn(),
   };
   return client;
 }

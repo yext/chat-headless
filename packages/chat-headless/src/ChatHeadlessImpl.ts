@@ -264,6 +264,21 @@ export class ChatHeadlessImpl implements ChatHeadless {
   }
 
   restartConversation() {
+    if (isChatEventClient(this.chatClient)) {
+      this.chatClient.resetSession();
+      let nextClient: ChatClient | undefined = undefined;
+      for (const client of this.clients) {
+        if (this.chatClient !== client) {
+          nextClient = client;
+        }
+      }
+      if (!nextClient) {
+        console.warn("No next client available during conversation reset.");
+        return;
+      }
+      this.chatClient = nextClient;
+    }
+
     this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
     this.setCanSendMessage(true);

@@ -1,4 +1,5 @@
 import {
+  ChatHttpClient,
   ConversationState,
   HeadlessConfig,
   Message,
@@ -28,7 +29,12 @@ const mockedMetaState: MetaState = {
 };
 
 beforeEach(() => {
-  jest.spyOn(coreLib, "provideChatCore").mockImplementation();
+  jest.spyOn(coreLib, "provideChatCore").mockImplementation(() => {
+    return {
+      getNextMessage: jest.fn(),
+      on: jest.fn(),
+    } as unknown as ChatHttpClient;
+  });
   localStorage.clear();
 });
 

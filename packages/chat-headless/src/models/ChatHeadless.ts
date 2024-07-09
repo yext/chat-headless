@@ -110,7 +110,7 @@ export interface ChatHeadless {
    */
   initLocalStorage(): void;
   /**
-   * Resets all fields within {@link ConversationState}
+   * Resets all fields within {@link ConversationState} and the agent session, if one exists.
    *
    * @public
    */

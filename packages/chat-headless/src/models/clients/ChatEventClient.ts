@@ -48,6 +48,11 @@ export interface ChatEventClient {
    * Provide the current chat session.
    */
   getSession(): any;
+
+  /**
+   * Reset the current chat session.
+   */
+  resetSession(): void;
 }
 
 export function isChatEventClient(
