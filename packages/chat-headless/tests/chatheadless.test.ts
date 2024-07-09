@@ -33,7 +33,7 @@ beforeEach(() => {
     return {
       getNextMessage: jest.fn(),
       on: jest.fn(),
-    } as unknown as ChatHttpClient;
+    } as Partial<ChatHttpClient> as ChatHttpClient;
   });
   localStorage.clear();
 });
