@@ -268,8 +268,8 @@ export class ChatHeadlessImpl implements ChatHeadless {
   restartConversation() {
     if (isChatEventClient(this.chatClient)) {
       this.chatClient.resetSession();
-      this.chatClient = this.botClient;
     }
+    this.chatClient = this.botClient;
 
     this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
