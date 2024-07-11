@@ -44,6 +44,7 @@ import { isChatEventClient } from "./models/clients/ChatEventClient";
 export class ChatHeadlessImpl implements ChatHeadless {
   private config: HeadlessConfig;
   private chatClient: ChatClient;
+  private botClient: ChatClient;
   private clients: ChatClient[];
   private stateManager: ReduxStateManager;
   private chatAnalyticsService: ChatAnalyticsService;
@@ -71,6 +72,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     // bot client is the default client.
     // If agent client is provided, it will be used as the second client on handoff
     this.chatClient = botClient ?? provideChatCore(this.config);
+    this.botClient = this.chatClient;
     this.clients = [this.chatClient];
     if (agentClient) {
       this.clients.push(agentClient);
@@ -264,6 +266,11 @@ export class ChatHeadlessImpl implements ChatHeadless {
   }
 
   restartConversation() {
+    if (isChatEventClient(this.chatClient)) {
+      this.chatClient.resetSession();
+    }
+    this.chatClient = this.botClient;
+
     this.setConversationId(undefined);
     this.setChatLoadingStatus(false);
     this.setCanSendMessage(true);

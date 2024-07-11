@@ -83,6 +83,10 @@ function ChatComponent() {
     });
   }, [actions]);
 
+  const onRestart = useCallback(() => {
+    actions.restartConversation();
+  }, [actions]);
+
   return (
     <div>
       {messages.map((m, i) => (
@@ -98,6 +102,7 @@ function ChatComponent() {
       <button onClick={onClick}>Send</button>
       <button onClick={onClickStream}>Send (Stream)</button>
       <button onClick={onReport}>report</button>
+      <button onClick={onRestart}>Restart</button>
     </div>
   );
 }

@@ -4,7 +4,9 @@
 
 ## ChatHeadless.restartConversation() method
 
-Resets all fields within [ConversationState](./chat-headless.conversationstate.md)
+Resets all fields within the [ConversationState](./chat-headless.conversationstate.md)<!-- -->, and sets the active client to the `bot` client, if one was provided when constructing the [ChatHeadless](./chat-headless.chatheadless.md) instance.
+
+If a [ChatEventClient](./chat-headless.chateventclient.md) is currently active before reset, that client's `resetSession` method is called.
 
 **Signature:**
 

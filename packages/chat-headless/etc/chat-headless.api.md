@@ -44,6 +44,7 @@ export interface ChatEventClient {
     init(messageResponse: MessageResponse): Promise<void>;
     on(eventName: "message" | "typing" | "close", cb: (data: any) => void): void;
     processMessage(request: MessageRequest): Promise<void>;
+    resetSession(): void;
 }
 
 // @public

@@ -110,7 +110,12 @@ export interface ChatHeadless {
    */
   initLocalStorage(): void;
   /**
-   * Resets all fields within {@link ConversationState}
+   * Resets all fields within the {@link ConversationState}, and sets the active
+   * client to the `bot` client, if one was provided when constructing the
+   * {@link ChatHeadless} instance.
+   *
+   * If a {@link ChatEventClient} is currently active before reset, that client's
+   * `resetSession` method is called.
    *
    * @public
    */
