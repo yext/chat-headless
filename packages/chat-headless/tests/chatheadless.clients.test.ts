@@ -85,7 +85,6 @@ it("handoff http client between event client", async () => {
     bot: botClient,
     agent: agentClient,
   });
-  // const expectedMessageSources: MessageSource[] = []
 
   //http client handoff to event client
   await headless.getNextMessage();
