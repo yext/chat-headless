@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Message, MessageResponse } from "@yext/chat-core";
+import { Message, MessageResponse, MessageSource } from "@yext/chat-core";
 import { provideChatHeadless } from "../src/HeadlessProvider";
 import { ChatEventClient, ChatHttpClient, HeadlessConfig } from "../src/models";
 import * as analyticsLib from "@yext/analytics";
@@ -85,17 +85,20 @@ it("handoff http client between event client", async () => {
     bot: botClient,
     agent: agentClient,
   });
+  // const expectedMessageSources: MessageSource[] = []
 
   //http client handoff to event client
   await headless.getNextMessage();
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(0);
   expect(agentClient.init).toHaveBeenCalledTimes(1);
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 
   //event client handle next user message
   await headless.getNextMessage("user message 1");
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.AGENT);
 
   //event client handoff to http client
   callbacks["close"]?.forEach((cb) => cb());
@@ -106,6 +109,7 @@ it("handoff http client between event client", async () => {
   await headless.getNextMessage("user message 2");
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 });
 
 it("update state on events from event client", async () => {
