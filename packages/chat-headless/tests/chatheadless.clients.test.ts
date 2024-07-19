@@ -91,13 +91,11 @@ it("handoff http client between event client", async () => {
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(0);
   expect(agentClient.init).toHaveBeenCalledTimes(1);
-  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 
   //event client handle next user message
   await headless.getNextMessage("user message 1");
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
-  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.AGENT);
 
   //event client handoff to http client
   callbacks["close"]?.forEach((cb) => cb());
@@ -108,7 +106,6 @@ it("handoff http client between event client", async () => {
   await headless.getNextMessage("user message 2");
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
-  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 });
 
 it("update state on events from event client", async () => {
@@ -157,6 +154,35 @@ it("resets session and uses bot client on reset", async () => {
   // with bot client, get next message
   await headless.getNextMessage();
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
+});
+
+it("update state messages with appropriate source during handoff", async () => {
+  const botClient = createMockHttpClient([
+    { message: createMessage("message 1"), notes: {}, integrationDetails: {} }, //trigger handoff
+    { message: createMessage("message 2"), notes: {} },
+  ]);
+  const callbacks: Record<string, any[]> = {};
+  const agentClient = createMockEventClient(callbacks);
+  const headless = provideChatHeadless(config, {
+    bot: botClient,
+    agent: agentClient,
+  });
+
+  //latest message is fromt BOT, then bot client handoff to agent client
+  await headless.getNextMessage();
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
+
+  //agent client handle next user message
+  await headless.getNextMessage("user message 1");
+  expect(headless.state.conversation.messages.at(-2)?.source).toEqual(MessageSource.USER);
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.AGENT);
+
+  //agent client handoff to bot client
+  callbacks["close"]?.forEach((cb) => cb());
+
+  //bot client handle next user message
+  await headless.getNextMessage("user message 2");
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 });
 
 function createMessage(text: string): Message {
