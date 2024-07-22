@@ -117,7 +117,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
       client.on("message", (data: string) => {
         this.addMessage({
-          source: MessageSource.BOT,
+          source: client === this.botClient ? MessageSource.BOT : MessageSource.AGENT,
           text: data,
           timestamp: new Date().toISOString(),
         });

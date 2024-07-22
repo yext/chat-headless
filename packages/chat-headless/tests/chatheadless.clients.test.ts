@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Message, MessageResponse } from "@yext/chat-core";
+import { Message, MessageResponse, MessageSource } from "@yext/chat-core";
 import { provideChatHeadless } from "../src/HeadlessProvider";
 import { ChatEventClient, ChatHttpClient, HeadlessConfig } from "../src/models";
 import * as analyticsLib from "@yext/analytics";
@@ -154,6 +154,35 @@ it("resets session and uses bot client on reset", async () => {
   // with bot client, get next message
   await headless.getNextMessage();
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
+});
+
+it("update state messages with appropriate source during handoff", async () => {
+  const botClient = createMockHttpClient([
+    { message: createMessage("message 1"), notes: {}, integrationDetails: {} }, //trigger handoff
+    { message: createMessage("message 2"), notes: {} },
+  ]);
+  const callbacks: Record<string, any[]> = {};
+  const agentClient = createMockEventClient(callbacks);
+  const headless = provideChatHeadless(config, {
+    bot: botClient,
+    agent: agentClient,
+  });
+
+  //latest message is fromt BOT, then bot client handoff to agent client
+  await headless.getNextMessage();
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
+
+  //agent client handle next user message
+  await headless.getNextMessage("user message 1");
+  expect(headless.state.conversation.messages.at(-2)?.source).toEqual(MessageSource.USER);
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.AGENT);
+
+  //agent client handoff to bot client
+  callbacks["close"]?.forEach((cb) => cb());
+
+  //bot client handle next user message
+  await headless.getNextMessage("user message 2");
+  expect(headless.state.conversation.messages.at(-1)?.source).toEqual(MessageSource.BOT);
 });
 
 function createMessage(text: string): Message {
