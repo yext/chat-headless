@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - @babel/runtime@7.24.8
+ - @babel/runtime@7.25.6
 
 This package contains the following license and notice below:
 
@@ -67,7 +67,7 @@ The following npm packages may be included in this product:
  - @types/hoist-non-react-statics@3.3.5
  - @types/prop-types@15.7.12
  - @types/react-dom@18.3.0
- - @types/react@18.3.3
+ - @types/react@18.3.5
  - @types/use-sync-external-store@0.0.3
 
 These packages each contain the following license and notice below:
@@ -338,7 +338,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - layerr@2.1.0
+ - layerr@3.0.0
 
 This package contains the following license and notice below:
 
@@ -594,7 +594,7 @@ This package contains the following license and notice below:
 
 The following npm package may be included in this product:
 
- - ulidx@2.3.0
+ - ulidx@2.4.1
 
 This package contains the following license and notice below:
 
