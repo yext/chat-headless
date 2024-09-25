@@ -207,7 +207,9 @@ it("reinitializes session using credentials saved in session storage", async () 
     agent: agentClient,
   });
 
-  expect(sessionStorage.getItem("yext_chat_handoff_credentials__localhost__botId")).toBeNull();
+  expect(
+    sessionStorage.getItem("yext_chat_handoff_credentials__localhost__botId")
+  ).toBeNull();
 
   // start with bot client, immediately trigger handoff
   await headless.getNextMessage();
@@ -220,11 +222,16 @@ it("reinitializes session using credentials saved in session storage", async () 
     agent: agentClient,
   });
 
-  // agent client is the active client
-  await headless.getNextMessage();
   expect(agentClient.init).toHaveBeenCalledTimes(0);
   expect(agentClient.reinitializeSession).toHaveBeenCalledTimes(1);
-  expect(agentClient.reinitializeSession).toHaveBeenCalledWith("mock-conversation-id");
+  expect(agentClient.reinitializeSession).toHaveBeenCalledWith(
+    "mock-conversation-id"
+  );
+
+  // process the async reinitializeSession
+  await jest.runAllTimersAsync();
+
+  await headless.getNextMessage();
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.processMessage).toHaveBeenCalledTimes(1);
 });
@@ -247,7 +254,9 @@ it("does not reinitialize session if saveToLocalStorage is false", async () => {
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
   expect(agentClient.init).toHaveBeenCalledTimes(1);
 
-  expect(sessionStorage.getItem("yext_chat_handoff_credentials__localhost__botId")).toBeNull();
+  expect(
+    sessionStorage.getItem("yext_chat_handoff_credentials__localhost__botId")
+  ).toBeNull();
 
   agentClient = createMockEventClient(callbacks);
   headless = provideChatHeadless(newConfig, {

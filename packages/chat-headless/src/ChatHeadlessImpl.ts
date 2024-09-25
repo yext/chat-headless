@@ -34,7 +34,10 @@ import {
   ChatEventPayLoad,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
-import { isChatEventClient } from "./models/clients/ChatEventClient";
+import {
+  ChatEventClient,
+  isChatEventClient,
+} from "./models/clients/ChatEventClient";
 
 const BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY =
   "yext_chat_handoff_credentials";
@@ -186,7 +189,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     if (isChatEventClient(nextClient)) {
       try {
         if (this.sessionAgentCredentials) {
-          await nextClient.reinitializeSession(this.sessionAgentCredentials);
+          await this.reinitializeAgentSession(nextClient);
         } else {
           const creds = await nextClient.init({
             conversationId: this.state.conversation.conversationId,
@@ -206,6 +209,12 @@ export class ChatHeadlessImpl implements ChatHeadless {
       }
     }
     this.chatClient = nextClient;
+  }
+
+  private async reinitializeAgentSession(client: ChatEventClient) {
+    this.setCanSendMessage(false);
+    await client.reinitializeSession(this.sessionAgentCredentials);
+    this.setCanSendMessage(true);
   }
 
   addClientSdk(additionalClientSdk: Record<string, string>) {
@@ -254,8 +263,12 @@ export class ChatHeadlessImpl implements ChatHeadless {
       );
       return;
     }
-      
+
     this.credentialsSessionStorageKey = `${BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY}__${hostname}__${this.config.botId}`;
+    
+    if (this.sessionAgentCredentials) {
+      this.handoff();
+    }
   }
 
   async report(
@@ -352,10 +365,6 @@ export class ChatHeadlessImpl implements ChatHeadless {
     text?: string,
     source: MessageSource = MessageSource.USER
   ): Promise<MessageResponse | undefined> {
-    if(this.sessionAgentCredentials && !isChatEventClient(this.chatClient)) {
-      await this.handoff();
-    }
-
     const client = this.chatClient;
     if (isChatEventClient(client)) {
       const { conversationId, notes } = this.state.conversation;
