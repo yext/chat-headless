@@ -21,5 +21,6 @@ export interface ChatEventClient
 |  [init(messageResponse)](./chat-headless.chateventclient.init.md) | Initializes the client, using credentials and data in the provided message to setup a chat session. |
 |  [on(eventName, cb)](./chat-headless.chateventclient.on.md) | Registers an event listener for a specified event. Supported events are: - <code>message</code>: A new message has been received. - <code>typing</code>: The agent is typing. - <code>close</code>: The chat session has been closed. |
 |  [processMessage(request)](./chat-headless.chateventclient.processmessage.md) | Processes a message request. The response should be emitted as a message event. |
+|  [reinitializeSession(credentials)](./chat-headless.chateventclient.reinitializesession.md) | Reinitialize the session using existing session data. |
 |  [resetSession()](./chat-headless.chateventclient.resetsession.md) | Reset the current chat session. |
 

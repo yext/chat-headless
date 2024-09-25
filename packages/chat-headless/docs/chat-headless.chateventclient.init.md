@@ -9,7 +9,7 @@ Initializes the client, using credentials and data in the provided message to se
 **Signature:**
 
 ```typescript
-init(messageResponse: MessageResponse): Promise<void>;
+init(messageResponse: MessageResponse): Promise<any>;
 ```
 
 ## Parameters
@@ -20,5 +20,5 @@ init(messageResponse: MessageResponse): Promise<void>;
 
 **Returns:**
 
-Promise&lt;void&gt;
+Promise&lt;any&gt;
 

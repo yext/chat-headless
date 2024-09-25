@@ -41,9 +41,10 @@ export { ChatConfig }
 export interface ChatEventClient {
     emit(eventName: string, data: any): void;
     getSession(): any;
-    init(messageResponse: MessageResponse): Promise<void>;
+    init(messageResponse: MessageResponse): Promise<any>;
     on(eventName: "message" | "typing" | "close", cb: (data: any) => void): void;
     processMessage(request: MessageRequest): Promise<void>;
+    reinitializeSession(credentials: any): Promise<void>;
     resetSession(): void;
 }
 

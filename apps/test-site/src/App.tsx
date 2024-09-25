@@ -6,6 +6,8 @@ import {
   MessageSource,
 } from "@yext/chat-headless-react";
 import { useCallback, useEffect, useState } from "react";
+import { provideChatCoreZendesk } from "@yext/chat-core-zendesk";
+// import { provideChatCore } from '@yext/chat-core';
 
 const config: HeadlessConfig = {
   botId: process.env.REACT_APP_TEST_BOT_ID || "BOT_ID_HERE",
@@ -20,12 +22,20 @@ const config: HeadlessConfig = {
       internalUser: true,
     },
   },
+  saveToLocalStorage: true,
 };
 
 function App() {
   return (
     <div className="App">
-      <ChatHeadlessProvider config={config}>
+      <ChatHeadlessProvider
+        config={config}
+        clients={{
+          agent: provideChatCoreZendesk({
+            integrationId: "65f4a281e2bab7777482db6d",
+          }),
+        }}
+      >
         <ChatComponent />
       </ChatHeadlessProvider>
     </div>

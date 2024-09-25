@@ -15,7 +15,7 @@ export interface ChatEventClient {
    *
    * @param messageResponse - The message response that initiated the handoff to the chat client.
    */
-  init(messageResponse: MessageResponse): Promise<void>;
+  init(messageResponse: MessageResponse): Promise<any>;
 
   /**
    * Registers an event listener for a specified event.
@@ -53,6 +53,11 @@ export interface ChatEventClient {
    * Reset the current chat session.
    */
   resetSession(): void;
+
+  /**
+   * Reinitialize the session using existing session data.
+   */
+  reinitializeSession(credentials: any): Promise<void>;
 }
 
 export function isChatEventClient(
