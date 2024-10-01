@@ -272,6 +272,44 @@ it("does not reinitialize session if saveToLocalStorage is false", async () => {
   expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
 });
 
+it("defaults to bot client if session storage contains invalid data", async () => {
+  const botClient = createMockHttpClient([
+    { message: createMessage("message 1"), notes: {}, integrationDetails: {} }, //trigger handoff
+    { message: createMessage("message 2"), notes: {} },
+  ]);
+  const callbacks: Record<string, any[]> = {};
+  let agentClient = createMockEventClient(callbacks);
+  const newConfig = { ...config, saveToLocalStorage: true };
+  let headless = provideChatHeadless(newConfig, {
+    bot: botClient,
+    agent: agentClient,
+  });
+
+  // start with bot client, immediately trigger handoff
+  await headless.getNextMessage();
+  expect(botClient.getNextMessage).toHaveBeenCalledTimes(1);
+  expect(agentClient.init).toHaveBeenCalledTimes(1);
+
+  // save invalid data to session storage
+  sessionStorage.setItem(
+    "yext_chat_handoff_credentials__localhost__botId",
+    "invalid"
+  );
+
+  agentClient = createMockEventClient(callbacks);
+  headless = provideChatHeadless(newConfig, {
+    bot: botClient,
+    agent: agentClient,
+  });
+
+  // agent does not reinitialize, nothing saved to session
+  expect(agentClient.reinitializeSession).toHaveBeenCalledTimes(0);
+
+  // bot client is the active client
+  await headless.getNextMessage();
+  expect(botClient.getNextMessage).toHaveBeenCalledTimes(2);
+});
+
 function createMessage(text: string): Message {
   return {
     text,

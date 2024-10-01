@@ -104,7 +104,14 @@ export class ChatHeadlessImpl implements ChatHeadless {
         this.credentialsSessionStorageKey
       );
       if (credentials) {
-        return JSON.parse(credentials);
+        try {
+          return JSON.parse(credentials);
+        } catch (e) {
+          this.removeSessionAgentCredentials();
+          throw new Error(
+            `Error occurred while parsing credentials from session storage: ${e}`
+          );
+        }
       }
     }
   }
@@ -265,9 +272,17 @@ export class ChatHeadlessImpl implements ChatHeadless {
     }
 
     this.credentialsSessionStorageKey = `${BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY}__${hostname}__${this.config.botId}`;
-    
-    if (this.sessionAgentCredentials) {
-      this.handoff();
+
+    try {
+      const credentials = this.sessionAgentCredentials;
+      if (credentials) {
+        this.handoff();
+      }
+    } catch (e) {
+      console.error(
+        "Error occurred while initializing agent session using stored credentials:",
+        e
+      );
     }
   }
 
