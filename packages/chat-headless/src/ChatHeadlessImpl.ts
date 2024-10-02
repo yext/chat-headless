@@ -34,7 +34,13 @@ import {
   ChatEventPayLoad,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
-import { isChatEventClient } from "./models/clients/ChatEventClient";
+import {
+  ChatEventClient,
+  isChatEventClient,
+} from "./models/clients/ChatEventClient";
+
+const BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY =
+  "yext_chat_handoff_credentials";
 
 /**
  * Concrete implementation of {@link ChatHeadless}
@@ -48,6 +54,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
   private clients: ChatClient[];
   private stateManager: ReduxStateManager;
   private chatAnalyticsService: ChatAnalyticsService;
+  private credentialsSessionStorageKey: string | undefined;
 
   private isImpressionAnalyticEventSent = false;
 
@@ -91,6 +98,39 @@ export class ChatHeadlessImpl implements ChatHeadless {
     }
   }
 
+  private get sessionAgentCredentials(): unknown | void {
+    if (this.credentialsSessionStorageKey) {
+      const credentials = sessionStorage.getItem(
+        this.credentialsSessionStorageKey
+      );
+      if (credentials) {
+        try {
+          return JSON.parse(credentials);
+        } catch (e) {
+          this.removeSessionAgentCredentials();
+          throw new Error(
+            `Error occurred while parsing credentials from session storage: ${e}`
+          );
+        }
+      }
+    }
+  }
+
+  private setSessionAgentCredentials(credentials: unknown) {
+    if (this.credentialsSessionStorageKey) {
+      sessionStorage.setItem(
+        this.credentialsSessionStorageKey,
+        JSON.stringify(credentials)
+      );
+    }
+  }
+
+  private removeSessionAgentCredentials() {
+    if (this.credentialsSessionStorageKey) {
+      sessionStorage.removeItem(this.credentialsSessionStorageKey);
+    }
+  }
+
   get state(): State {
     return this.stateManager.getState();
   }
@@ -117,7 +157,8 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
       client.on("message", (data: string) => {
         this.addMessage({
-          source: client === this.botClient ? MessageSource.BOT : MessageSource.AGENT,
+          source:
+            client === this.botClient ? MessageSource.BOT : MessageSource.AGENT,
           text: data,
           timestamp: new Date().toISOString(),
         });
@@ -137,6 +178,10 @@ export class ChatHeadlessImpl implements ChatHeadless {
    * Switches the current chat client with the next client, if available.
    */
   private async handoff(integrationDetails?: IntegrationDetails) {
+    if (isChatEventClient(this.chatClient)) {
+      this.removeSessionAgentCredentials();
+    }
+
     let nextClient: ChatClient | undefined = undefined;
     for (const client of this.clients) {
       if (this.chatClient !== client) {
@@ -150,21 +195,33 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
     if (isChatEventClient(nextClient)) {
       try {
-        await nextClient.init({
-          conversationId: this.state.conversation.conversationId,
-          message: this.state.conversation.messages.at(-1) || {
-            source: MessageSource.BOT,
-            text: "",
-          },
-          notes: this.state.conversation.notes || {},
-          integrationDetails,
-        });
+        if (this.sessionAgentCredentials) {
+          await this.reinitializeAgentSession(nextClient);
+        } else {
+          const creds = await nextClient.init({
+            conversationId: this.state.conversation.conversationId,
+            message: this.state.conversation.messages.at(-1) || {
+              source: MessageSource.BOT,
+              text: "",
+            },
+            notes: this.state.conversation.notes || {},
+            integrationDetails,
+          });
+
+          this.setSessionAgentCredentials(creds);
+        }
       } catch (e) {
         console.error("Error occurred while initializing next client:", e);
         return;
       }
     }
     this.chatClient = nextClient;
+  }
+
+  private async reinitializeAgentSession(client: ChatEventClient) {
+    this.setCanSendMessage(false);
+    await client.reinitializeSession(this.sessionAgentCredentials);
+    this.setCanSendMessage(true);
   }
 
   addClientSdk(additionalClientSdk: Record<string, string>) {
@@ -182,6 +239,21 @@ export class ChatHeadlessImpl implements ChatHeadless {
   }
 
   initLocalStorage() {
+    const hostname = window.location.hostname;
+    if (!hostname) {
+      console.warn(
+        "Unable to get hostname of current page. State will not be persisted while navigating across pages."
+      );
+      return;
+    }
+
+    if (!localStorage) {
+      console.warn(
+        "Local storage is not available. State will not be persisted while navigating across pages."
+      );
+      return;
+    }
+
     this.setState({
       ...this.state,
       conversation: loadSessionState(this.config.botId),
@@ -191,6 +263,27 @@ export class ChatHeadlessImpl implements ChatHeadless {
       callback: () =>
         saveSessionState(this.config.botId, this.state.conversation),
     });
+
+    if (!sessionStorage) {
+      console.warn(
+        "Session storage is not available. State will not be persisted while navigating across pages."
+      );
+      return;
+    }
+
+    this.credentialsSessionStorageKey = `${BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY}__${hostname}__${this.config.botId}`;
+
+    try {
+      const credentials = this.sessionAgentCredentials;
+      if (credentials) {
+        this.handoff();
+      }
+    } catch (e) {
+      console.error(
+        "Error occurred while initializing agent session using stored credentials:",
+        e
+      );
+    }
   }
 
   async report(
@@ -267,6 +360,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
   restartConversation() {
     if (isChatEventClient(this.chatClient)) {
+      this.removeSessionAgentCredentials();
       this.chatClient.resetSession();
     }
     this.chatClient = this.botClient;
@@ -438,7 +532,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
     this.setCanSendMessage(true);
     this.setChatLoadingStatus(false);
     if (!!messageResponse.integrationDetails) {
-      this.handoff(messageResponse.integrationDetails);
+      await this.handoff(messageResponse.integrationDetails);
     }
     return messageResponse;
   }

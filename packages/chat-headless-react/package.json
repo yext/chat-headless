@@ -39,7 +39,7 @@
   "homepage": "https://github.com/yext/chat-headless#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@yext/chat-headless": "^0.11.1",
+    "@yext/chat-headless": "^0.12.0",
     "react-redux": "^8.0.5"
   },
   "peerDependencies": {

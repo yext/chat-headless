@@ -37,6 +37,7 @@ beforeEach(() => {
     return client;
   });
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 describe("setters work as expected", () => {
