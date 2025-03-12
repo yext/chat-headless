@@ -5,12 +5,11 @@ name: Check and Update Repo's documenation and third party notices
 on: pull_request
 
 jobs:
-  update-docs-and-third-party-notices:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: yext/slapshot-reusable-workflows/.github/workflows/update_docs.yml@v1
-      secrets:
-        REPO_SCOPED_TOKEN: ${{ secrets.BOT_REPO_SCOPED_TOKEN }}
-    - uses: yext/slapshot-reusable-workflows/.github/workflows/third_party_notices_check.yml@v1
-      secrets:
-        REPO_SCOPED_TOKEN: ${{ secrets.BOT_REPO_SCOPED_TOKEN }}
+  call_update_docs:
+    uses: yext/slapshot-reusable-workflows/.github/workflows/update_docs.yml@v1
+    secrets:
+      REPO_SCOPED_TOKEN: ${{ secrets.BOT_REPO_SCOPED_TOKEN }}
+  call_third_party_notices_check:
+    uses: yext/slapshot-reusable-workflows/.github/workflows/third_party_notices_check.yml@v1
+    secrets:
+      REPO_SCOPED_TOKEN: ${{ secrets.BOT_REPO_SCOPED_TOKEN }}
