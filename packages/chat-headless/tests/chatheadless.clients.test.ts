@@ -305,7 +305,7 @@ it("defaults to bot client if session storage contains invalid data", async () =
     bot: botClient,
     agent: agentClient,
   });
-  unmaskConsoleErrors(originalErrorFn);
+  unmaskConsoleErrors(originalErrorFn, 1);
 
   // agent does not reinitialize, nothing saved to session
   expect(agentClient.reinitializeSession).toHaveBeenCalledTimes(0);
@@ -374,6 +374,7 @@ function maskConsoleErrors() : (data: any[]) => void {
   return originalFunction;
 }
 
-function unmaskConsoleErrors(originalFunction : (data: any[]) => void) {
+function unmaskConsoleErrors(originalFunction : (data: any[]) => void, numExpectedCalls : number) {
+  expect(console.error).toHaveBeenCalledTimes(numExpectedCalls);
   console.error = originalFunction;
 }
