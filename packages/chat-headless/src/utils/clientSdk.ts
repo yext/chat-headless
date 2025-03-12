@@ -1,4 +1,4 @@
-import { ChatEventPayLoad } from "@yext/analytics";
+import { EventPayload } from "@yext/analytics";
 import { version, dependencies } from "../../package.json";
 
 const coreVersion = dependencies["@yext/chat-core"];
@@ -10,8 +10,8 @@ const coreVersion = dependencies["@yext/chat-core"];
  * @internal
  */
 export function getClientSdk(
-  additionalClientSdk?: ChatEventPayLoad["clientSdk"]
-): ChatEventPayLoad["clientSdk"] {
+  additionalClientSdk?: EventPayload["clientSdk"]
+): EventPayload["clientSdk"] {
   return {
     ...additionalClientSdk,
     CHAT_HEADLESS: version,

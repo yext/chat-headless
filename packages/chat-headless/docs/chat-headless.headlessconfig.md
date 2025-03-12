@@ -17,6 +17,6 @@ export interface HeadlessConfig extends ChatConfig
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [analyticsConfig?](./chat-headless.headlessconfig.analyticsconfig.md) |  | Omit&lt;ChatAnalyticsConfig, "apiKey" \| "env" \| "region"&gt; &amp; { baseEventPayload?: DeepPartial&lt;ChatEventPayLoad&gt;; } | _(Optional)_ Configurations for Chat analytics. |
+|  [analyticsConfig?](./chat-headless.headlessconfig.analyticsconfig.md) |  | Omit&lt;AnalyticsConfig, "authorizationType" \| "authorization" \| "env" \| "region"&gt; &amp; { baseEventPayload?: DeepPartial&lt;EventPayload&gt;; } | _(Optional)_ Configurations for Chat analytics. |
 |  [saveToLocalStorage?](./chat-headless.headlessconfig.savetolocalstorage.md) |  | boolean | _(Optional)_ Whether to save the instance's [ConversationState](./chat-headless.conversationstate.md) to local storage. Defaults to true. |
 

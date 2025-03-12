@@ -7,15 +7,32 @@ import {
 } from "@yext/chat-headless-react";
 import { useCallback, useEffect, useState } from "react";
 
+/**
+ * The analytics SDK only supports the SANDBOX and PRODUCTION environments. If you want to test
+ * chat with analytics events, set testEnvironment to SANDBOX.
+ * */
+const testEnvironment = 'DEV';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const chatEndpoint = testEnvironment === 'SANDBOX'
+    ?  `https://sbx-cdn.us.yextapis.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message`
+    : `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message`;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const chatStreamEndpoint = testEnvironment === 'SANDBOX'
+    ? `https://sbx-cdn.us.yextapis.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message/streaming`
+    : `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message/streaming`;
+
 const config: HeadlessConfig = {
   botId: process.env.REACT_APP_TEST_BOT_ID || "BOT_ID_HERE",
   apiKey: process.env.REACT_APP_BOT_API_KEY || "BOT_KEY_HERE",
+  env: 'SANDBOX',
+  region: 'US',
   endpoints: {
-    chat: `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message`,
-    chatStream: `https://liveapi-dev.yext.com/v2/accounts/me/chat/${process.env.REACT_APP_TEST_BOT_ID}/message/streaming`,
+    chat: chatEndpoint,
+    chatStream: chatStreamEndpoint,
   },
   analyticsConfig: {
-    endpoint: "https://www.dev.us.yextevents.com/accounts/me/events",
     baseEventPayload: {
       internalUser: true,
     },

@@ -39,8 +39,9 @@ function mockChatCore(spy?: jest.Mock) {
 
 beforeEach(() => {
   localStorage.clear();
-  jest.spyOn(analyticsLib, "provideChatAnalytics").mockReturnValue({
+  jest.spyOn(analyticsLib, "analytics").mockReturnValue({
     report: jest.fn(),
+    with: jest.fn(),
   });
 });
 
@@ -211,6 +212,8 @@ describe("Chat API methods work as expected", () => {
     } catch (e) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(e).toBeInstanceOf(ApiError);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       // eslint-disable-next-line jest/no-conditional-expect
       expect(e.message).toEqual(
         "Stream Error: Missing full message response at the end of stream."

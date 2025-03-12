@@ -9,7 +9,7 @@ Configurations for Chat analytics.
 **Signature:**
 
 ```typescript
-analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
-        baseEventPayload?: DeepPartial<ChatEventPayLoad>;
+analyticsConfig?: Omit<AnalyticsConfig, "authorizationType" | "authorization" | "env" | "region"> & {
+        baseEventPayload?: DeepPartial<EventPayload>;
     };
 ```

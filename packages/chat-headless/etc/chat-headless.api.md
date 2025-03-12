@@ -4,15 +4,15 @@
 
 ```ts
 
+import { AnalyticsConfig } from '@yext/analytics';
 import { ApiError } from '@yext/chat-core';
-import { ChatAnalyticsConfig } from '@yext/analytics';
 import { ChatConfig } from '@yext/chat-core';
-import { ChatEventPayLoad } from '@yext/analytics';
 import { ChatPrompt } from '@yext/chat-core';
 import { DeepPartial } from '@reduxjs/toolkit';
 import { EndEvent } from '@yext/chat-core';
 import { Endpoints } from '@yext/chat-core';
 import { Environment } from '@yext/chat-core';
+import { EventPayload } from '@yext/analytics';
 import { InternalConfig } from '@yext/chat-core';
 import { Message } from '@yext/chat-core';
 import { MessageNotes } from '@yext/chat-core';
@@ -56,7 +56,7 @@ export interface ChatHeadless {
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
     initLocalStorage(): void;
-    report(eventPayload: Omit<ChatEventPayLoad, "chat"> & DeepPartial<Pick<ChatEventPayLoad, "chat">>): Promise<void>;
+    report(eventPayload: Omit<EventPayload, "chat"> & DeepPartial<Pick<EventPayload, "chat">>): Promise<void>;
     restartConversation(): void;
     setCanSendMessage(canSendMessage: boolean): void;
     setChatLoadingStatus(isLoading: boolean): void;
@@ -95,8 +95,8 @@ export { Environment }
 
 // @public
 export interface HeadlessConfig extends ChatConfig {
-    analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
-        baseEventPayload?: DeepPartial<ChatEventPayLoad>;
+    analyticsConfig?: Omit<AnalyticsConfig, "authorizationType" | "authorization" | "env" | "region"> & {
+        baseEventPayload?: DeepPartial<EventPayload>;
     };
     saveToLocalStorage?: boolean;
 }
