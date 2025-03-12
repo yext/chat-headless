@@ -31,6 +31,9 @@ it("passes through analytics specific configurations", () => {
     ...config,
     env: "SANDBOX",
     region: "US",
+    analyticsConfig: {
+      sessionTrackingEnabled: true,
+    }
   });
   expect(chatAnalyticsSpy).toBeCalledTimes(1);
   expect(chatAnalyticsSpy).toBeCalledWith({
@@ -38,6 +41,7 @@ it("passes through analytics specific configurations", () => {
     authorization: "MY_API_KEY",
     env: "SANDBOX",
     region: "US",
+    sessionTrackingEnabled: true,
   });
 });
 
