@@ -29,9 +29,9 @@ import {
 import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
 import { setContext } from "./slices/meta";
 import {
-  provideChatAnalytics,
-  ChatAnalyticsService,
-  ChatEventPayLoad,
+  analytics,
+  AnalyticsEventService,
+  EventPayload,
 } from "@yext/analytics";
 import { getClientSdk } from "./utils/clientSdk";
 import {
@@ -53,7 +53,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
   private botClient: ChatClient;
   private clients: ChatClient[];
   private stateManager: ReduxStateManager;
-  private chatAnalyticsService: ChatAnalyticsService;
+  private analyticsService: AnalyticsEventService;
   private credentialsSessionStorageKey: string | undefined;
 
   private isImpressionAnalyticEventSent = false;
@@ -87,8 +87,9 @@ export class ChatHeadlessImpl implements ChatHeadless {
     this.setClientEventListeners();
 
     this.stateManager = new ReduxStateManager();
-    this.chatAnalyticsService = provideChatAnalytics({
-      apiKey: this.config.apiKey,
+    this.analyticsService = analytics({
+      authorizationType: 'apiKey',
+      authorization: this.config.apiKey,
       env: this.config.env,
       region: this.config.region,
       ...this.config.analyticsConfig,
@@ -287,8 +288,8 @@ export class ChatHeadlessImpl implements ChatHeadless {
   }
 
   async report(
-    eventPayload: Omit<ChatEventPayLoad, "chat"> &
-      DeepPartial<Pick<ChatEventPayLoad, "chat">>
+    eventPayload: Omit<EventPayload, "chat"> &
+      DeepPartial<Pick<EventPayload, "chat">>
   ) {
     if (eventPayload.action === "CHAT_IMPRESSION") {
       if (this.isImpressionAnalyticEventSent) {
@@ -296,13 +297,13 @@ export class ChatHeadlessImpl implements ChatHeadless {
       }
       this.isImpressionAnalyticEventSent = true;
     }
-    const chatProps: ChatEventPayLoad["chat"] = {
+    const chatProps: EventPayload["chat"] = {
       botId: this.config.botId,
       conversationId: this.state.conversation.conversationId,
     };
     const baseEventPayload = this.config.analyticsConfig?.baseEventPayload;
     try {
-      await this.chatAnalyticsService.report({
+      await this.analyticsService.report({
         timestamp: new Date().toISOString(),
         pageUrl: window?.location.href || undefined,
         referrerUrl: window?.document.referrer || undefined,
@@ -521,10 +522,11 @@ export class ChatHeadlessImpl implements ChatHeadless {
       this.setChatLoadingStatus(false);
       return Promise.reject(e);
     }
-    this.report({
+    await this.report({
       action: "CHAT_RESPONSE",
       timestamp: messageResponse.message.timestamp,
       chat: {
+        botId: this.config.botId,
         conversationId: messageResponse.conversationId,
         responseId: messageResponse.message.responseId,
       },

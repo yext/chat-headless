@@ -10,7 +10,7 @@ const config: HeadlessConfig = {
 };
 
 it("passes though apiKey, env, region from core config to analytics config", () => {
-  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
+  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "analytics");
   provideChatHeadless({
     ...config,
     env: "SANDBOX",
@@ -18,29 +18,29 @@ it("passes though apiKey, env, region from core config to analytics config", () 
   });
   expect(chatAnalyticsSpy).toBeCalledTimes(1);
   expect(chatAnalyticsSpy).toBeCalledWith({
-    apiKey: "MY_API_KEY",
+    authorizationType: "apiKey",
+    authorization: "MY_API_KEY",
     env: "SANDBOX",
     region: "US",
   });
 });
 
 it("passes through analytics specific configurations", () => {
-  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "provideChatAnalytics");
+  const chatAnalyticsSpy = jest.spyOn(AnalyticsLib, "analytics");
   provideChatHeadless({
     ...config,
     env: "SANDBOX",
     region: "US",
     analyticsConfig: {
-      endpoint: "http://www.my-endpoint.com",
       sessionTrackingEnabled: true,
-    },
+    }
   });
   expect(chatAnalyticsSpy).toBeCalledTimes(1);
   expect(chatAnalyticsSpy).toBeCalledWith({
-    apiKey: "MY_API_KEY",
+    authorizationType: "apiKey",
+    authorization: "MY_API_KEY",
     env: "SANDBOX",
     region: "US",
-    endpoint: "http://www.my-endpoint.com",
     sessionTrackingEnabled: true,
   });
 });
@@ -48,8 +48,9 @@ it("passes through analytics specific configurations", () => {
 it("merges base payload with event specific payload (latter overrides)", () => {
   jest.spyOn(Date.prototype, "toISOString").mockReturnValue("mocked-time");
   const reportSpy = jest.fn();
-  jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
+  jest.spyOn(AnalyticsLib, "analytics").mockImplementation(() => ({
     report: reportSpy,
+    with: jest.fn(),
   }));
   const headless = provideChatHeadless({
     ...config,
@@ -101,8 +102,9 @@ it("merges base payload with event specific payload (latter overrides)", () => {
 it("addClientSdk works as expected", () => {
   jest.spyOn(Date.prototype, "toISOString").mockReturnValue("mocked-time");
   const reportSpy = jest.fn();
-  jest.spyOn(AnalyticsLib, "provideChatAnalytics").mockImplementation(() => ({
+  jest.spyOn(AnalyticsLib, "analytics").mockImplementation(() => ({
     report: reportSpy,
+    with: jest.fn(),
   }));
   const headless = provideChatHeadless({
     ...config,

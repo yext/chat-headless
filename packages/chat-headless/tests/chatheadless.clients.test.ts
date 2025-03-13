@@ -4,10 +4,12 @@ import { provideChatHeadless } from "../src/HeadlessProvider";
 import { ChatEventClient, ChatHttpClient, HeadlessConfig } from "../src/models";
 import * as analyticsLib from "@yext/analytics";
 
+jest.useFakeTimers();
 jest.mock("@yext/analytics");
 beforeEach(() => {
-  jest.spyOn(analyticsLib, "provideChatAnalytics").mockReturnValue({
+  jest.spyOn(analyticsLib, "analytics").mockReturnValue({
     report: jest.fn(),
+    with: jest.fn(),
   });
   localStorage.clear();
   sessionStorage.clear();
@@ -297,10 +299,13 @@ it("defaults to bot client if session storage contains invalid data", async () =
   );
 
   agentClient = createMockEventClient(callbacks);
+  // this call is expected to log an error to console because the handoff credential is invalid
+  const originalErrorFn = maskConsoleErrors();
   headless = provideChatHeadless(newConfig, {
     bot: botClient,
     agent: agentClient,
   });
+  unmaskConsoleErrors(originalErrorFn, 1);
 
   // agent does not reinitialize, nothing saved to session
   expect(agentClient.reinitializeSession).toHaveBeenCalledTimes(0);
@@ -361,4 +366,15 @@ function createMockEventClient(
     reinitializeSession: jest.fn(),
   };
   return client;
+}
+
+function maskConsoleErrors() : (data: any[]) => void {
+  const originalFunction = console.error;
+  console.error = jest.fn();
+  return originalFunction;
+}
+
+function unmaskConsoleErrors(originalFunction : (data: any[]) => void, numExpectedCalls : number) {
+  expect(console.error).toHaveBeenCalledTimes(numExpectedCalls);
+  console.error = originalFunction;
 }

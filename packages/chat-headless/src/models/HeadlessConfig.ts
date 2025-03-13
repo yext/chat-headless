@@ -1,5 +1,5 @@
 import { DeepPartial } from "@reduxjs/toolkit";
-import { ChatAnalyticsConfig, ChatEventPayLoad } from "@yext/analytics";
+import { AnalyticsConfig, EventPayload } from "@yext/analytics";
 import { ChatConfig } from "@yext/chat-core";
 
 /**
@@ -11,8 +11,8 @@ export interface HeadlessConfig extends ChatConfig {
   /** Whether to save the instance's {@link ConversationState} to local storage. Defaults to true. */
   saveToLocalStorage?: boolean;
   /** Configurations for Chat analytics. */
-  analyticsConfig?: Omit<ChatAnalyticsConfig, "apiKey" | "env" | "region"> & {
+  analyticsConfig?: Omit<AnalyticsConfig, "authorizationType" | "authorization" | "env" | "region"> & {
     /** Base payload to include for requests to the Analytics Events API. */
-    baseEventPayload?: DeepPartial<ChatEventPayLoad>;
+    baseEventPayload?: DeepPartial<EventPayload>;
   };
 }
