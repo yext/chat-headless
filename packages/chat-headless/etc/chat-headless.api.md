@@ -56,7 +56,8 @@ export interface ChatHeadless {
     addMessage(message: Message): void;
     getNextMessage(text?: string, source?: MessageSource): Promise<MessageResponse | undefined>;
     initLocalStorage(): void;
-    report(eventPayload: Omit<EventPayload, "chat"> & DeepPartial<Pick<EventPayload, "chat">>): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "RecursivePartial" needs to be exported by the entry point index.d.ts
+    report(eventPayload: Omit<EventPayload, "chat"> & RecursivePartial<Pick<EventPayload, "chat">>): Promise<void>;
     restartConversation(): void;
     setCanSendMessage(canSendMessage: boolean): void;
     setChatLoadingStatus(isLoading: boolean): void;
