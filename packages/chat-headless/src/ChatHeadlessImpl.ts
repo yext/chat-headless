@@ -26,7 +26,7 @@ import {
   setMessages,
   addMessage,
 } from "./slices/conversation";
-import { DeepPartial, Store, Unsubscribe } from "@reduxjs/toolkit";
+import { Store, Unsubscribe } from "@reduxjs/toolkit";
 import { setContext } from "./slices/meta";
 import {
   analytics,
@@ -38,6 +38,7 @@ import {
   ChatEventClient,
   isChatEventClient,
 } from "./models/clients/ChatEventClient";
+import { RecursivePartial } from "./models/ChatHeadless";
 
 const BASE_HANDOFF_CREDENTIALS_SESSION_STORAGE_KEY =
   "yext_chat_handoff_credentials";
@@ -289,7 +290,7 @@ export class ChatHeadlessImpl implements ChatHeadless {
 
   async report(
     eventPayload: Omit<EventPayload, "chat"> &
-      DeepPartial<Pick<EventPayload, "chat">>
+        RecursivePartial<Pick<EventPayload, "chat">>
   ) {
     if (eventPayload.action === "CHAT_IMPRESSION") {
       if (this.isImpressionAnalyticEventSent) {
@@ -526,7 +527,6 @@ export class ChatHeadlessImpl implements ChatHeadless {
       action: "CHAT_RESPONSE",
       timestamp: messageResponse.message.timestamp,
       chat: {
-        botId: this.config.botId,
         conversationId: messageResponse.conversationId,
         responseId: messageResponse.message.responseId,
       },

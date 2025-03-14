@@ -134,3 +134,39 @@ it("addClientSdk works as expected", () => {
     })
   );
 });
+
+it("automatically fills in botId for chat events", () => {
+  jest.spyOn(Date.prototype, "toISOString").mockReturnValue("mocked-time");
+  const reportSpy = jest.fn();
+  jest.spyOn(AnalyticsLib, "analytics").mockImplementation(() => ({
+    report: reportSpy,
+    with: jest.fn(),
+  }));
+  const headless = provideChatHeadless({
+    ...config,
+    analyticsConfig: {
+      baseEventPayload: {
+        clientSdk: {
+          CHAT_RANDOM_SDK: "0.0.0",
+        },
+      },
+    },
+  });
+  headless.report({
+    action: "CHAT_LINK_CLICK",
+    chat: {
+      conversationId: "my-convo-id",
+      responseId: "my-response-id",
+    }
+  });
+  expect(reportSpy).toBeCalledTimes(1);
+  expect(reportSpy).toBeCalledWith(
+      expect.objectContaining({
+        chat: expect.objectContaining({
+          botId: config.botId,
+          conversationId: "my-convo-id",
+          responseId: "my-response-id",
+        }),
+      })
+  );
+});
